@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-validator": "^5.2.0",
@@ -16,6 +17,9 @@
     "morgan": "~1.9.0",
     "pg": "^7.4.3",
     "pug": "2.0.0-beta11",
+    "querystring": "^0.2.0",
+    "request": "^2.87.0",
+    "save": "^2.3.2",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.0.0",
     "socket.io": "^2.1.1"

@@ -57,7 +57,7 @@ $(function() {
         })
         .done((data) => {
             access_token = data.access_token;
-            $('#oauth').text('access_token: '+access_token+'\n\n refresh_token: '+refresh_token)
+            $('#oauth').text('access_token: '+access_token+'\n refresh_token: '+refresh_token)
         });
     });
 

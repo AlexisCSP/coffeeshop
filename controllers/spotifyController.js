@@ -1,3 +1,4 @@
+/* Based off https://github.com/spotify/web-api-auth-examples */
 const request = require('request');
 const querystring = require('querystring');
 

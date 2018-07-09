@@ -3,3 +3,31 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  p There are #[span#numUsers] users here
+
+  div#login
+    a.button#login-button(href="/spotify/login") LOGIN WITH SPOTIFY
+
+  div#loggedin
+    div#user-profile
+      dl
+        //- Returns null at the moment
+        //- h2 Display Name
+        //- p#display_name
+        h4 Id
+        p#user_id
+        h4 Email
+        p#email
+        h4 Spotify URI
+        a#external_urls_spotify
+        h4 Link
+        a#user_link_href
+        h4 Profile Image
+        img#images_0_url
+        h4 Country
+        p#country
+    div#oauth
+    button.button#obtain-new-token Obtain new token using refresh token
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/index.js"></script>

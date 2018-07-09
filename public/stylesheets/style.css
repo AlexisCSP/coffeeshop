@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+#login-button{
+  background-color: #1db954;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 700;
+}

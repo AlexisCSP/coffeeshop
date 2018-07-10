@@ -39,7 +39,6 @@ exports.login = function(req, res) {
 exports.callback = function(req, res) {
     // application requests refresh and access tokens
     // after checking the state parameter
-
     var code = req.query.code || null;
     var state = req.query.state || null;
     var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -53,16 +52,16 @@ exports.callback = function(req, res) {
     else {
         res.clearCookie(stateKey);
         var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
-        form: {
-            code: code,
-            redirect_uri: redirect_uri,
-            grant_type: 'authorization_code'
-        },
-        headers: {
-            'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-        },
-        json: true
+            url: 'https://accounts.spotify.com/api/token',
+            form: {
+                code: code,
+                redirect_uri: redirect_uri,
+                grant_type: 'authorization_code'
+            },
+            headers: {
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+            },
+            json: true
         };
 
         request.post(authOptions, function(error, response, body) {
@@ -71,14 +70,14 @@ exports.callback = function(req, res) {
             var refresh_token = body.refresh_token;
 
             var options = {
-            url: 'https://api.spotify.com/v1/me',
-            headers: { 'Authorization': 'Bearer ' + access_token },
-            json: true
+                url: 'https://api.spotify.com/v1/me',
+                headers: { 'Authorization': 'Bearer ' + access_token },
+                json: true
             };
 
             // use the access token to access the Spotify Web API
             request.get(options, function(error, response, body) {
-            console.log(body);
+                //console.log(body);
             });
 
             // we can also pass the token to the browser to make requests from there
@@ -105,8 +104,8 @@ exports.refresh_token = function(req, res) {
         url: 'https://accounts.spotify.com/api/token',
         headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
         form: {
-        grant_type: 'refresh_token',
-        refresh_token: refresh_token
+            grant_type: 'refresh_token',
+            refresh_token: refresh_token
         },
         json: true
     };

@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 Welcome to Room: #[span#room-key #{room.key}]
+  p There are #[span#num-users 0] users in rooms
+
+  a.button(href='/rooms') Back to rooms
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/rooms.js"></script>

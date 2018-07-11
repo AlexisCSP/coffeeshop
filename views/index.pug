@@ -3,7 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  p There are #[span#numUsers] users here
+  p There are #[span#num-users 0] users here at index
 
   div#login
     a.button#login-button(href="/spotify/login") LOGIN WITH SPOTIFY
@@ -28,6 +28,8 @@ block content
         p#country
     div#oauth
     button.button#obtain-new-token Obtain new token using refresh token
+    br
+    a.button(href='/rooms') View Rooms
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/scripts/index.js"></script>

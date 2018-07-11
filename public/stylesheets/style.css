@@ -7,6 +7,22 @@ a {
   color: #00B7FF;
 }
 
+.red{
+  color: red;
+}
+
+.input-block {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  margin-bottom: 10px;
+}
+
+.text-flex {
+  display: flex;
+  align-content: space-between;
+}
+
 #login-button{
   background-color: #1db954;
   color: #fff;

@@ -1,6 +1,6 @@
 $(function() {
-    const socket = io({transports: ['websocket'], upgrade: false});
-
+    // const socket = io('http://localhost', {transports: ['websocket'], upgrade: false});
+    var socket = io('//'+document.location.hostname+':'+document.location.port);
     /* Parses URL for Spotify access_token with regex */
     function getHashParams() {
         var hashParams = {};
@@ -27,7 +27,7 @@ $(function() {
             url: 'https://api.spotify.com/v1/me',
             headers: {'Authorization': 'Bearer ' + access_token}
         })
-        .done((response) => {
+        .success((response) => {
             // var data = JSON.stringify(response);
             $('#display_name').text(response.display_name);
             $('#user_id').text(response.id);
@@ -62,10 +62,10 @@ $(function() {
     });
 
     socket.on('user joined', (data) => {
-        $('#numUsers').text(data.numUsers);
+        $('#num-users').text(data.numUsers);
     })
 
     socket.on('user left', (data) => {
-        $('#numUsers').text(data.numUsers);
+        $('#num-users').text(data.numUsers);
     })
 })

@@ -1,5 +1,5 @@
 /* Module dependencies. */
-var app = require('../app');
+var app = require('../app').app;
 var debug = require('debug')('coffeeshop:server');
 var http = require('http');
 
@@ -8,8 +8,8 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /* Create HTTP server and socket.io instance. */
-var server = http.createServer(app);
-const io = require('socket.io').listen(server);
+var server = require('../app').server;
+// var io = require('socket.io').listen(server);
 
 /* Listen on provided port, on all network interfaces. */
 server.listen(port, () => {
@@ -17,25 +17,6 @@ server.listen(port, () => {
 });
 server.on('error', onError);
 server.on('listening', onListening);
-
-/* Listen to sockets with socket.io */
-let numUsers = 0;
-io.sockets.on('connection', (socket) => {
-  socket.emit('user joined', {numUsers: ++numUsers});
-  
-  socket.on('disconnect', () => {
-    socket.emit('user left', {numUsers: --numUsers});
-  })
-});
-
-let roomUsers = 0;
-io.of('/rooms').on('connection', (socket) => {
-  socket.emit('user joined room', {roomUsers: ++roomUsers});
-  
-  socket.on('disconnect', () => {
-    socket.emit('user left room', {roomUsers: --roomUsers});
-  })
-})
 
 /* Normalize a port into a number, string, or false. */
 function normalizePort(val) {

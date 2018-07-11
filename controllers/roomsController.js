@@ -2,6 +2,8 @@ const models = require('../models');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
+let numUsers = 0;
+
 /* Generates Room Keys - hard coded at length 4 */
 var keygen = function() {
     let text = '';
@@ -59,6 +61,7 @@ exports.room_create_post = [
 /* GET room detail */
 exports.room_detail_get = function(req, res){
   models.Room.findById(req.params.id).then(room =>{
+    res.io.emit('user joined room', 'test');
     res.render('room_detail', { title: 'Room Information', room: room });
   });
 }

@@ -7,7 +7,8 @@ const { sanitizeBody } = require('express-validator/filter');
 var async = require('async');
 
 exports.index = function(req, res) {
-  res.send('NOT IMPLEMENTED: List all rooms');
+  res.render('index', { title: 'Coffee Shop' });
+
 };
 
 // Display list of all books.

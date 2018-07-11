@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  each room in rooms
+    h1 
+      a(href='/rooms/'+room.id)= room.title
+      
+  a.button(href='/rooms/create') Create new room

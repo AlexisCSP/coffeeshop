@@ -19,8 +19,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /* Listen to sockets with socket.io */
-var numUsers = 0;
-
+let numUsers = 0;
 io.sockets.on('connection', (socket) => {
   socket.emit('user joined', {numUsers: ++numUsers});
   
@@ -28,6 +27,15 @@ io.sockets.on('connection', (socket) => {
     socket.emit('user left', {numUsers: --numUsers});
   })
 });
+
+let roomUsers = 0;
+io.of('/rooms').on('connection', (socket) => {
+  socket.emit('user joined room', {roomUsers: ++roomUsers});
+  
+  socket.on('disconnect', () => {
+    socket.emit('user left room', {roomUsers: --roomUsers});
+  })
+})
 
 /* Normalize a port into a number, string, or false. */
 function normalizePort(val) {

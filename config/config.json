@@ -1,23 +1,20 @@
 {
   "development": {
-    "username": "cmpt470",
-    "password": "cmpt470",
-    "database": "coffeeshop",
-    "host": "127.0.0.1",
+    "use_env_variable": "DATABASE_URL",
     "dialect": "postgres"
   },
   "test": {
-    "username": "cmpt470",
-    "password": "cmpt470",
-    "database": "coffeeshop",
+    "username": "root",
+    "password": null,
+    "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql"
   },
   "production": {
-    "username": "cmpt470",
-    "password": "cmpt470",
-    "database": "coffeeshop",
+    "username": "root",
+    "password": null,
+    "database": "database_production",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql"
   }
 }

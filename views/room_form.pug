@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+
+  if errors
+    ul
+      each error in errors
+        li.red!= error.msg
+
+  form.new-room-form(method='POST' action='')
+    input(type='hidden' name='id' value=(undefined===room ? '' : room.id))
+    div.input-block
+      div.text-flex
+        label(for='title') Title
+        span.small-text.red &nbsp;*
+      input.form-control#title(type='text' name='title' value=(undefined===room ? '' : room.title) required)
+    div.text-flex
+      span.small-text.red *&nbsp;
+      span.small-text This field is required
+    button.button(type='submit')= title

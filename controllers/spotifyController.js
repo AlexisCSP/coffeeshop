@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 /* Based off https://github.com/spotify/web-api-auth-examples */
+=======
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
+>>>>>>> d6e37bfdfeec25328a9c3aa5f42b0beae2d7177b
 const request = require('request');
 const querystring = require('querystring');
 
@@ -22,7 +27,7 @@ var generateRandomString = function(length) {
 exports.login = function(req, res) {
     var state = generateRandomString(16);
     res.cookie(stateKey, state);
-  
+
     // application requests authorization
     // TODO Make scope multi-line for easier reading
     var scope = 'user-read-private user-read-email playlist-read-private user-library-read user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
@@ -48,7 +53,7 @@ exports.callback = function(req, res) {
         querystring.stringify({
             error: 'state_mismatch'
         }));
-    } 
+    }
     else {
         res.clearCookie(stateKey);
         var authOptions = {
@@ -86,7 +91,7 @@ exports.callback = function(req, res) {
                 access_token: access_token,
                 refresh_token: refresh_token
             }));
-        } 
+        }
         else {
             res.redirect('/#' +
             querystring.stringify({
@@ -109,7 +114,7 @@ exports.refresh_token = function(req, res) {
         },
         json: true
     };
-    
+
     request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
         var access_token = body.access_token;
@@ -118,4 +123,54 @@ exports.refresh_token = function(req, res) {
         });
         }
     });
+};
+
+//----------------------------------------------------------------------------------------------------------------//
+//SEARCH SONG FROM SPOTIFY
+//Import the Spotify API
+var Spotify = require('node-spotify-api');
+
+//Import our Keys File
+var keys = require('../routes/keys');
+
+//Create a Spotify Client
+var spotify = new Spotify(keys.spotifyKeys);
+
+//Store the results of a request to spotify
+var results = [];
+
+exports.search_get = function (req, res, next) {
+    // results = [];
+    res.render('index', {title: 'Coffeeshop', results: results});
+};
+
+exports.search_post = function (req, res, next) {
+    //Get the type of Query from the User
+    var type = 'track';
+
+    //Get the query from the user
+    var query = req.body.query;
+
+    //Clear out old results
+    results = [];
+
+    //Make a request to Spotify
+    spotify.search({type: type, query: query})
+        .then(function (spotRes) {
+
+            //Store the artist, song, preview link, and album in the results array
+            spotRes.tracks.items.forEach(function(ea){
+                results.push({artist: ea.artists[0].name,
+                              song: ea.name,
+                              preview: ea.external_urls.spotify,
+                              album: ea.album.name});
+            });
+            // console.log(results); -- for debug
+            //Render the homepage and return results to the view
+            res.render('search', {title: 'Seacrh Result', results: results});
+        })
+        .catch(function (err) {
+            console.log(err);
+            throw err;
+        });
 };

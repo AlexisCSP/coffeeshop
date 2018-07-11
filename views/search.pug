@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  //- form(method='POST' action='/spotify/search')
+  //-   div.form-group
+  //-     label(for='query') Your song <span> </span> 
+  //-     input#query.form-control(type='text' placeholder='Song' name='query' required='true')
+  //-     | 
+  //-     button.btn.btn-primary(type='submit') Search
+  if errors 
+    ul
+      for error in errors
+        li!= error.msg
+  
+  if results.length > 0
+    ul
+    each track in results
+      li
+        a(href=track.preview) #{track.song}
+        |  - (#{track.artist})

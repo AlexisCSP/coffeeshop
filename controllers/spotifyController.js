@@ -137,7 +137,7 @@ var spotify = new Spotify(keys.spotifyKeys);
 var results = [];
 
 exports.search_get = function (req, res, next) {
-    results = [];
+    // results = [];
     res.render('index', {title: 'Coffeeshop', results: results});
 };
 
@@ -164,7 +164,7 @@ exports.search_post = function (req, res, next) {
             });
             // console.log(results); -- for debug
             //Render the homepage and return results to the view
-            res.render('index', {title: 'Coffeeshop', results: results});
+            res.render('search', {title: 'Seacrh Result', results: results});
         })
         .catch(function (err) {
             console.log(err);

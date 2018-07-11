@@ -5,6 +5,7 @@ block content
   p There are #[span#num-users 0] users in rooms
 
   a.button(href='/rooms') Back to rooms
+  input#id(type='hidden' value=room.id)
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/scripts/rooms.js"></script>

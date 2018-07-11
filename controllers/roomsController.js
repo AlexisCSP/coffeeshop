@@ -61,8 +61,22 @@ exports.room_create_post = [
 /* GET room detail */
 exports.room_detail_get = function(req, res){
   models.Room.findById(req.params.id).then(room =>{
-    res.io.emit('user joined room', 'test');
     res.render('room_detail', { title: 'Room Information', room: room });
+    // res.io.on('connect', (socket) => {
+    //   let roomID;
+    //   socket.on('join', (room) => {
+    //     roomID = room;
+    //     socket.join(room);
+    //     if(!socket['numUsers'+room]){ socket['numUsers'+room]=0; }
+    //     res.io.to(room).emit('user joined', ++socket['numUsers'+room]);
+    //     console.log('joined and emitted to '+room);
+    //   });
+    //   socket.on('disconnect', () => {
+    //     console.log('user leaving '+roomID);
+    //     res.io.to(roomID).emit('user left', --socket['numUsers'+roomID]);
+    //     socket.leave(roomID);
+    //   })
+    // });
   });
 }
 

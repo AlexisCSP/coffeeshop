@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 /* Based off https://github.com/spotify/web-api-auth-examples */
-=======
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
->>>>>>> d6e37bfdfeec25328a9c3aa5f42b0beae2d7177b
 const request = require('request');
 const querystring = require('querystring');
 

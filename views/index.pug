@@ -3,26 +3,25 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-<<<<<<< HEAD
 
-  form(method='POST' action='')
-    div.form-group
-      label(for='query') Your song <span> </span> 
-      input#query.form-control(type='text' placeholder='Song' name='query' required='true')
-      | 
-      button.btn.btn-primary(type='submit') Search
-  if errors 
-    ul
-      for error in errors
-        li!= error.msg
-  
-  if results.length > 0
-    ul
-    each track in results
-      li
-        a(href=track.preview) #{track.song}
-        |  - (#{track.artist})
-=======
+  //- form(method='POST' action='')
+  //-   div.form-group
+  //-     label(for='query') Your song <span> </span> 
+  //-     input#query.form-control(type='text' placeholder='Song' name='query' required='true')
+  //-     | 
+  //-     button.btn.btn-primary(type='submit') Search
+  //- if errors 
+  //-   ul
+  //-     for error in errors
+  //-       li!= error.msg
+  //- 
+  //- if results.length > 0
+  //-   ul
+  //-   each track in results
+  //-     li
+  //-       a(href=track.preview) #{track.song}
+  //-       |  - (#{track.artist})
+
   p There are #[span#numUsers] users here
 
   div#login
@@ -51,4 +50,3 @@ block content
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/scripts/index.js"></script>
->>>>>>> b78f10573f8f525c1705475332db4efbdf3cb8e2

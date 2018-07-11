@@ -1,6 +1,7 @@
 $(function() {
     // const socket = io('http://localhost', {transports: ['websocket'], upgrade: false});
     var socket = io('//'+document.location.hostname+':'+document.location.port);
+    
     /* Parses URL for Spotify access_token with regex */
     function getHashParams() {
         var hashParams = {};
@@ -28,7 +29,6 @@ $(function() {
             headers: {'Authorization': 'Bearer ' + access_token}
         })
         .success((response) => {
-            // var data = JSON.stringify(response);
             $('#display_name').text(response.display_name);
             $('#user_id').text(response.id);
             $('#email').text(response.email);

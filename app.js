@@ -7,6 +7,7 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const spotifyRouter = require('./routes/spotify');
+const coffeeshopRouter = require('./routes/coffeeshop');
 // const usersRouter = require('./routes/users');
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/spotify', spotifyRouter);
+app.use('/coffeeshop', coffeeshopRouter);
 // app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "cmpt470",
+    "password": "cmpt470",
+    "database": "coffeeshop",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "cmpt470",
+    "password": "cmpt470",
+    "database": "coffeeshop",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "cmpt470",
+    "password": "cmpt470",
+    "database": "coffeeshop",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}

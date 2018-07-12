@@ -159,8 +159,9 @@ exports.search_post = function (req, res, next) {
             spotRes.tracks.items.forEach(function(ea){
                 results.push({artist: ea.artists[0].name,
                               song: ea.name,
-                              preview: ea.external_urls.spotify,
-                              album: ea.album.name});
+                              url: ea.external_urls.spotify,
+                              preview: ea.preview_url,
+                              album: ea.album});
             });
             // console.log(results); -- for debug
             //Render the homepage and return results to the view

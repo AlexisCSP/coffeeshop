@@ -59,7 +59,7 @@ exports.room_create_post = [
 /* GET room detail */
 exports.room_detail_get = function(req, res){
   models.Room.findById(req.params.id).then(room =>{
-    res.render('room_detail', { title: 'Room Information', room: room });
+    res.render('room_detail', { title: 'Room Information', room: room, access_token: req.cookies.access_token });
   });
 }
 

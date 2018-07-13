@@ -46,6 +46,7 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
   // Ready
   sdk.addListener('ready', ({ device_id }) => {
     console.log('Ready with Device ID', device_id);
+    play(device_id);
   });
 
   // Not Ready
@@ -74,3 +75,16 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
     console.log(`You're listening to ${track_name} by ${artists[0].name}!`);
   }
 })();
+
+// Play a specified track on the Web Playback SDK's device ID
+function play(device_id) {
+  $.ajax({
+   url: "https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
+   type: "PUT",
+   data: '{"uris": ["spotify:track:4kWO6O1BUXcZmaxitpVUwp"]}',
+   beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
+   success: function(data) { 
+     console.log(data)
+   }
+  });
+}

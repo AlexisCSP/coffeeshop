@@ -15,3 +15,19 @@ end
 execute 'ntp_restart' do
   command 'service ntp restart'
 end
+
+# Installing NodeJS
+execute 'get_setup' do
+  command 'curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -'
+end
+
+execute 'install_nodejs' do
+  command 'sudo apt-get install -y nodejs'
+end
+
+# Installing npm packages
+execute "install_packages" do
+  command "sudo npm install --silent"
+  cwd "/home/vagrant/project"
+  user 'vagrant'
+end

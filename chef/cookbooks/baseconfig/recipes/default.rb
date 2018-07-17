@@ -2,6 +2,7 @@
 cookbook_file "apt-sources.list" do
   path "/etc/apt/sources.list"
 end
+
 execute 'apt_update' do
   command 'apt-get update'
 end
@@ -9,9 +10,12 @@ end
 # Base configuration recipe in Chef.
 package "wget"
 package "ntp"
+package "postgresql"
+
 cookbook_file "ntp.conf" do
   path "/etc/ntp.conf"
 end
+
 execute 'ntp_restart' do
   command 'service ntp restart'
 end
@@ -30,4 +34,16 @@ execute "install_packages" do
   command "sudo npm install --silent"
   cwd "/home/vagrant/project"
   user 'vagrant'
+end
+
+# Create databases
+execute 'create_dbs' do
+  command 'echo "CREATE DATABASE database_dev; CREATE USER vagrant WITH PASSWORD \'vagrant\'; GRANT ALL PRIVILEGES ON DATABASE database_dev TO vagrant; ALTER USER vagrant CREATEDB;" | sudo -u postgres psql'
+end
+
+
+# Execute db migrations
+execute "run_migrations" do
+  command "sudo node_modules/.bin/sequelize db:migrate"
+  cwd "/home/vagrant/project"
 end

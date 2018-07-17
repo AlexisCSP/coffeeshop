@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Rooms from './components/Rooms'
 
 class App extends Component {
   state = { rooms: [] }
@@ -17,12 +18,7 @@ class App extends Component {
     console.log(this.state.rooms)
     return (
       <div className="App">
-      <h1>Rooms</h1>
-      <ul>
-        {this.state.rooms.map(room =>
-        <li key={room.id}>{room.title}</li>
-      )}
-      </ul>
+      <Rooms rooms = {this.state.rooms}/>
       </div>
     );
   }

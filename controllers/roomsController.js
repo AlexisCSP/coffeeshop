@@ -6,7 +6,7 @@ const { sanitizeBody } = require('express-validator/filter');
 var keygen = function() {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  
+
     for (let i = 0; i < 4; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
@@ -15,11 +15,9 @@ var keygen = function() {
 };
 
 /* GET index */
-exports.index = function(req, res){
-  models.Room.findAll().then(rooms => {
-    res.render('room_index', { title: 'Room List', rooms: rooms });
-  });
-};
+exports.index = function(req, res) {
+  models.Room.findAll().then(rooms => res.json(rooms))
+}
 
 /* GET create room */
 exports.room_create_get = function(req, res){
@@ -39,11 +37,11 @@ exports.room_create_post = [
       return;
     }
     else {
-        do{ var roomKey = keygen(); } 
+        do{ var roomKey = keygen(); }
         while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
         models.Room.findOrCreate({
             where: {id: req.body.id || 0, key: roomKey},
-            defaults: { 
+            defaults: {
                 id:    req.body.id,
                 key:   roomKey,
                 title: req.body.title,

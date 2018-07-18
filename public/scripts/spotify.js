@@ -1,5 +1,7 @@
 window.onSpotifyWebPlayerSDKReady = () => {};
 
+var d_id = null;
+
 async function waitForSpotifyWebPlaybackSDKToLoad () {
   return new Promise(resolve => {
     if (window.Spotify) {
@@ -45,8 +47,9 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
 
   // Ready
   sdk.addListener('ready', ({ device_id }) => {
+    d_id = device_id;
     console.log('Ready with Device ID', device_id);
-    play(device_id);
+    //play(device_id);
   });
 
   // Not Ready
@@ -73,7 +76,22 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
       }
     } = state.track_window.current_track;
     console.log(`You're listening to ${track_name} by ${artists[0].name}!`);
-  }
+
+    let togglePlayButton = document.getElementById('togglePlay');
+    togglePlayButton.onclick = async function() { 
+      await sdk.togglePlay().then(() => {
+        console.log("Playback toggled!");
+      });
+    }
+
+    let skipTrackButton = document.getElementById('skipTrack');
+    skipTrackButton.onclick = async function() { 
+      await sdk.nextTrack().then(() => {
+        console.log('Set to next track!');
+      });
+    }
+
+  };
 })();
 
 // Play a specified track on the Web Playback SDK's device ID
@@ -84,7 +102,13 @@ function play(device_id) {
    data: '{"uris": ["spotify:track:4kWO6O1BUXcZmaxitpVUwp"]}',
    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
    success: function(data) { 
-     console.log(data)
+     // console.log(data)
    }
   });
 }
+
+let playButton = document.getElementById('play');
+playButton.onclick = function() { 
+  play(d_id); 
+  console.log('Playing music');
+};

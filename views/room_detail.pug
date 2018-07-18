@@ -5,7 +5,9 @@ block content
   p There are #[span#num-users 0] users in rooms
 
   a.button(href='/rooms') Back to rooms
-  <button onclick="playAudio()" type="button">Play Audio</button>
+  <button id="play" type="button">Play Audio</button>
+  <button id="togglePlay" type="button">Resume/Pause</button>
+  <button id="skipTrack" type="button">Skip Song</button>
  
   <script src="/socket.io/socket.io.js"></script>
   <script src="/scripts/rooms.js"></script>

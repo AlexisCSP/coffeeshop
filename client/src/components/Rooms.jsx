@@ -7,20 +7,22 @@ class Rooms extends Component {
   render() {
     return (
       <Router>
-        <div id="sidebar">
-        <ul>
-          {this.props.rooms.map(room =>
-          <li key={room.id}><Link to={"/rooms/" + room.id}>{room.title}</Link></li>)}
-        </ul>
+        <div style={{ display: "flex" }}>
+          <div id="sidebar">
+            <ul>
+              {this.props.rooms.map(room =>
+              <li key={room.id}><Link to={"/rooms/" + room.id}>{room.title}</Link></li>)}
+            </ul>
+          </div>
 
-        <div style={{ flex: 1, padding: "10px" }}>
-          {this.props.rooms.map((room, index) => (
-          <Route
-            key={index}
-            path={"/rooms/" + room.id}
-            component={() => <h2>{room.title}</h2>} /> // TODO create a React component for Room
-        ))}
-        </div>
+          <div style={{ flex: 1, padding: "10px" }}>
+            {this.props.rooms.map((room, index) => (
+            <Route
+              key={index}
+              path={"/rooms/" + room.id}
+              component={() => <h2>{room.title}</h2>} /> // TODO create a React component for Room
+            ))}
+          </div>
         </div>
       </Router>
     )

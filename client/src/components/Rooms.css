@@ -1,10 +1,9 @@
 
 #sidebar {
-  height: 100%;
-  position: absolute;
+  height: 100vh;
   padding: 10px;
   display: flex;
-  left: 0;
+  float: left;
   background: #000;
 }
 

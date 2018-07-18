@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Rooms.css'
+import Room from './Room.jsx'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class Rooms extends Component {
@@ -20,7 +21,7 @@ class Rooms extends Component {
             <Route
               key={index}
               path={"/rooms/" + room.id}
-              component={() => <h2>{room.title}</h2>} /> // TODO create a React component for Room
+              component={() => <Room title={room.title}/>} /> // TODO create a React component for Room
             ))}
           </div>
         </div>

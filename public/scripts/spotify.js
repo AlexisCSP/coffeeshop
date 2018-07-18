@@ -14,7 +14,7 @@ async function waitForSpotifyWebPlaybackSDKToLoad () {
   });
 };
 
-async function waitUntilUserHasSelectedPlayer (sdk) {
+async function checkSelectedPlayer (sdk) {
   return new Promise(resolve => {
     let interval = setInterval(async () => {
       let state = await sdk.getCurrentState();
@@ -42,6 +42,10 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
 
   sdk.on("player_state_changed", state => {
     // Update UI with playback state changes
+    if (sdk.state && !sdk.state.paused && state.paused && state.position === 0) {
+      console.log('Track ended');
+    }
+    sdk.state = state;
   });
 
 
@@ -49,7 +53,7 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
   sdk.addListener('ready', ({ device_id }) => {
     d_id = device_id;
     console.log('Ready with Device ID', device_id);
-    //play(device_id);
+    transferPlayback();
   });
 
   // Not Ready
@@ -59,8 +63,7 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
 
   let connected = await sdk.connect();
   if (connected) {
-    //let state = await selectPlayer(device_id);
-    let state = await waitUntilUserHasSelectedPlayer(sdk);
+    let state = await checkSelectedPlayer(sdk);
     await sdk.resume();
     await sdk.setVolume(0.5);
     let {
@@ -95,14 +98,39 @@ async function waitUntilUserHasSelectedPlayer (sdk) {
 })();
 
 // Play a specified track on the Web Playback SDK's device ID
-function play(device_id) {
+function play() {
   $.ajax({
-   url: "https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
+   url: "https://api.spotify.com/v1/me/player/play?device_id=" + d_id,
    type: "PUT",
    data: '{"uris": ["spotify:track:4kWO6O1BUXcZmaxitpVUwp"]}',
    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
    success: function(data) { 
-     // console.log(data)
+     // console.log(data);
+   }
+  });
+}
+
+function pausePlayback() {
+  $.ajax({
+   url: "https://api.spotify.com/v1/me/player/pause",
+   type: "PUT",
+   beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
+   success: function() { 
+     console.log("Playback paused");
+   }
+  });
+}
+
+// Transfer playback to Web Playback SDK's
+function transferPlayback() {
+  pausePlayback();
+  $.ajax({
+   url: "https://api.spotify.com/v1/me/player",
+   type: "PUT",
+   data: '{"device_ids": ["' + d_id + '"], "play": false}',
+   beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
+   success: function() { 
+     console.log("Playback transfered");
    }
   });
 }

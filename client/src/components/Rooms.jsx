@@ -1,18 +1,29 @@
 import React, { Component } from 'react';
 import './Rooms.css'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class Rooms extends Component {
+
   render() {
     return (
-      <div>
-        <h1>Rooms</h1>
+      <Router>
+        <div id="sidebar">
         <ul>
           {this.props.rooms.map(room =>
-          <li key={room.id}><a href={'/rooms/'+room.id}>{room.title}</a></li>
-        )}
+          <li key={room.id}><Link to={"/rooms/" + room.id}>{room.title}</Link></li>)}
         </ul>
-      </div>
-    );
+
+        <div style={{ flex: 1, padding: "10px" }}>
+          {this.props.rooms.map((room, index) => (
+          <Route
+            key={index}
+            path={"/rooms/" + room.id}
+            component={() => <h2>{room.title}</h2>} /> // TODO create a React component for Room
+        ))}
+        </div>
+        </div>
+      </Router>
+    )
   }
 }
 

@@ -10,6 +10,7 @@ class Rooms extends Component {
       <Router>
         <div style={{ display: "flex" }}>
           <div id="sidebar">
+            <h1>Coffee Shop</h1>
             <ul>
               {this.props.rooms.map(room =>
               <li key={room.id}><NavLink to={"/rooms/" + room.id}  activeClassName="selected">{room.title}</NavLink></li>)}

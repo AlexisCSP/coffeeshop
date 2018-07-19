@@ -2,9 +2,13 @@
 #sidebar {
   height: 100vh;
   padding: 10px;
-  display: flex;
   float: left;
   background: #000;
+}
+
+#sidebar h1 {
+  color: #FFF;
+  text-align: center;
 }
 
 #sidebar h2 {

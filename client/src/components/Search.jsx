@@ -44,7 +44,7 @@ class Search extends Component {
       xhr.onload = () => {
           let status = xhr.status;
 
-          if (status == 200) {
+          if (status === 200) {
               // In this example we expects from the server data with the structure of:
               // [
               //    {
@@ -115,8 +115,8 @@ class Search extends Component {
    */
   renderItem(item, isHighlighted){
       return (
-          <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-              {item.song}
+          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
+              {item.song} - {item.artist}
           </div>
       );
   }
@@ -143,7 +143,7 @@ class Search extends Component {
                 value={this.state.value}
                 onChange={this.onChange}
                 onSelect={this.onSelect}
-                wrapperStyle={{display: 'block', margin: 'auto', width: '500px'}}
+                wrapperStyle={{display: 'block', marginLeft: 'auto', width: '500px', marginRight: 'auto', marginTop: '20px' }}
                 inputProps={{ id: "searchbar" }}
             />
       );

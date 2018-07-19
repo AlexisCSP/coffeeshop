@@ -20,7 +20,7 @@ class Room extends Component {
         <Search/>
         <ul>
           {songList.map(song =>
-          <li>{song.title} {this.props.title}</li>)}
+          <li key={song.title}>{song.title} {this.props.title}</li>)}
         </ul>
       </div>
     )

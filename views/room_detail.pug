@@ -27,6 +27,8 @@ block content
             button(type="submit").btn.btn-primary= `${candidate.songId} - ${candidate.count} Votes - Submitted by ${candidate.user.username}`
 
   a.button(href='/rooms') Back to rooms
-
+  
   <script src="/socket.io/socket.io.js"></script>
   <script src="/scripts/rooms.js"></script>
+  script.
+    var room_id = #{room.id};

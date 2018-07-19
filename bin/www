@@ -28,12 +28,26 @@ io.sockets.on('connection', (socket) => {
   })
 });
 
-let roomUsers = 0;
+//let roomUsers = 0;
 io.of('/rooms').on('connection', (socket) => {
-  socket.emit('user joined room', {roomUsers: ++roomUsers});
-  
-  socket.on('disconnect', () => {
-    socket.emit('user left room', {roomUsers: --roomUsers});
+
+  socket.on('join room', (room) => {
+    if(socket.room)
+      socket.leave(socket.room);
+    
+    socket.room = room;
+    socket.join(room);
+
+    let roomUsers = io.of('/rooms').in(room).clients.length;
+    socket.emit('user joined room', {roomUsers: roomUsers});
+    socket.broadcast.to(room).emit('user joined room', {roomUsers: roomUsers});
+  })
+
+
+  socket.on('disconnect', (room) => {
+    let roomUsers = io.of('/rooms').in(room).clients.length;
+    socket.broadcast.to(room).emit('user left room', {roomUsers: roomUsers});
+    socket.leave(socket.room);
   })
 })
 

@@ -25,6 +25,12 @@ exports.getCandidates = (roomId) => {
             where: {RoomId: roomId}
         }).then(candidates => {
             Promise.all(candidates.map(makeCandidateObject)).then(results => {
+                results.sort(function(a, b) {
+                    if (a.count == b.count) {
+                        return a.songId - b.songId; // change to timestamp
+                    }
+                    return b.count - a.count;
+                });
                 resolve(results);
             });
         });
@@ -39,7 +45,7 @@ exports.createNewCandidate = (roomId, songId, userId) => {
             SongId: songId,
             UserId: userId
         }).then(candidate => {
-            voteHelper.CreateVote(
+            voteHelper.createNewVote(
                 candidate.dataValues.id, 
                 userId).then(() => {
                     resolve();

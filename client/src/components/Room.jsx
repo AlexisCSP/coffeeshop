@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Room.css'
+import Search from './Search.jsx'
 
   const songList = [
     {
@@ -15,10 +16,13 @@ class Room extends Component {
 
   render() {
     return (
-      <ul>
-        {songList.map(song =>
-        <li>{song.title} {this.props.title}</li>)}
-      </ul>
+      <div>
+        <Search/>
+        <ul>
+          {songList.map(song =>
+          <li>{song.title} {this.props.title}</li>)}
+        </ul>
+      </div>
     )
   }
 }

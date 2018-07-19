@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Rooms.css'
 import Room from './Room.jsx'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 
 class Rooms extends Component {
 
@@ -12,7 +12,7 @@ class Rooms extends Component {
           <div id="sidebar">
             <ul>
               {this.props.rooms.map(room =>
-              <li key={room.id}><Link to={"/rooms/" + room.id}>{room.title}</Link></li>)}
+              <li key={room.id}><NavLink to={"/rooms/" + room.id}  activeClassName="selected">{room.title}</NavLink></li>)}
             </ul>
           </div>
 

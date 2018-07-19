@@ -16,12 +16,12 @@ class Rooms extends Component {
             </ul>
           </div>
 
-          <div style={{ flex: 1, padding: "10px" }}>
+          <div id="content">
             {this.props.rooms.map((room, index) => (
             <Route
               key={index}
               path={"/rooms/" + room.id}
-              component={() => <Room title={room.title}/>} /> // TODO create a React component for Room
+              component={() => <Room title={room.title}/>} />
             ))}
           </div>
         </div>

@@ -48,6 +48,12 @@
   background: #6f7072;
 }
 
-#sidebar .selected {
+.selected {
   font-weight:bold;
+}
+
+#content {
+  flex: 1;
+  padding: "10px";
+  background-color: gray;
 }

@@ -16,7 +16,7 @@ class Room extends Component {
 
   render() {
     return (
-      <div>
+      <div id="content-wrapper">
         <Search/>
         <ul>
           {songList.map(song =>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
+import './Search.css'
 
 class Search extends Component {
   constructor(props, context) {
@@ -135,16 +136,16 @@ class Search extends Component {
 
   render() {
       return (
-          <div>
-              <Autocomplete
-                  getItemValue={this.getItemValue}
-                  items={this.state.autocompleteData}
-                  renderItem={this.renderItem}
-                  value={this.state.value}
-                  onChange={this.onChange}
-                  onSelect={this.onSelect}
-              />
-          </div>
+            <Autocomplete
+                getItemValue={this.getItemValue}
+                items={this.state.autocompleteData}
+                renderItem={this.renderItem}
+                value={this.state.value}
+                onChange={this.onChange}
+                onSelect={this.onSelect}
+                wrapperStyle={{display: 'block', margin: 'auto', width: '500px'}}
+                inputProps={{ id: "searchbar" }}
+            />
       );
   }
 }

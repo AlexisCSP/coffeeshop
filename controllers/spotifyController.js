@@ -27,7 +27,7 @@ exports.login = function(req, res) {
 
     // application requests authorization
     // TODO Make scope multi-line for easier reading
-    var scope = 'user-read-private user-read-email playlist-read-private user-library-read user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
+    var scope = 'streaming user-read-birthdate user-read-private user-read-email playlist-read-private user-library-read user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
         response_type: 'code',
@@ -82,6 +82,8 @@ exports.callback = function(req, res) {
                 //console.log(body);
             });
 
+            res.cookie('access_token', access_token);
+            res.cookie('refresh_token', refresh_token);
             // we can also pass the token to the browser to make requests from there
             res.redirect('/#' +
             querystring.stringify({
@@ -159,8 +161,9 @@ exports.search_post = function (req, res, next) {
             spotRes.tracks.items.forEach(function(ea){
                 results.push({artist: ea.artists[0].name,
                               song: ea.name,
-                              preview: ea.external_urls.spotify,
-                              album: ea.album.name});
+                              url: ea.external_urls.spotify,
+                              preview: ea.preview_url,
+                              album: ea.album});
             });
             // console.log(results); -- for debug
             //Render the homepage and return results to the view

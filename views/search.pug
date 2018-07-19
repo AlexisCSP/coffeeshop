@@ -19,5 +19,7 @@ block content
     ul
     each track in results
       li
+        a(href=track.preview)
+          img(src=track.album.images[2].url, alt="")
         a(href=track.preview) #{track.song}
         |  - (#{track.artist})

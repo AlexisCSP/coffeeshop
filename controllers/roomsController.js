@@ -69,9 +69,11 @@ exports.room_detail_get = function(req, res){
       res.render('room_detail', { 
         title: 'Room Information', 
         room: room,
-        candidates: candidates
+        candidates: candidates,
+        access_token: req.cookies.access_token
       });
     });
+
 }
 
 /* GET room edit */

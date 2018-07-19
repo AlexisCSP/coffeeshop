@@ -1,0 +1,13 @@
+#searchbar {
+  height: 35px;
+  width: 500px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 1em;
+  padding-left: 10px;
+}
+
+.song-search-result {
+  padding: 25px;
+  font-family: Lato,"Helvetica Neue",Arial,sans-serif
+}

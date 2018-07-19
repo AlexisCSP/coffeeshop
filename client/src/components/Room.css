@@ -1,0 +1,25 @@
+li {
+  padding: 0px 10vh 0px 10vh;
+  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  text-decoration: none;
+  color: #FFF;
+}
+
+li:last-child {
+  border: none;
+}
+
+ul {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0;
+  padding: 100px;
+}
+
+#content-wrapper {
+  display: block;
+  height: 100%;
+  width: 100%;
+}

@@ -1,6 +1,7 @@
 const models = require('../models');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
+const candidateHelper = require('../helpers/candidateHelper');
 
 /* Generates Room Keys - hard coded at length 4 */
 var keygen = function() {
@@ -58,9 +59,19 @@ exports.room_create_post = [
 
 /* GET room detail */
 exports.room_detail_get = function(req, res){
-  models.Room.findById(req.params.id).then(room =>{
-    res.render('room_detail', { title: 'Room Information', room: room });
-  });
+  const roomId = req.params.id;
+  Promise.all([
+    models.Room.findById(roomId),
+    candidateHelper.getCandidates(roomId)
+  ]).then(results =>{
+    const room = results[0];
+    const candidates = results[1];
+      res.render('room_detail', { 
+        title: 'Room Information', 
+        room: room,
+        candidates: candidates
+      });
+    });
 }
 
 /* GET room edit */

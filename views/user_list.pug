@@ -1,0 +1,7 @@
+extends layout
+
+block content
+    h1= title
+    ul.list-group
+        for user in users
+            li.list-group-item= `Username: ${user.username} UserId: ${user.id}`

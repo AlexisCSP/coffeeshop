@@ -4,6 +4,28 @@ block content
   h1 Welcome to Room: #[span#room-key #{room.key}]
   p There are #[span#num-users 0] users in rooms
 
+  form(method="post", action=`/suggestions/new`)
+    div.form-group
+      label(for="SongId") Song Id
+      input(name="SongId", type="int", placeholder="Enter an ID (Number)").form-control
+      small#songid-help.form-text.text-muted This is for development for now
+
+    div.form-group
+      label(for="UserId") User Id
+      input(name="UserId", type="int", placeholder="Enter an ID (Number)").form-control
+      small#songid-help.form-text.text-muted This is for development
+
+    input(name="RoomId", type="hidden", value=`${room.id}`)
+    button(type="submit").btn.btn-primary Suggest A Song
+
+  if (candidates)
+    h2 Song Suggestions
+    ol#candidate-list.list-group
+      for candidate in candidates
+        li.candidate.list-group-item
+          form(method="POST", action=`/votes/new?UserId=null&CandidateId=${candidate.id}`)
+            button(type="submit").btn.btn-primary= `${candidate.songId} - ${candidate.count} Votes - Submitted by ${candidate.user.username}`
+
   a.button(href='/rooms') Back to rooms
 
   <script src="/socket.io/socket.io.js"></script>

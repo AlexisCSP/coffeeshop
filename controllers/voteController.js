@@ -5,16 +5,15 @@ const voteHelper = require('../helpers/voteHelper');
 const numberUtility = require('../utilities/numberUtitlity');
 
 exports.createNewVote = [
-    query('CandidateId', 'CandidateId must be provided').exists().isAlpha(),
+    query('CandidateId', 'CandidateId must be provided').exists().isInt(),
     sanitizeQuery('CandidateId').toInt(),
-
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
             /* TODO fill in proper error handling here */
             return;
         }
-
+        
         var userId = req.query.UserId;
         var candidateId = req.query.CandidateId;
 

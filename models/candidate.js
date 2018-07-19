@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     const Candidate = sequelize.define('Candidate', {
         SongId: {
             type: DataTypes.INTEGER,
-            unique: true
+            unique: true // cannot be unique
         }
     });
 

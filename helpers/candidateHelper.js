@@ -45,7 +45,7 @@ exports.createNewCandidate = (roomId, songId, userId) => {
             SongId: songId,
             UserId: userId
         }).then(candidate => {
-            voteHelper.CreateVote(
+            voteHelper.createNewVote(
                 candidate.dataValues.id, 
                 userId).then(() => {
                     resolve();

@@ -144,7 +144,8 @@ class Search extends Component {
                 onChange={this.onChange}
                 onSelect={this.onSelect}
                 wrapperStyle={{display: 'block', marginLeft: 'auto', width: '500px', marginRight: 'auto', marginTop: '20px' }}
-                inputProps={{ id: "searchbar" }}
+                inputProps={{ id: "searchbar", placeholder:"Search for your favourite songs..." }}
+
             />
       );
   }

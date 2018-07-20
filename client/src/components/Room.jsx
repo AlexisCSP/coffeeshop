@@ -5,7 +5,9 @@ import Search from './Search.jsx'
 class Room extends Component {
   constructor(props) {
     super(props);
-    this.state = { roomData : {candidates : []} };
+    this.state = { roomData : {
+      candidates: []}
+    };
   }
 
   componentDidMount() {
@@ -17,7 +19,7 @@ class Room extends Component {
       }
     })
     .then(res => res.json())
-    .then(roomData => this.setState({ roomData : roomData }))
+    .then(roomData => this.setState({ roomData : roomData } ))
     .catch(error => {
          // handle error
     });
@@ -29,7 +31,7 @@ class Room extends Component {
         <Search/>
         <ul>
           {this.state.roomData.candidates.map(song =>
-          <li key={song.title}>{song.title} {this.props.title}</li>)}
+          <li key={song.songId}>Song Id : {song.songId} Votes : {song.count}</li>)}
         </ul>
       </div>
     )

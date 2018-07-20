@@ -70,17 +70,15 @@ exports.room_detail_get = function(req, res){
   Promise.all([
     models.Room.findById(roomId),
     candidateHelper.getCandidates(roomId)
-  ]).then(results =>{
+  ]).then(results => {
     const room = results[0];
     const candidates = results[1];
-      res.render('room_detail', { 
-        title: 'Room Information', 
-        room: room,
-        candidates: candidates,
-        access_token: req.cookies.access_token
-      });
+    res.json({
+      room: room,
+      candidates: candidates,
+      access_token: req.cookies.access_token
     });
-
+  });
 }
 
 /* GET room edit */

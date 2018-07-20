@@ -73,8 +73,8 @@ exports.room_detail_get = function(req, res){
   ]).then(results =>{
     const room = results[0];
     const candidates = results[1];
-      res.render('room_detail', { 
-        title: 'Room Information', 
+      res.render('room_detail', {
+        title: 'Room Information',
         room: room,
         candidates: candidates,
         access_token: req.cookies.access_token
@@ -84,11 +84,21 @@ exports.room_detail_get = function(req, res){
 }
 
 /* GET room edit */
-exports.room_edit_get = function(req, res){
+exports.room_update_get = function(req, res){
     res.send('NOT YET IMPLEMENTED');
 }
 
 /* POST room edit */
-exports.room_edit_post = function (req, res){
+exports.room_update_post = function (req, res){
+    res.send('NOT YET IMPLEMENTED');
+}
+
+/* GET room delete */
+exports.room_delete_get = function(req, res){
+    res.send('NOT YET IMPLEMENTED');
+}
+
+/* POST room delete */
+exports.room_delete_post = function (req, res){
     res.send('NOT YET IMPLEMENTED');
 }

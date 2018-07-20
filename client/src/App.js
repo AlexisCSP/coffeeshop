@@ -3,7 +3,10 @@ import './App.css';
 import Rooms from './components/Rooms'
 
 class App extends Component {
-  state = { rooms: [] }
+  constructor(props) {
+    super(props);
+    this.state = { rooms : [] };
+  }
 
   componentDidMount() {
      fetch('/rooms', {
@@ -21,7 +24,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.rooms)
     return (
       <div className="App">
       <Rooms rooms = {this.state.rooms}/>

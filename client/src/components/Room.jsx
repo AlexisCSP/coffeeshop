@@ -2,24 +2,33 @@ import React, { Component } from 'react';
 import './Room.css'
 import Search from './Search.jsx'
 
-  const songList = [
-    {
-      title : "Test Song 1"
-    }, {
-      title : "Test Song 2"
-    }, {
-      title : "Test Song 3"
-    }
-  ] // TO DO get actual list of songs for each room once endpoint is built
-
 class Room extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { roomData : {candidates : []} };
+  }
+
+  componentDidMount() {
+    fetch('/rooms/' + this.props.id, {
+      method: 'GET',
+      headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json',
+      }
+    })
+    .then(res => res.json())
+    .then(roomData => this.setState({ roomData : roomData }))
+    .catch(error => {
+         // handle error
+    });
+  }
 
   render() {
     return (
       <div id="content-wrapper">
         <Search/>
         <ul>
-          {songList.map(song =>
+          {this.state.roomData.candidates.map(song =>
           <li key={song.title}>{song.title} {this.props.title}</li>)}
         </ul>
       </div>

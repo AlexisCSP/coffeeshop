@@ -17,8 +17,17 @@ var keygen = function() {
 
 /* GET index */
 exports.index = function(req, res) {
-  models.Room.findAll().then(rooms => res.json(rooms))
+  var contype = req.headers['content-type'];
+  models.Room.findAll().then(rooms => {
+    if (contype == 'application/json') {
+      res.json(rooms)
+    } else {
+      res.render('room_index', { title: 'Room List', rooms: rooms });
+    }
+
+  });
 }
+
 
 /* GET create room */
 exports.room_create_get = function(req, res){

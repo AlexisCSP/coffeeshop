@@ -6,7 +6,13 @@ class App extends Component {
   state = { rooms: [] }
 
   componentDidMount() {
-     fetch('/rooms')
+     fetch('/rooms', {
+       method: 'GET',
+       headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+       }
+     })
      .then(res => res.json())
      .then(rooms => this.setState({ rooms : rooms }))
      .catch(error => {

@@ -85,13 +85,40 @@ exports.room_detail_get = function(req, res){
 
 /* GET room edit */
 exports.room_update_get = function(req, res){
-    res.send('NOT YET IMPLEMENTED');
+    models.Room.findById(req.params.id).then(function(room) {
+      res.render('room_form', { title: 'Edit Room', room: room });
+    }).catch(function (err) {
+      return next(err);
+    })
 }
 
 /* POST room edit */
-exports.room_update_post = function (req, res){
-    res.send('NOT YET IMPLEMENTED');
-}
+exports.room_update_post = [
+  body('title', 'Title is required').isLength({ min: 1 }).trim(),
+  sanitizeBody('title').trim().escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    /* There were validation errors */
+    if (!errors.isEmpty()) {
+      res.render('room_form', { title: 'Create Room', room: req.body, errors: errors.array()});
+      return;
+    }
+    else {
+        // load all existing room's Information
+        var room = models.Room.findById(req.params.id);
+        room['title'] = req.body.title;
+        // find and update room
+        models.Room.findById(req.params.id).then((instance) => {
+          instance.update(room).then((self) => {
+            res.redirect('/rooms/' + self.id);
+          }).catch(function(err) {
+            return next(err);
+          })
+        });
+    }
+  }
+];
 
 /* GET room delete */
 exports.room_delete_get = function(req, res){

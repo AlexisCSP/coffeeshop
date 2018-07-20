@@ -45,6 +45,13 @@ execute "install_packages" do
   user 'vagrant'
 end
 
+# Installing npm packages for react
+execute "install_packages" do
+  command "sudo npm install --silent"
+  cwd "/home/vagrant/project/client"
+  user 'vagrant'
+end
+
 # Installing npm package forever
 execute "install_forever" do
   command "sudo npm install -g forever"

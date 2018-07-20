@@ -18,16 +18,7 @@ server.listen(port, () => {
 server.on('error', onError);
 server.on('listening', onListening);
 
-/* Listen to sockets with socket.io */
-let numUsers = 0;
-io.sockets.on('connection', (socket) => {
-  socket.emit('user joined', {numUsers: ++numUsers});
-
-  socket.on('disconnect', () => {
-    socket.emit('user left', {numUsers: --numUsers});
-  })
-});
-
+/** Socket.IO Functionality **/
 io.of('/rooms').on('connection', (socket) => {
   socket.on('join room', (room) => {
     if(socket.room)
@@ -38,19 +29,21 @@ io.of('/rooms').on('connection', (socket) => {
 
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
-      socket.emit('user joined room', clients);
+      io.of('/rooms').in(room).emit('user joined room', clients);
     });
   })
 
-
-  socket.on('disconnect', (room) => {
-    socket.leave(socket.room);
+  socket.on('disconnect', () => {
+    let room = socket.room;
+    console.log(`room: ${room}`);
+    socket.leave(room);
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
-      socket.emit('user joined room', clients);
+      io.of('/rooms').in(room).emit('user left room', clients);
     });
   })
 })
+
 
 /* Normalize a port into a number, string, or false. */
 function normalizePort(val) {

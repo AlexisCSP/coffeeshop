@@ -122,10 +122,20 @@ exports.room_update_post = [
 
 /* GET room delete */
 exports.room_delete_get = function(req, res){
-    res.send('NOT YET IMPLEMENTED');
+    models.Room.findById(req.params.id).then(function(room) {
+      res.render('room_form', { title: 'Delete Room', room: room });
+    }).catch(function (err) {
+      return next(err);
+    })
 }
 
 /* POST room delete */
 exports.room_delete_post = function (req, res){
-    res.send('NOT YET IMPLEMENTED');
+    models.Room.destroy({
+        where: {
+            id: req.body.id,
+        },
+    }).then(function() {
+        res.redirect('/rooms/');
+    });
 }

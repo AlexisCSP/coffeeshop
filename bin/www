@@ -28,7 +28,6 @@ io.sockets.on('connection', (socket) => {
   })
 });
 
-//let roomUsers = 0;
 io.of('/rooms').on('connection', (socket) => {
   socket.on('join room', (room) => {
     if(socket.room)
@@ -37,16 +36,19 @@ io.of('/rooms').on('connection', (socket) => {
     socket.room = room;
     socket.join(room);
 
-    let roomUsers = io.of('/rooms').in(room).clients.length;
-    socket.emit('user joined room', {roomUsers: roomUsers});
-    socket.broadcast.to(room).emit('user joined room', {roomUsers: roomUsers});
+    io.of('/rooms').in(room).clients((error, clients) => {
+      if (error) throw error;
+      socket.emit('user joined room', clients);
+    });
   })
 
 
   socket.on('disconnect', (room) => {
-    let roomUsers = io.of('/rooms').in(room).clients.length;
-    socket.broadcast.to(room).emit('user left room', {roomUsers: roomUsers});
     socket.leave(socket.room);
+    io.of('/rooms').in(room).clients((error, clients) => {
+      if (error) throw error;
+      socket.emit('user joined room', clients);
+    });
   })
 })
 

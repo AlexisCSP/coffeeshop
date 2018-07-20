@@ -33,13 +33,13 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-var promises = [];
-Object.keys(db).forEach(modelName => {
-  promises.pop(db[modelName].sync());
-});
+//var promises = [];
+//Object.keys(db).forEach(modelName => {
+  //promises.pop(db[modelName].sync());
+//});
 
-Promise.all(promises);
-
+//Promise.all(promises);
+sequelize.sync();
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 module.exports = db;

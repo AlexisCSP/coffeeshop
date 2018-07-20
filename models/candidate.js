@@ -1,4 +1,4 @@
-/* CANDIDATE is an alias for SONG_SUGGESTION... I just like it better */
+'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Candidate = sequelize.define('Candidate', {
         SongId: {

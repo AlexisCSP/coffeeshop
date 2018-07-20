@@ -7,7 +7,7 @@ const querystring = require('querystring');
 /* API Credentials */
 var client_id = 'c086167c88da4af6a09abe8244133a5b';
 var client_secret = 'ebb82a0aa5334a51bfbe31d9f2e596d6';
-var redirect_uri = 'http://localhost:3000/spotify/callback';
+var redirect_uri = 'http://localhost:3001/spotify/callback';
 var stateKey = 'spotify_auth_state'; //response header
 
 /* Helper for statekey generation */

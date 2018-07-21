@@ -23,6 +23,7 @@ fs
     (file.slice(-3) === '.js'))
   .forEach(file => {
     const model = sequelize.import(path.join(__dirname, file));
+    console.log(`Adding model: ${model.name} From File: ${file} With Directory Name: ${__dirname}`);
     db[model.name] = model;
   });
 
@@ -32,7 +33,13 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+//var promises = [];
+//Object.keys(db).forEach(modelName => {
+  //promises.pop(db[modelName].sync());
+//});
+
+//Promise.all(promises);
+sequelize.sync();
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
 module.exports = db;

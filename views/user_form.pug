@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1= title
+
+    form(method="POST", action="/users/new")#create-user-form
+        div.form-group
+            label(for="Username") Username
+            input(type="text", name="Username", placeholder="Enter a username").form-control
+            small.form-text.text-muted This is for development
+        button(type="submit") Add A User

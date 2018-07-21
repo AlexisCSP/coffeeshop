@@ -3,8 +3,40 @@ extends layout
 block content
   h1 Welcome to Room: #[span#room-key #{room.key}]
   p There are #[span#num-users 0] users in rooms
+  ul#connected-users
+
+  form(method="post", action=`/suggestions/new`)
+    div.form-group
+      label(for="SongId") Song Id
+      input(name="SongId", type="int", placeholder="Enter an ID (Number)").form-control
+      small#songid-help.form-text.text-muted This is for development for now
+
+    div.form-group
+      label(for="UserId") User Id
+      input(name="UserId", type="int", placeholder="Enter an ID (Number)").form-control
+      small#songid-help.form-text.text-muted This is for development
+
+    input(name="RoomId", type="hidden", value=`${room.id}`)
+    button(type="submit").btn.btn-primary Suggest A Song
+
+  if (candidates)
+    h2 Song Suggestions
+    ol#candidate-list.list-group
+      for candidate in candidates
+        li.candidate.list-group-item
+          form(method="POST", action=`/votes/new?UserId=null&CandidateId=${candidate.id}`)
+            button(type="submit").btn.btn-primary= `${candidate.songId} - ${candidate.count} Votes - Submitted by ${candidate.user.username}`
+  div          
+    button(id="play" type="button") Play Audio
+    button(id="togglePlay" type="button") Resume/Pause
+    button(id="skipTrack" type="button") Skip Song
 
   a.button(href='/rooms') Back to rooms
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/scripts/rooms.js"></script>
+  script(src="/socket.io/socket.io.js")
+  script(src="/scripts/rooms.js")
+  script(src="https://sdk.scdn.co/spotify-player.js")
+  script(src="/scripts/spotify.js")
+  script.
+    var room_id = #{room.id};
+    var access_token = !{JSON.stringify(access_token)};

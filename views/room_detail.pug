@@ -3,6 +3,7 @@ extends layout
 block content
   h1 Welcome to Room: #[span#room-key #{room.key}]
   p There are #[span#num-users 0] users in rooms
+  ul#connected-users
 
   form(method="post", action=`/suggestions/new`)
     div.form-group

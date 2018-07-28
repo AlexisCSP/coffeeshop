@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Room.css'
 import Search from './Search.jsx'
+import Song from './Song.jsx'
 
 class Room extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class Room extends Component {
         <Search/>
         <ul>
           {this.state.roomData.candidates.map(song =>
-          <li key={song.songId}>Song Id : {song.songId} Votes : {song.count}</li>)}
+          <li key={song.songId}><Song song={song}/></li>)}
         </ul>
       </div>
     )

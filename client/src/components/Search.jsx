@@ -116,7 +116,8 @@ class Search extends Component {
   renderItem(item, isHighlighted){
       return (
           <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-              {item.song} - {item.artist}
+              <img src={item.album.images[0].url} alt={item.song} height={40} width={40}/>
+              <span className="song-search-result-data">{item.song} - {item.artist}</span>
           </div>
       );
   }

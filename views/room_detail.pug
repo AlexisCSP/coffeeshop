@@ -43,3 +43,9 @@ block content
   script.
     var room_id = #{room.id};
     var access_token = !{JSON.stringify(access_token)};
+    var candidates_json = !{JSON.stringify(candidates)};
+    var track = null;
+    if (candidates_json !== []) {
+      track = candidates_json[0];
+    }
+

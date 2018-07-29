@@ -98,16 +98,19 @@ async function checkSelectedPlayer (sdk) {
 })();
 
 // Play a specified track on the Web Playback SDK's device ID
-function play() {
-  $.ajax({
-   url: "https://api.spotify.com/v1/me/player/play?device_id=" + d_id,
-   type: "PUT",
-   data: '{"uris": ["spotify:track:4kWO6O1BUXcZmaxitpVUwp"]}',
-   beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
-   success: function(data) { 
-     // console.log(data);
-   }
-  });
+function play(track) {
+  console.log(track);
+  if (track != null) {
+    $.ajax({
+      url: "https://api.spotify.com/v1/me/player/play?device_id=" + d_id,
+      type: "PUT",
+      data: '{"uris": ["' + track + '"]}',
+      beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
+      success: function(data) { 
+        // console.log(data);
+      }
+     });
+  }
 }
 
 function pausePlayback() {
@@ -136,7 +139,11 @@ function transferPlayback() {
 }
 
 let playButton = document.getElementById('play');
-playButton.onclick = function() { 
-  play(d_id); 
-  console.log('Playing music');
+playButton.onclick = function() {
+  if (track != null) {
+    play(track.SongId); 
+    console.log('Playing music');
+  } else {
+    console.log('No song on the queue');
+  }
 };

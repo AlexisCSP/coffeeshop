@@ -53,11 +53,29 @@ class Room extends Component {
   }
 
   onUpvoteClick(songId) {
-    console.log("upvoting " + songId)
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/candidate/upvote');
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    const data = {
+      RoomId: this.props.id,
+      SongId: songId,
+      UserId: 1
+    }
+    xhr.send(JSON.stringify(data));
+    this.fetchCandidatesData()
   }
 
   onDownvoteClick(songId) {
-    console.log("downvoting " + songId)
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/candidate/downvote');
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    const data = {
+      RoomId: this.props.id,
+      SongId: songId,
+      UserId: 1
+    }
+    xhr.send(JSON.stringify(data));
+    this.fetchCandidatesData()
   }
 
   render() {

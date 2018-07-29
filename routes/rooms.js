@@ -22,4 +22,6 @@ router.post('/:id/delete', rooms_controller.room_delete_post);
 
 router.get('/:id/candidates', rooms_controller.room_candidates_get);
 
+router.post('/:id/dequeue', rooms_controller.room_dequeue_post);
+
 module.exports = router;

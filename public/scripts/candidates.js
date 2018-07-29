@@ -6,3 +6,10 @@ async function getCandidates(roomId) {
     });
     return result;
 }
+
+async function dequeue(roomId) {
+  await $.ajax({
+   url: "http://localhost:3001/rooms/" + roomId + "/dequeue",
+   type: "POST"
+  });
+}

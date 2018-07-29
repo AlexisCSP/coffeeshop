@@ -44,14 +44,8 @@ async function checkSelectedPlayer (sdk) {
     // Update UI with playback state changes
     if (sdk.state && !sdk.state.paused && state && state.paused && state.position === 0) {
       console.log('Track ended');
-      getCandidates(room_id).then( (candidates) => {
-        console.log(candidates);
-        if (candidates.length > 1) {
-          console.log("Yes");
-        }
-      });
-
-
+      dequeue(room_id);
+      // send message through socket about dequeue
     }
     sdk.state = state;
   });

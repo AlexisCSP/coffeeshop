@@ -80,12 +80,13 @@ class Search extends Component {
    * @param {Object} val Value returned by the getItemValue function.
    * @return {Nothing} No value is returned
    */
-  onSelect(val){
+  onSelect(val, item){
       this.setState({
           value: val
       });
 
       console.log("Option from 'database' selected : ", val);
+      console.log("TESTING!", item.artist)
   }
 
   /**
@@ -97,7 +98,7 @@ class Search extends Component {
    */
   renderItem(item, isHighlighted){
       return (
-          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: isHighlighted? 'pointer' : 'default' }}>
+          <div key= {item.url} className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: isHighlighted? 'pointer' : 'default' }}>
               <img src={item.album.images[0].url} alt={item.song} height={40} width={40}/>
               <span className="song-search-result-data">{item.song} - {item.artist}</span>
           </div>

@@ -157,6 +157,7 @@ exports.search_get = function (req, res, next) {
             spotRes.tracks.items.forEach(function(ea){
                 results.push({artist: ea.artists[0].name,
                               song: ea.name,
+                              uri: ea.uri,
                               url: ea.external_urls.spotify,
                               preview: ea.preview_url,
                               album: ea.album});

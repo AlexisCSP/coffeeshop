@@ -10,6 +10,21 @@ exports.createNewCandidate = [
     body('RoomId', 'Room Id is required').isNumeric(),
     sanitizeBody('RoomId').toInt(),
 
+    body('name', 'name is required'),
+    sanitizeBody('name'),
+
+    body('artist', 'artist is required'),
+    sanitizeBody('artist'),
+
+    body('preview', 'preview is required'),
+    sanitizeBody('preview'),
+
+    body('album_name', 'album_name is required'),
+    sanitizeBody('album_name'),
+
+    body('album_image', 'album_image is required'),
+    sanitizeBody('album_image'),
+
     body('UserId', 'User ID is required (May be null)').exists(),
 
     (req, res, next) => {
@@ -19,8 +34,6 @@ exports.createNewCandidate = [
             return;
         }
 
-        const roomId = req.body.RoomId;
-        const songId = req.body.SongId;
         var userId = req.body.UserId;
 
         if (userId && userId != null && userId != ""){
@@ -29,7 +42,18 @@ exports.createNewCandidate = [
             userId = null;
         }
 
-        candidateHelper.createNewCandidate(roomId, songId, userId)
+        var data = {
+            name: req.body.name,
+            artist: req.body.artist,
+            songId: req.body.SongId,
+            preview: req.body.preview,
+            album_name: req.body.album_name,
+            album_image: req.body.album_image,
+            vote_count: 1,
+            userId: userId,
+            roomId: req.body.RoomId
+        };
+        candidateHelper.createNewCandidate(data)
             .then( () => {
                 res.redirect(`/rooms/${roomId}`);
             }

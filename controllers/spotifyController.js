@@ -159,8 +159,10 @@ exports.search_get = function (req, res, next) {
                               song: ea.name,
                               uri: ea.uri,
                               url: ea.external_urls.spotify,
-                              preview: ea.preview_url,
-                              album: ea.album});
+                              preview: ea.preview,
+                              album_name: ea.album.name,
+                              album_image: ea.album.images[0].url
+                            });
             });
             // console.log(results); -- for debug
             //Render the homepage and return results to the view

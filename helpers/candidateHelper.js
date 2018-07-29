@@ -40,12 +40,17 @@ exports.getCandidates = (roomId) => {
 };
 
 // Returns no object
-exports.createNewCandidate = (roomId, songId, userId) => {
+exports.createNewCandidate = (data) => {
     return new Promise((resolve, reject) => {
         models.Candidate.create({
-            RoomId: roomId,
-            SongId: songId,
-            UserId: userId,
+            RoomId: data.roomId,
+            SongId: data.songId,
+            UserId: data.userId,
+            name: data.name,
+            artist: data.artist,
+            album_name: data.album_name,
+            album_image: data.album_image,
+            preview: data.preview,
             vote_count: 1
         })
         resolve();

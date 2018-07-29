@@ -66,6 +66,7 @@ exports.room_create_post = [
 
 /* GET room detail */
 exports.room_detail_get = function(req, res){
+  var contype = req.headers['content-type'];
   const roomId = req.params.id;
   Promise.all([
     models.Room.findById(roomId),
@@ -73,11 +74,20 @@ exports.room_detail_get = function(req, res){
   ]).then(results => {
     const room = results[0];
     const candidates = results[1];
-    res.json({
-      room: room,
-      candidates: candidates,
-      access_token: req.cookies.access_token
-    });
+    if (contype == 'application/json') {
+      res.json({
+        room: room,
+        candidates: candidates,
+        access_token: req.cookies.access_token
+      });
+    } else {
+      res.render('room_detail', { 
+        title: 'Room Information', 
+        room: room,
+        candidates: candidates,
+        access_token: req.cookies.access_token
+      });
+    }
   });
 }
 

@@ -8,16 +8,21 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         preview: DataTypes.STRING,
-        album: DataTypes.STRING,
+        album_name: DataTypes.STRING,
+        album_image: DataTypes.STRING,
         vote_count: {
             type: DataTypes.INTEGER,
             defaultValue: 0
+        },
+        UserId: {
+            type: DataTypes.INTEGER,
+            defaultValue: null
         }
     });
 
     Candidate.associate = (models) => {
         Candidate.belongsTo(models.Room);
-        Candidate.belongsTo(models.User);
+        // Candidate.belongsTo(models.User);
     };
 
     return Candidate;

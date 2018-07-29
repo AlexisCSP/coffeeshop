@@ -136,4 +136,3 @@ exports.vote = (req, res, type) => {
 //         });
 //     });
 // }
-

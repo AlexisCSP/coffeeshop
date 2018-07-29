@@ -33,11 +33,8 @@ class Search extends Component {
   retrieveDataAsynchronously(searchText){
       let _this = this;
 
-      // Url of your website that process the data and returns a
       let url = `/spotify/search/` + searchText;
 
-      // Configure a basic AJAX request to your server side API
-      // that returns the data according to the sent text
       let xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = 'json';
@@ -46,26 +43,10 @@ class Search extends Component {
           let status = xhr.status;
 
           if (status === 200) {
-              // In this example we expects from the server data with the structure of:
-              // [
-              //    {
-              //        label: "Some Text",
-              //        value: 1,
-              //    },
-              //    {
-              //        label: "Some Other Text",
-              //        value: 1,
-              //    },
-              // ]
-              // But you can obviously change the render data :)
 
-              // Update the state with the remote data and that's it !
               _this.setState({
                   autocompleteData: xhr.response
               });
-
-              // Show response of your server in the console
-              console.log(xhr.response);
           } else {
               console.error("Cannot load data from remote source");
           }
@@ -116,7 +97,7 @@ class Search extends Component {
    */
   renderItem(item, isHighlighted){
       return (
-          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
+          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: isHighlighted? 'pointer' : 'default' }}>
               <img src={item.album.images[0].url} alt={item.song} height={40} width={40}/>
               <span className="song-search-result-data">{item.song} - {item.artist}</span>
           </div>
@@ -130,9 +111,6 @@ class Search extends Component {
    * @return {String} val
    */
   getItemValue(item){
-      // You can obviously only return the Label or the component you need to show
-      // In this case we are going to show the value and the label that shows in the input
-      // something like "1 - Microsoft"
       return `${item.song} - ${item.artist}`;
   }
 

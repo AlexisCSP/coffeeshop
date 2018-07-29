@@ -6,7 +6,7 @@ class Song extends Component {
   render() {
     return (
       <div>
-          <span>Song Id : {this.props.song.songId} Votes : {this.props.song.count}</span>
+          <span>Song Id : {this.props.song.SongId} Votes : {this.props.song.vote_count}</span>
           <span className="song-upvote-icon"><FontAwesomeIcon icon="thumbs-up"/></span>
           <span className="song-downvote-icon"><FontAwesomeIcon icon="thumbs-down"/></span>
       </div>

@@ -42,8 +42,16 @@ async function checkSelectedPlayer (sdk) {
 
   sdk.on("player_state_changed", state => {
     // Update UI with playback state changes
-    if (sdk.state && !sdk.state.paused && state.paused && state.position === 0) {
+    if (sdk.state && !sdk.state.paused && state && state.paused && state.position === 0) {
       console.log('Track ended');
+      getCandidates(room_id).then( (candidates) => {
+        console.log(candidates);
+        if (candidates.length > 1) {
+          console.log("Yes");
+        }
+      });
+
+
     }
     sdk.state = state;
   });

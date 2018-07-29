@@ -139,3 +139,11 @@ exports.room_delete_post = function (req, res){
         res.redirect('/rooms/');
     });
 }
+
+/* GET room candidates */
+exports.room_candidates_get = async function room_candidates_get(req, res) {
+  const roomId = req.params.id;
+  candidateHelper.getCandidates(roomId).then(candidates => {
+    res.json(candidates)
+  });
+}

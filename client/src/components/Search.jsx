@@ -41,6 +41,7 @@ class Search extends Component {
       let xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = 'json';
+      xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onload = () => {
           let status = xhr.status;
 

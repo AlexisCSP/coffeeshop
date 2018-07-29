@@ -1,7 +1,5 @@
 window.onSpotifyWebPlayerSDKReady = () => {};
 
-var d_id = null;
-
 async function waitForSpotifyWebPlaybackSDKToLoad () {
   return new Promise(resolve => {
     if (window.Spotify) {
@@ -42,8 +40,12 @@ async function checkSelectedPlayer (sdk) {
 
   sdk.on("player_state_changed", state => {
     // Update UI with playback state changes
-    if (sdk.state && !sdk.state.paused && state.paused && state.position === 0) {
+    if (sdk.state && !sdk.state.paused && state && state.paused && state.position === 0) {
       console.log('Track ended');
+      dequeue(room_id).then(() => {
+        play();
+      });
+      // TODO: send message through socket about dequeue
     }
     sdk.state = state;
   });
@@ -51,9 +53,8 @@ async function checkSelectedPlayer (sdk) {
 
   // Ready
   sdk.addListener('ready', ({ device_id }) => {
-    d_id = device_id;
     console.log('Ready with Device ID', device_id);
-    transferPlayback();
+    transferPlayback(device_id);
   });
 
   // Not Ready
@@ -99,15 +100,26 @@ async function checkSelectedPlayer (sdk) {
 
 // Play a specified track on the Web Playback SDK's device ID
 function play() {
-  $.ajax({
-   url: "https://api.spotify.com/v1/me/player/play?device_id=" + d_id,
-   type: "PUT",
-   data: '{"uris": ["spotify:track:4kWO6O1BUXcZmaxitpVUwp"]}',
-   beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
-   success: function(data) { 
-     // console.log(data);
-   }
-  });
+  console.log("Entering play function");
+  getCandidates(room_id).then((candidates) => {
+    if (candidates.length > 0) {
+      var track = candidates[0].SongId;
+      console.log("Playing", track);
+      $.ajax({
+        url: "https://api.spotify.com/v1/me/player/play",
+        type: "PUT",
+        data: '{"uris": ["' + track + '"]}',
+        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
+        success: function(data) { 
+          // console.log(data);
+        }
+       }).then(() => {
+        console.log('Playing music');
+       });
+    } else {
+      console.log('No songs on the queue');
+    }
+  })
 }
 
 function pausePlayback() {
@@ -122,12 +134,12 @@ function pausePlayback() {
 }
 
 // Transfer playback to Web Playback SDK's
-function transferPlayback() {
+function transferPlayback(device_id) {
   pausePlayback();
   $.ajax({
    url: "https://api.spotify.com/v1/me/player",
    type: "PUT",
-   data: '{"device_ids": ["' + d_id + '"], "play": false}',
+   data: '{"device_ids": ["' + device_id + '"], "play": false}',
    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
    success: function() { 
      console.log("Playback transfered");
@@ -136,7 +148,6 @@ function transferPlayback() {
 }
 
 let playButton = document.getElementById('play');
-playButton.onclick = function() { 
-  play(d_id); 
-  console.log('Playing music');
+playButton.onclick = function() {
+  play(); 
 };

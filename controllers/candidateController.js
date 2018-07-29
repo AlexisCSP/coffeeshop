@@ -15,7 +15,7 @@ exports.createNewCandidate = [
     (req, res, next) => {
         const errors = validationResult(req);
         if(!errors.isEmpty()){
-            // TODO: Handle this properly   
+            // TODO: Handle this properly
             return;
         }
 
@@ -38,17 +38,65 @@ exports.createNewCandidate = [
 ];
 
 exports.upvoteCandidate = [
-    query('SongId', 'SongId must be provided').exists(),
-    sanitizeQuery('SongId'), 
-    (req, res, next) => {
-        candidateHelper.vote(req, res, "upvote");
-    }
+  body('SongId', 'Song Id is required'),
+  sanitizeBody('SongId'),
+
+  body('RoomId', 'Room Id is required').isNumeric(),
+  sanitizeBody('RoomId').toInt(),
+
+  (req, res, next) => {
+      const errors = validationResult(req);
+      if(!errors.isEmpty()){
+          // TODO: Handle this properly
+          return;
+      }
+
+      const roomId = req.body.RoomId;
+      const songId = req.body.SongId;
+      var userId = req.body.UserId;
+
+      if (userId && userId != null && userId != ""){
+          userId = parseInt(userId);
+      } else {
+          userId = null;
+      }
+
+      candidateHelper.commit_vote(roomId, songId, userId, "upvote")
+          .then( (candidate) => {
+            res.json(candidate)
+          }
+      );
+  }
 ];
 
 exports.downvoteCandidate = [
-    query('SongId', 'SongId must be provided').exists(),
-    sanitizeQuery('SongId'), 
-    (req, res, next) => {
-        candidateHelper.vote(req, res, "downvote");
-    }
+  body('SongId', 'Song Id is required'),
+  sanitizeBody('SongId'),
+
+  body('RoomId', 'Room Id is required').isNumeric(),
+  sanitizeBody('RoomId').toInt(),
+
+  (req, res, next) => {
+      const errors = validationResult(req);
+      if(!errors.isEmpty()){
+          // TODO: Handle this properly
+          return;
+      }
+
+      const roomId = req.body.RoomId;
+      const songId = req.body.SongId;
+      var userId = req.body.UserId;
+
+      if (userId && userId != null && userId != ""){
+          userId = parseInt(userId);
+      } else {
+          userId = null;
+      }
+
+      candidateHelper.commit_vote(roomId, songId, userId, "downvote")
+          .then( (candidate) => {
+            res.json(candidate)
+          }
+      );
+  }
 ];

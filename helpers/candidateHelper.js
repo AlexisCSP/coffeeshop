@@ -52,13 +52,13 @@ exports.createNewCandidate = (roomId, songId, userId) => {
     });
 };
 
-exports.commit_vote = (data, type) => {
+exports.commit_vote = (roomId, songId, userId, type) => {
     return new Promise((resolve, reject) => {
         models.Candidate.findOne({
             where: {
-                RoomId: data.roomId,
-                SongId: data.candidateId,
-                UserId: data.userId
+                RoomId: roomId,
+                SongId: songId,
+                UserId: userId
             }
         }).then(candidate => {
             var new_vote_count = candidate.vote_count;
@@ -70,32 +70,9 @@ exports.commit_vote = (data, type) => {
             candidate.update({
                 vote_count: new_vote_count
             }).then(() => {})
-            resolve();
+            resolve(candidate);
         });
     });
-};
-
-exports.vote = (req, res, type) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()){
-        /* TODO fill in proper error handling here */
-        return;
-    }
-    var data = {
-        userId: req.query.UserId,
-        candidateId: req.query.SongId,
-        roomId: req.query.RoomId
-    }
-
-    if (data.userId && data.userId != null && numberUtility.isNumeric(data.userId)){
-        data.userId = parseInt(userId);
-    } else {
-        data.userId = null;
-    }
-
-    this.commit_vote(data, type);
-    res.redirect(`/rooms/${data.roomId}`);
-
 };
 
 // // Returns the room id (integer) that corresponds to the candidate id

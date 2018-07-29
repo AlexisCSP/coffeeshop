@@ -1,7 +1,6 @@
 const models = require('../models');
 const { body, query, validationResult } = require('express-validator/check');
 const { sanitizeBody, sanitizeQuery } = require('express-validator/filter');
-const candidateHelper = require('../helpers/candidateHelper');
 const numberUtility = require('../utilities/numberUtitlity');
 const voteHelper = require('./voteHelper');
 const userHelper = require('./userHelper');

@@ -139,3 +139,24 @@ exports.room_delete_post = function (req, res){
         res.redirect('/rooms/');
     });
 }
+
+/* GET room candidates */
+exports.room_candidates_get = (req, res) => {
+  const roomId = req.params.id;
+  candidateHelper.getCandidates(roomId).then(candidates => {
+    res.json(candidates)
+  });
+}
+
+/* POST room dequeue, which removes the song at the top of the queue */
+exports.room_dequeue_post = (req, res) => {
+  const roomId = req.params.id;
+  candidateHelper.getCandidates(roomId).then(candidates => {
+    if (candidates.length > 0) {
+      candidates[0].destroy().then(() => {
+        console.log("Song Dequeued")
+        res.json("result");
+      });
+    }
+  });
+}

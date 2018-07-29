@@ -141,7 +141,7 @@ exports.room_delete_post = function (req, res){
 }
 
 /* GET room candidates */
-exports.room_candidates_get = async function room_candidates_get(req, res) {
+exports.room_candidates_get = (req, res) => {
   const roomId = req.params.id;
   candidateHelper.getCandidates(roomId).then(candidates => {
     res.json(candidates)
@@ -149,15 +149,14 @@ exports.room_candidates_get = async function room_candidates_get(req, res) {
 }
 
 /* POST room dequeue, which removes the song at the top of the queue */
-exports.room_dequeue_post = async function room_dequeue_post(req, res) {
-  return new Promise((resolve, reject) => {
-    const roomId = req.params.id;
-    candidateHelper.getCandidates(roomId).then(candidates => {
-      if (candidates.length > 0) {
-        candidates[0].destroy();
+exports.room_dequeue_post = (req, res) => {
+  const roomId = req.params.id;
+  candidateHelper.getCandidates(roomId).then(candidates => {
+    if (candidates.length > 0) {
+      candidates[0].destroy().then(() => {
         console.log("Song Dequeued")
-      }
-      resolve();
-    });
+        res.json("result");
+      });
+    }
   });
 }

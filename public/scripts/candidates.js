@@ -8,8 +8,9 @@ async function getCandidates(roomId) {
 }
 
 async function dequeue(roomId) {
-  await $.ajax({
+  const result = await $.ajax({
    url: "http://localhost:3001/rooms/" + roomId + "/dequeue",
    type: "POST"
   });
+  return result;
 }

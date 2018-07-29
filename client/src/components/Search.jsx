@@ -70,8 +70,6 @@ class Search extends Component {
        * Handle the remote request with the current text !
        */
       this.retrieveDataAsynchronously(e.target.value);
-
-      console.log("The Input Text has changed to ", e.target.value);
   }
 
   /**
@@ -85,8 +83,7 @@ class Search extends Component {
           value: val
       });
 
-      console.log("Option from 'database' selected : ", val);
-      console.log("TESTING!", item.artist)
+      this.props.onSearchItemClick(item)
   }
 
   /**
@@ -98,8 +95,8 @@ class Search extends Component {
    */
   renderItem(item, isHighlighted){
       return (
-          <div key= {item.url} className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: isHighlighted? 'pointer' : 'default' }}>
-              <img src={item.album.images[0].url} alt={item.song} height={40} width={40}/>
+          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: isHighlighted? 'pointer' : 'default' }}>
+              <img src={item.album_image} alt={item.song} height={40} width={40}/>
               <span className="song-search-result-data">{item.song} - {item.artist}</span>
           </div>
       );

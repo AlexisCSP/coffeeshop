@@ -8,6 +8,7 @@ class Room extends Component {
     super(props);
     this.onUpvoteClick = this.onUpvoteClick.bind(this);
     this.onDownvoteClick = this.onDownvoteClick.bind(this);
+    this.onSearchItemClick = this.onSearchItemClick.bind(this);
 
     this.state = { roomData : {
       candidates: []}
@@ -78,10 +79,28 @@ class Room extends Component {
     this.fetchCandidatesData()
   }
 
+  onSearchItemClick(song) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/candidate/new');
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    const data = {
+      RoomId: this.props.id,
+      SongId: song.uri,
+      UserId: 1,
+      name: song.song,
+      artist: song.artist,
+      preview: song.preview,
+      album_name: song.album_name,
+      album_image: song.album_image
+    }
+    xhr.send(JSON.stringify(data));
+    this.fetchCandidatesData()
+  }
+
   render() {
     return (
       <div id="content-wrapper">
-        <Search/>
+        <Search onSearchItemClick={this.onSearchItemClick}/>
         <ul>
           {this.state.roomData.candidates.map(song =>
           <li key={song.SongId}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}

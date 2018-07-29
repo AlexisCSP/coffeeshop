@@ -24,7 +24,7 @@ class Room extends Component {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
-       'Content-Type': 'application/json',
+       'Content-Type': 'application/json'
       }
     })
     .then(res => res.json())
@@ -54,7 +54,7 @@ class Room extends Component {
   }
 
   onUpvoteClick(songId) {
-    var xhr = new XMLHttpRequest();
+    /*var xhr = new XMLHttpRequest();
     xhr.open('POST', '/candidate/upvote');
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     const data = {
@@ -62,12 +62,23 @@ class Room extends Component {
       SongId: songId,
       UserId: 1
     }
-    xhr.send(JSON.stringify(data));
-    this.fetchCandidatesData()
+    xhr.send(JSON.stringify(data));*/
+    fetch('/candidate/upvote', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        RoomId: this.props.id,
+        SongId: songId,
+        UserId: 1
+      })
+    }).then(() => this.fetchCandidatesData())
   }
 
   onDownvoteClick(songId) {
-    var xhr = new XMLHttpRequest();
+    /*var xhr = new XMLHttpRequest();
     xhr.open('POST', '/candidate/downvote');
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     const data = {
@@ -75,8 +86,20 @@ class Room extends Component {
       SongId: songId,
       UserId: 1
     }
-    xhr.send(JSON.stringify(data));
-    this.fetchCandidatesData()
+    xhr.send(JSON.stringify(data));*/
+    fetch('/candidate/downvote', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        RoomId: this.props.id,
+        SongId: songId,
+        UserId: 1
+      })
+    }).then(() => this.fetchCandidatesData())
+
   }
 
   onSearchItemClick(song) {

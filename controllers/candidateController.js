@@ -1,10 +1,11 @@
-const { body, validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
+const { body, query, validationResult } = require('express-validator/check');
+const { sanitizeBody, sanitizeQuery } = require('express-validator/filter');
 const candidateHelper = require('../helpers/candidateHelper');
+const numberUtility = require('../utilities/numberUtitlity');
 
 exports.createNewCandidate = [
-    body('SongId', 'Song Id is required').isNumeric(),
-    sanitizeBody('SongId').toInt(),
+    body('SongId', 'Song Id is required'),
+    sanitizeBody('SongId'),
 
     body('RoomId', 'Room Id is required').isNumeric(),
     sanitizeBody('RoomId').toInt(),
@@ -33,5 +34,21 @@ exports.createNewCandidate = [
                 res.redirect(`/rooms/${roomId}`);
             }
         );
+    }
+];
+
+exports.upvoteCandidate = [
+    query('SongId', 'SongId must be provided').exists(),
+    sanitizeQuery('SongId'), 
+    (req, res, next) => {
+        candidateHelper.vote(req, res, "upvote");
+    }
+];
+
+exports.downvoteCandidate = [
+    query('SongId', 'SongId must be provided').exists(),
+    sanitizeQuery('SongId'), 
+    (req, res, next) => {
+        candidateHelper.vote(req, res, "downvote");
     }
 ];

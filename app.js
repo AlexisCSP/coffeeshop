@@ -9,9 +9,8 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const spotifyRouter = require('./routes/spotify');
 const roomsRouter = require('./routes/rooms');
-const candidatesRouter = require('./routes/candidates');
+const candidatesRouter = require('./routes/candidate');
 const usersRouter = require('./routes/user');
-const votesRouter = require('./routes/votes');
 
 const app = express();
 
@@ -29,9 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/rooms', roomsRouter);
-app.use('/suggestions', candidatesRouter);
+app.use('/candidate', candidatesRouter);
 app.use('/users', usersRouter);
-app.use('/votes', votesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -5,10 +5,10 @@ block content
   p There are #[span#num-users 0] users in rooms
   ul#connected-users
 
-  form(method="post", action=`/suggestions/new`)
+  form(method="post", action=`/candidate/new`)
     div.form-group
       label(for="SongId") Song Id
-      input(name="SongId", type="int", placeholder="Enter an ID (Number)").form-control
+      input(name="SongId", type="string", placeholder="Enter a track URI").form-control
       small#songid-help.form-text.text-muted This is for development for now
 
     div.form-group
@@ -24,8 +24,11 @@ block content
     ol#candidate-list.list-group
       for candidate in candidates
         li.candidate.list-group-item
-          form(method="POST", action=`/votes/new?UserId=null&CandidateId=${candidate.id}`)
-            button(type="submit").btn.btn-primary= `${candidate.songId} - ${candidate.count} Votes - Submitted by ${candidate.user.username}`
+          p #{candidate.SongId} - #{candidate.vote_count} Votes
+          form(method="POST", action=`/candidate/upvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
+            button(type="submit").btn.btn-primary=`upvote`
+          form(method="POST", action=`/candidate/downvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
+            button(type="submit").btn.btn-primary=`downvote`
   div          
     button(id="play" type="button") Play Audio
     button(id="togglePlay" type="button") Resume/Pause

@@ -55,7 +55,7 @@ exports.createNewCandidate = [
         };
         candidateHelper.createNewCandidate(data)
             .then( () => {
-                res.redirect(`/rooms/${roomId}`);
+                res.redirect(`/rooms/${req.body.RoomId}`);
             }
         );
     }

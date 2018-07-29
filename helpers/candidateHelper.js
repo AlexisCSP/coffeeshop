@@ -63,7 +63,6 @@ exports.commit_vote = (roomId, songId, userId, type) => {
             where: {
                 RoomId: roomId,
                 SongId: songId,
-                UserId: userId
             }
         }).then(candidate => {
             var new_vote_count = candidate.vote_count;

@@ -10,7 +10,9 @@ library.add(faThumbsDown)
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { rooms : [] };
+    this.state = {
+      rooms : [],
+      isLoggedIn : false };
   }
 
   componentDidMount() {
@@ -31,7 +33,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <Rooms rooms = {this.state.rooms}/>
+      <Rooms rooms = {this.state.rooms} isLoggedIn = {this.state.isLoggedIn}/>
       </div>
     );
   }

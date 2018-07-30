@@ -15,7 +15,8 @@ class Rooms extends Component {
               {this.props.rooms.map(room =>
               <li key={room.id}><NavLink to={"/rooms/" + room.id}  activeClassName="selected">{room.title}</NavLink></li>)}
             </ul>
-            <a href="http://localhost:3001/spotify/login" id="login-logout">Login</a>
+            {!this.props.isLoggedIn && <a href="http://localhost:3001/spotify/login" id="login-logout">Login</a>}
+            {this.props.isLoggedIn && <a href="http://localhost:3001/spotify/logout" id="login-logout">Logout</a>}
           </div>
 
           <div id="content">

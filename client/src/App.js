@@ -3,6 +3,7 @@ import './App.css';
 import Rooms from './components/Rooms'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import cookie from 'react-cookies'
 
 library.add(faThumbsUp)
 library.add(faThumbsDown)
@@ -28,6 +29,7 @@ class App extends Component {
      .catch(error => {
           // handle error
      });
+     this.setState({isLoggedIn : cookie.load('access_token') ? true : false})
   }
 
   render() {

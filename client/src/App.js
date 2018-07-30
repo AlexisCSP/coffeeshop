@@ -45,7 +45,6 @@ class App extends Component {
          // handle error
     });
     this.setState({isLoggedIn : cookie.load('access_token') ? true : false})
-    console.log("TEST!!!!!!")
   }
 
   render() {

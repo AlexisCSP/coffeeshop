@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
+import './NewRoomModal.css'
 
 class NewRoomModal extends Component {
   constructor(props, context) {
@@ -36,14 +37,13 @@ class NewRoomModal extends Component {
   render() {
     return (
       <Modal open={this.props.isModalOpen} onClose={this.props.onModalClose} center>
-          <h2>Create a new room</h2>
+        <div className="form-style-6">
+          <h1>Create a new room</h1>
           <form onSubmit={this.handleSubmit}>
-            <label>
-              Group Title :
-              <input type="text" value={this.state.value} onChange={this.handleChange} />
-            </label>
-            <input type="submit" value="Submit" />
+            <input type="text" value={this.state.value} onChange={this.handleChange} placeholder="Room Name" />
+            <input type="submit" value="Create" />
           </form>
+        </div>
       </Modal>
     )
   }

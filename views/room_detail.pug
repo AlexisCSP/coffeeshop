@@ -5,15 +5,40 @@ block content
   p There are #[span#num-users 0] users in rooms
   ul#connected-users
 
-  form(method="post", action=`/suggestions/new`)
+  form(method="post", action=`/candidate/new`)
     div.form-group
       label(for="SongId") Song Id
-      input(name="SongId", type="int", placeholder="Enter an ID (Number)").form-control
+      input(name="SongId", type="string", placeholder="Enter a track URI").form-control
       small#songid-help.form-text.text-muted This is for development for now
 
     div.form-group
       label(for="UserId") User Id
       input(name="UserId", type="int", placeholder="Enter an ID (Number)").form-control
+      small#songid-help.form-text.text-muted This is for development
+      
+    div.form-group
+      label(for="name") Song name
+      input(name="name", type="string", placeholder="Enter track name").form-control
+      small#songid-help.form-text.text-muted This is for development for now
+
+    div.form-group
+      label(for="artist") Artist
+      input(name="artist", type="string", placeholder="Enter track artist").form-control
+      small#songid-help.form-text.text-muted This is for development
+  
+    div.form-group
+      label(for="preview") Preview URL
+      input(name="preview", type="string", placeholder="Enter preview url").form-control
+      small#songid-help.form-text.text-muted This is for development for now
+
+    div.form-group
+      label(for="album_name") Album name
+      input(name="album_name", type="string", placeholder="Enter album name").form-control
+      small#songid-help.form-text.text-muted This is for development
+
+    div.form-group
+      label(for="album_image") Album image url
+      input(name="album_image", type="string", placeholder="Enter album image url").form-control
       small#songid-help.form-text.text-muted This is for development
 
     input(name="RoomId", type="hidden", value=`${room.id}`)
@@ -24,8 +49,11 @@ block content
     ol#candidate-list.list-group
       for candidate in candidates
         li.candidate.list-group-item
-          form(method="POST", action=`/votes/new?UserId=null&CandidateId=${candidate.id}`)
-            button(type="submit").btn.btn-primary= `${candidate.songId} - ${candidate.count} Votes - Submitted by ${candidate.user.username}`
+          p #{candidate.name} / #{candidate.album_name} / #{candidate.artist} - #{candidate.vote_count} Votes
+          form(method="POST", action=`/candidate/upvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
+            button(type="submit").btn.btn-primary=`upvote`
+          form(method="POST", action=`/candidate/downvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
+            button(type="submit").btn.btn-primary=`downvote`
   div          
     button(id="play" type="button") Play Audio
     button(id="togglePlay" type="button") Resume/Pause
@@ -35,6 +63,7 @@ block content
 
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/rooms.js")
+  script(src="/scripts/candidates.js")
   script(src="https://sdk.scdn.co/spotify-player.js")
   script(src="/scripts/spotify.js")
   script.

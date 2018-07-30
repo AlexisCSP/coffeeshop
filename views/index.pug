@@ -5,7 +5,7 @@ block content
   p Welcome to #{title}
   p There are #[span#num-users 0] users here at index
 
-  form(method='POST' action='/spotify/search')
+  form(method='GET' action='/spotify/search/:query')
     div.form-group
       label(for='query') Your song <span> </span> 
       input#query.form-control(type='text' placeholder='Song' name='query' required='true')

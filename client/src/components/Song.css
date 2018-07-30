@@ -1,0 +1,9 @@
+.song-upvote-icon {
+  margin-left: 4em;
+  cursor: pointer;
+}
+
+.song-downvote-icon {
+  margin-left: 1em;
+  cursor: pointer;
+}

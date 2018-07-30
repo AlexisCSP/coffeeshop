@@ -66,21 +66,29 @@ exports.room_create_post = [
 
 /* GET room detail */
 exports.room_detail_get = function(req, res){
+  var contype = req.headers['content-type'];
   const roomId = req.params.id;
   Promise.all([
     models.Room.findById(roomId),
     candidateHelper.getCandidates(roomId)
-  ]).then(results =>{
+  ]).then(results => {
     const room = results[0];
     const candidates = results[1];
-      res.render('room_detail', {
-        title: 'Room Information',
+    if (contype == 'application/json') {
+      res.json({
         room: room,
         candidates: candidates,
         access_token: req.cookies.access_token
       });
-    });
-
+    } else {
+      res.render('room_detail', { 
+        title: 'Room Information', 
+        room: room,
+        candidates: candidates,
+        access_token: req.cookies.access_token
+      });
+    }
+  });
 }
 
 /* GET room edit */
@@ -138,4 +146,25 @@ exports.room_delete_post = function (req, res){
     }).then(function() {
         res.redirect('/rooms/');
     });
+}
+
+/* GET room candidates */
+exports.room_candidates_get = (req, res) => {
+  const roomId = req.params.id;
+  candidateHelper.getCandidates(roomId).then(candidates => {
+    res.json(candidates)
+  });
+}
+
+/* POST room dequeue, which removes the song at the top of the queue */
+exports.room_dequeue_post = (req, res) => {
+  const roomId = req.params.id;
+  candidateHelper.getCandidates(roomId).then(candidates => {
+    if (candidates.length > 0) {
+      candidates[0].destroy().then(() => {
+        console.log("Song Dequeued")
+        res.json("result");
+      });
+    }
+  });
 }

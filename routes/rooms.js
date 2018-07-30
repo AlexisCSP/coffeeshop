@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const rooms_controller = require('../controllers/roomsController');
-const candidates_router = require('./candidates');
+const candidates_router = require('./candidate');
 
 router.get('/', rooms_controller.index);
 
@@ -19,5 +19,9 @@ router.post('/:id/update', rooms_controller.room_update_post);
 router.get('/:id/delete', rooms_controller.room_delete_get);
 
 router.post('/:id/delete', rooms_controller.room_delete_post);
+
+router.get('/:id/candidates', rooms_controller.room_candidates_get);
+
+router.post('/:id/dequeue', rooms_controller.room_dequeue_post);
 
 module.exports = router;

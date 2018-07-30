@@ -33,38 +33,20 @@ class Search extends Component {
   retrieveDataAsynchronously(searchText){
       let _this = this;
 
-      // Url of your website that process the data and returns a
       let url = `/spotify/search/` + searchText;
 
-      // Configure a basic AJAX request to your server side API
-      // that returns the data according to the sent text
       let xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = 'json';
+      xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onload = () => {
           let status = xhr.status;
 
           if (status === 200) {
-              // In this example we expects from the server data with the structure of:
-              // [
-              //    {
-              //        label: "Some Text",
-              //        value: 1,
-              //    },
-              //    {
-              //        label: "Some Other Text",
-              //        value: 1,
-              //    },
-              // ]
-              // But you can obviously change the render data :)
 
-              // Update the state with the remote data and that's it !
               _this.setState({
                   autocompleteData: xhr.response
               });
-
-              // Show response of your server in the console
-              console.log(xhr.response);
           } else {
               console.error("Cannot load data from remote source");
           }
@@ -88,8 +70,6 @@ class Search extends Component {
        * Handle the remote request with the current text !
        */
       this.retrieveDataAsynchronously(e.target.value);
-
-      console.log("The Input Text has changed to ", e.target.value);
   }
 
   /**
@@ -98,12 +78,12 @@ class Search extends Component {
    * @param {Object} val Value returned by the getItemValue function.
    * @return {Nothing} No value is returned
    */
-  onSelect(val){
+  onSelect(val, item){
       this.setState({
           value: val
       });
 
-      console.log("Option from 'database' selected : ", val);
+      this.props.onSearchItemClick(item)
   }
 
   /**
@@ -115,8 +95,9 @@ class Search extends Component {
    */
   renderItem(item, isHighlighted){
       return (
-          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-              {item.song} - {item.artist}
+          <div className="song-search-result" style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: isHighlighted? 'pointer' : 'default' }}>
+              <img src={item.album_image} alt={item.song} height={40} width={40}/>
+              <span className="song-search-result-data">{item.song} - {item.artist}</span>
           </div>
       );
   }
@@ -128,9 +109,6 @@ class Search extends Component {
    * @return {String} val
    */
   getItemValue(item){
-      // You can obviously only return the Label or the component you need to show
-      // In this case we are going to show the value and the label that shows in the input
-      // something like "1 - Microsoft"
       return `${item.song} - ${item.artist}`;
   }
 

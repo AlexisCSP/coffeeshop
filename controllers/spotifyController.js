@@ -139,6 +139,7 @@ var spotify = new Spotify(keys.spotifyKeys);
 var results = [];
 
 exports.search_get = function (req, res, next) {
+    var contype = req.headers['content-type'];
     //Get the type of Query from the User
     var type = 'track';
 
@@ -156,13 +157,22 @@ exports.search_get = function (req, res, next) {
             spotRes.tracks.items.forEach(function(ea){
                 results.push({artist: ea.artists[0].name,
                               song: ea.name,
+                              uri: ea.uri,
                               url: ea.external_urls.spotify,
-                              preview: ea.preview_url,
-                              album: ea.album});
+                              preview: ea.preview,
+                              album_name: ea.album.name,
+                              album_image: ea.album.images[0].url
+                            });
             });
             // console.log(results); -- for debug
             //Render the homepage and return results to the view
-            res.json(results);
+
+            if (contype == 'application/json') {
+                res.json(results)
+            } else {
+                res.render('search', { title: 'Search results', results: results });
+            }
+            //res.json(results);
         })
         .catch(function (err) {
             console.log(err);

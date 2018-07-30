@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import Rooms from './components/Rooms'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faThumbsUp)
+library.add(faThumbsDown)
 
 class App extends Component {
-  state = { rooms: [] }
+  constructor(props) {
+    super(props);
+    this.state = { rooms : [] };
+  }
 
   componentDidMount() {
      fetch('/rooms', {
@@ -21,7 +29,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.rooms)
     return (
       <div className="App">
       <Rooms rooms = {this.state.rooms}/>

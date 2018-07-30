@@ -1,4 +1,7 @@
 const models = require('../models');
+const { body, query, validationResult } = require('express-validator/check');
+const { sanitizeBody, sanitizeQuery } = require('express-validator/filter');
+const numberUtility = require('../utilities/numberUtitlity');
 const voteHelper = require('./voteHelper');
 const userHelper = require('./userHelper');
 
@@ -24,44 +27,66 @@ exports.getCandidates = (roomId) => {
         models.Candidate.findAll({
             where: {RoomId: roomId}
         }).then(candidates => {
-            Promise.all(candidates.map(makeCandidateObject)).then(results => {
-                results.sort(function(a, b) {
-                    if (a.count == b.count) {
-                        return a.songId - b.songId; // change to timestamp
+                candidates.sort(function(a, b) {
+                    if (a.vote_count == b.vote_count) {
+                        return a.SongId > b.SongId; // change to timestamp
                     }
-                    return b.count - a.count;
+                    return b.vote_count - a.vote_count;
                 });
-                resolve(results);
+                resolve(candidates);
             });
         });
-    });
+
 };
 
 // Returns no object
-exports.createNewCandidate = (roomId, songId, userId) => {
+exports.createNewCandidate = (data) => {
     return new Promise((resolve, reject) => {
         models.Candidate.create({
-            RoomId: roomId,
-            SongId: songId,
-            UserId: userId
+            RoomId: data.roomId,
+            SongId: data.songId,
+            UserId: data.userId,
+            name: data.name,
+            artist: data.artist,
+            album_name: data.album_name,
+            album_image: data.album_image,
+            preview: data.preview,
+            vote_count: 1
+        })
+        resolve();
+    });
+};
+
+exports.commit_vote = (roomId, songId, userId, type) => {
+    return new Promise((resolve, reject) => {
+        models.Candidate.findOne({
+            where: {
+                RoomId: roomId,
+                SongId: songId,
+            }
         }).then(candidate => {
-            voteHelper.createNewVote(
-                candidate.dataValues.id, 
-                userId).then(() => {
-                    resolve();
-                });
+            var new_vote_count = candidate.vote_count;
+            if (type == "upvote") {
+                new_vote_count += 1;
+            } else {
+                new_vote_count -= 1;
+            }
+            candidate.update({
+                vote_count: new_vote_count
+            }).then(() => {})
+            resolve(candidate);
         });
     });
 };
 
-// Returns the room id (integer) that corresponds to the candidate id
-exports.getRoomIdForCandidate = (candidateId) => {
-    return new Promise((resolve, reject) => {
-        models.Candidate.findById(candidateId).then(candidate => {
-            resolve(candidate.dataValues.RoomId);
-        });
-    });
-};
+// // Returns the room id (integer) that corresponds to the candidate id
+// exports.getRoomIdForCandidate = (candidateId) => {
+//     return new Promise((resolve, reject) => {
+//         models.Candidate.findById(candidateId).then(candidate => {
+//             resolve(candidate.dataValues.RoomId);
+//         });
+//     });
+// };
 
 //Return the following object
 // {
@@ -74,21 +99,21 @@ exports.getRoomIdForCandidate = (candidateId) => {
 //     }
 // }
 // Returns a promise to make the code using this easier to use
-function makeCandidateObject(candidate){
-    return new Promise((resolve, reject) => {
-        Promise.all([
-            voteHelper.getVoteCountForCandidate(candidate.dataValues.id),
-            userHelper.getUserById(candidate.dataValues.UserId)
-        ]).then(pieces => {
-            const voteCount = pieces[0];
-            const user = pieces[1];
+// function makeCandidateObject(candidate){
+//     return new Promise((resolve, reject) => {
+//         Promise.all([
+//             voteHelper.getVoteCountForCandidate(candidate.dataValues.id),
+//             userHelper.getUserById(candidate.dataValues.UserId)
+//         ]).then(pieces => {
+//             const voteCount = pieces[0];
+//             const user = pieces[1];
 
-            resolve({
-                id: candidate.dataValues.id,
-                songId: candidate.dataValues.SongId,
-                count: voteCount,
-                user: user
-            });
-        });
-    });
-}
+//             resolve({
+//                 id: candidate.dataValues.id,
+//                 songId: candidate.dataValues.SongId,
+//                 count: voteCount,
+//                 user: user
+//             });
+//         });
+//     });
+// }

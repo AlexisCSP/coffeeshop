@@ -20,6 +20,7 @@
     "pg-hstore": "^2.3.2",
     "pug": "2.0.0-beta11",
     "querystring": "^0.2.0",
+    "react-upvote": "0.0.2",
     "request": "^2.87.0",
     "save": "^2.3.2",
     "sequelize": "^4.38.0",

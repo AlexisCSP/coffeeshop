@@ -8,6 +8,10 @@
 }
 
 .song-search-result {
-  padding: 25px;
-  font-family: Lato,"Helvetica Neue",Arial,sans-serif
+  padding: 10px;
+  font-family: Lato,"Helvetica Neue",Arial,sans-serif;
+}
+
+.song-search-result-data {
+  margin-left: 0.5em
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
+import Player from './Player.jsx'
 
 class Room extends Component {
   constructor(props) {
@@ -128,6 +129,8 @@ class Room extends Component {
           {this.state.roomData.candidates.map(song =>
           <li key={song.SongId}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
         </ul>
+        <Player />
+
       </div>
     )
   }

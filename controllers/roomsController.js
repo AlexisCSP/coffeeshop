@@ -46,7 +46,7 @@ exports.room_create_post = [
       res.json({ title: 'Create Room', room: room, errors: errors.array()});
       return;
     }
-    /*else {
+    else {
         do{ var roomKey = keygen(); }
         while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
         models.Room.findOrCreate({
@@ -58,9 +58,9 @@ exports.room_create_post = [
             }
         })
         .spread(room  => {
-            res.redirect('/rooms/'+room.id);
+            res.json(room);
         })
-    }*/
+    }
   }
 ];
 

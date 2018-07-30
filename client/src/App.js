@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import Rooms from './components/Rooms'
+import NewRoomModal from './components/NewRoomModal'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import cookie from 'react-cookies'
-import Modal from 'react-responsive-modal';
 
 library.add(faThumbsUp)
 library.add(faThumbsDown)
@@ -24,6 +24,7 @@ class App extends Component {
 
   onCloseModal = () => {
     this.setState({ isModalOpen: false });
+    this.getRoomsData()
   };
 
   componentDidMount() {
@@ -44,22 +45,14 @@ class App extends Component {
          // handle error
     });
     this.setState({isLoggedIn : cookie.load('access_token') ? true : false})
+    console.log("TEST!!!!!!")
   }
 
   render() {
     return (
       <div className="App">
         <Rooms rooms = {this.state.rooms} isLoggedIn = {this.state.isLoggedIn} openModal = {this.onOpenModal}/>
-        <Modal open={this.state.isModalOpen} onClose={this.onCloseModal} center>
-            <h2>Create a new room</h2>
-            <form action="/rooms/create" method="post">
-              <label>
-                Group Title :
-                <input type="text" name="title" />
-              </label>
-              <input type="submit" value="Submit" />
-            </form>
-        </Modal>
+        <NewRoomModal isModalOpen={this.state.isModalOpen} onModalClose={this.onCloseModal}/>
       </div>
     );
   }

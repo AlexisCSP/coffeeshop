@@ -72,3 +72,21 @@
   display: block;
   margin: 1em;
 }
+
+#new-room-btn {
+  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  color: #FFF;
+  text-align: center;
+  margin: 1em;
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+#new-room-btn:hover {
+  font-size: 30px;
+  background: #6f7072;
+}

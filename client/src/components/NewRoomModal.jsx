@@ -31,6 +31,7 @@ class NewRoomModal extends Component {
     .catch(error => {
          // handle error
     });
+    this.props.onModalClose();
     event.preventDefault();
   }
 

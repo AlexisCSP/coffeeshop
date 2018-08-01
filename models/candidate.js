@@ -1,28 +1,30 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Candidate = sequelize.define('Candidate', {
-        name: DataTypes.STRING,
-        artist: DataTypes.STRING,
-        SongId: {
-            type: DataTypes.STRING,
-            primaryKey: true
+        roomId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'room',
+                key: 'id',
+                allowNull: false
+            }
         },
-        preview: DataTypes.STRING,
-        album_name: DataTypes.STRING,
-        album_image: DataTypes.STRING,
+        songId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'song',
+                key: 'id',
+                allowNull: false
+            }
+        },
         vote_count: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        UserId: {
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        }
     });
 
     Candidate.associate = (models) => {
-        Candidate.belongsTo(models.Room);
-        // Candidate.belongsTo(models.User);
+
     };
 
     return Candidate;

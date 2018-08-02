@@ -43,7 +43,7 @@ exports.room_create_post = [
 
     /* There were validation errors */
     if (!errors.isEmpty()) {
-      res.render('room_form', { title: 'Create Room', room: room, errors: errors.array()});
+      res.json({ title: 'Create Room', room: room, errors: errors.array()});
       return;
     }
     else {
@@ -58,7 +58,7 @@ exports.room_create_post = [
             }
         })
         .spread(room  => {
-            res.redirect('/rooms/'+room.id);
+            res.json(room);
         })
     }
   }
@@ -81,8 +81,8 @@ exports.room_detail_get = function(req, res){
         access_token: req.cookies.access_token
       });
     } else {
-      res.render('room_detail', { 
-        title: 'Room Information', 
+      res.render('room_detail', {
+        title: 'Room Information',
         room: room,
         candidates: candidates,
         access_token: req.cookies.access_token

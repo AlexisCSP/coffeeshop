@@ -4,11 +4,11 @@ const candidateHelper = require('../helpers/candidateHelper');
 const numberUtility = require('../utilities/numberUtitlity');
 
 exports.createNewCandidate = [
-    body('SongId', 'Song Id is required'),
-    sanitizeBody('SongId'),
+    body('uri', 'uri is required'),
+    sanitizeBody('uri'),
 
-    body('RoomId', 'Room Id is required').isNumeric(),
-    sanitizeBody('RoomId').toInt(),
+    body('roomId', 'room Id is required').isNumeric(),
+    sanitizeBody('roomId').toInt(),
 
     body('name', 'name is required'),
     sanitizeBody('name'),
@@ -25,7 +25,7 @@ exports.createNewCandidate = [
     body('album_image', 'album_image is required'),
     sanitizeBody('album_image'),
 
-    body('UserId', 'User ID is required (May be null)').exists(),
+    body('userId', 'user ID is required (May be null)').exists(),
 
     (req, res, next) => {
         const errors = validationResult(req);
@@ -34,7 +34,7 @@ exports.createNewCandidate = [
             return;
         }
 
-        var userId = req.body.UserId;
+        var userId = req.body.userId;
 
         if (userId && userId != null && userId != ""){
             userId = parseInt(userId);
@@ -45,28 +45,28 @@ exports.createNewCandidate = [
         var data = {
             name: req.body.name,
             artist: req.body.artist,
-            songId: req.body.SongId,
+            uri: req.body.uri,
             preview: req.body.preview,
             album_name: req.body.album_name,
             album_image: req.body.album_image,
             vote_count: 1,
             userId: userId,
-            roomId: req.body.RoomId
+            roomId: req.body.roomId
         };
         candidateHelper.createNewCandidate(data)
             .then( () => {
-                res.redirect(`/rooms/${req.body.RoomId}`);
+                res.redirect(`/rooms/${req.body.roomId}`);
             }
         );
     }
 ];
 
 exports.upvoteCandidate = [
-  body('SongId', 'Song Id is required'),
-  sanitizeBody('SongId'),
+  body('songId', 'song Id is required'),
+  sanitizeBody('songId'),
 
-  body('RoomId', 'Room Id is required').isNumeric(),
-  sanitizeBody('RoomId').toInt(),
+  body('roomId', 'room Id is required').isNumeric(),
+  sanitizeBody('roomId').toInt(),
 
   (req, res, next) => {
       const errors = validationResult(req);
@@ -75,9 +75,9 @@ exports.upvoteCandidate = [
           return;
       }
 
-      const roomId = req.body.RoomId;
-      const songId = req.body.SongId;
-      var userId = req.body.UserId;
+      const roomId = req.body.roomId;
+      const songId = req.body.songId;
+      var userId = req.body.userId;
 
       if (userId && userId != null && userId != ""){
           userId = parseInt(userId);
@@ -94,11 +94,11 @@ exports.upvoteCandidate = [
 ];
 
 exports.downvoteCandidate = [
-  body('SongId', 'Song Id is required'),
-  sanitizeBody('SongId'),
+  body('songId', 'song Id is required'),
+  sanitizeBody('songId'),
 
-  body('RoomId', 'Room Id is required').isNumeric(),
-  sanitizeBody('RoomId').toInt(),
+  body('roomId', 'room Id is required').isNumeric(),
+  sanitizeBody('roomId').toInt(),
 
   (req, res, next) => {
       const errors = validationResult(req);
@@ -107,9 +107,9 @@ exports.downvoteCandidate = [
           return;
       }
 
-      const roomId = req.body.RoomId;
-      const songId = req.body.SongId;
-      var userId = req.body.UserId;
+      const roomId = req.body.roomId;
+      const songId = req.body.songId;
+      var userId = req.body.userId;
 
       if (userId && userId != null && userId != ""){
           userId = parseInt(userId);

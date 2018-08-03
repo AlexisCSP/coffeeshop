@@ -103,7 +103,7 @@ function play() {
   console.log("Entering play function");
   getCandidates(room_id).then((candidates) => {
     if (candidates.length > 0) {
-      var track = candidates[0].SongId;
+      var track = candidates[0].uri;
       console.log("Playing", track);
       $.ajax({
         url: "https://api.spotify.com/v1/me/player/play",

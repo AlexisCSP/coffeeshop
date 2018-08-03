@@ -24,36 +24,49 @@ const userHelper = require('./userHelper');
 // ]
 exports.getCandidates = (roomId) => {
     return new Promise((resolve, reject) => {
-        models.Candidate.findAll({
-            where: {roomId: roomId}
-        }).then(candidates => {
-                candidates.sort(function(a, b) {
+        models.Room.findById(roomId).then((room) => {
+            room.getSong().then((songs) => {
+                songs.sort(function(a, b) {
                     if (a.vote_count == b.vote_count) {
-                        return a.SongId > b.SongId; // change to timestamp
+                        return a.songId > b.songId; // change to timestamp
                     }
                     return b.vote_count - a.vote_count;
                 });
-                resolve(candidates);
+                resolve(songs);
             });
         });
-
-};
+    });
+}
 
 // Returns no object
 exports.createNewCandidate = (data) => {
     return new Promise((resolve, reject) => {
-        models.Candidate.create({
-            RoomId: data.roomId,
-            SongId: data.songId,
-            UserId: data.userId,
-            name: data.name,
-            artist: data.artist,
-            album_name: data.album_name,
-            album_image: data.album_image,
-            preview: data.preview,
-            vote_count: 1
-        })
-        resolve();
+        console.log("SEARCHING SONG");
+        models.Song.findOrCreate({
+            where: {uri: data.uri},
+            defaults: {
+                name: data.name,
+                artist: data.artist,
+                preview: data.preview,
+                album_name: data.album_name,
+                album_image: data.album_image,
+                uri: data.uri,
+            }
+        }).spread((song, created) => {
+            if (created) {
+                models.Room.findById(data.roomId).then((room) => {
+                    song.addRoom(room, { vote_count: 1 }).then( () => {
+                        resolve();
+                    });
+                });
+            } else {
+                this.commit_vote(data.roomId, song.id, data.userId, "upvote").then( () => {
+                    resolve();
+                });
+            }
+        });
+
+
     });
 };
 
@@ -61,8 +74,8 @@ exports.commit_vote = (roomId, songId, userId, type) => {
     return new Promise((resolve, reject) => {
         models.Candidate.findOne({
             where: {
-                RoomId: roomId,
-                SongId: songId,
+                roomId: roomId,
+                songId: songId,
             }
         }).then(candidate => {
             var new_vote_count = candidate.vote_count;

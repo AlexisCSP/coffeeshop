@@ -7,13 +7,13 @@ block content
 
   form(method="post", action=`/candidate/new`)
     div.form-group
-      label(for="SongId") Song Id
-      input(name="SongId", type="string", placeholder="Enter a track URI").form-control
+      label(for="uri") Song Id
+      input(name="uri", type="string", placeholder="Enter a track URI").form-control
       small#songid-help.form-text.text-muted This is for development for now
 
     div.form-group
-      label(for="UserId") User Id
-      input(name="UserId", type="int", placeholder="Enter an ID (Number)").form-control
+      label(for="userId") User Id
+      input(name="userId", type="int", placeholder="Enter an ID (Number)").form-control
       small#songid-help.form-text.text-muted This is for development
       
     div.form-group
@@ -41,7 +41,7 @@ block content
       input(name="album_image", type="string", placeholder="Enter album image url").form-control
       small#songid-help.form-text.text-muted This is for development
 
-    input(name="RoomId", type="hidden", value=`${room.id}`)
+    input(name="roomId", type="hidden", value=`${room.id}`)
     button(type="submit").btn.btn-primary Suggest A Song
 
   if (candidates)

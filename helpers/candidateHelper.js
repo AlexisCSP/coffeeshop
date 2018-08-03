@@ -25,7 +25,7 @@ const userHelper = require('./userHelper');
 exports.getCandidates = (roomId) => {
     return new Promise((resolve, reject) => {
         models.Candidate.findAll({
-            where: {RoomId: roomId}
+            where: {roomId: roomId}
         }).then(candidates => {
                 candidates.sort(function(a, b) {
                     if (a.vote_count == b.vote_count) {

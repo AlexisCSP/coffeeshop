@@ -70,9 +70,9 @@ class Room extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        RoomId: this.props.id,
-        SongId: songId,
-        UserId: 1
+        roomId: this.props.id,
+        songId: songId,
+        userId: 1
       })
     }).then(() => this.fetchCandidatesData())
   }
@@ -94,9 +94,9 @@ class Room extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        RoomId: this.props.id,
-        SongId: songId,
-        UserId: 1
+        roomId: this.props.id,
+        songId: songId,
+        userId: 1
       })
     }).then(() => this.fetchCandidatesData())
 
@@ -107,9 +107,9 @@ class Room extends Component {
     xhr.open('POST', '/candidate/new');
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     const data = {
-      RoomId: this.props.id,
-      SongId: song.uri,
-      UserId: 1,
+      roomId: this.props.id,
+      uri: song.uri,
+      userId: 1,
       name: song.song,
       artist: song.artist,
       preview: song.preview,

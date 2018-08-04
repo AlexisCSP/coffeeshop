@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const rooms_controller = require('../controllers/roomsController');
+const candidates_controller = require('../controllers/candidateController');
 const candidates_router = require('./candidate');
 
 router.get('/', rooms_controller.index);
@@ -23,5 +24,7 @@ router.post('/:id/delete', rooms_controller.room_delete_post);
 router.get('/:id/candidates', rooms_controller.room_candidates_get);
 
 router.post('/:id/dequeue', rooms_controller.room_dequeue_post);
+
+router.post('/:id/candidate/save', candidates_controller.candidate_create_post);
 
 module.exports = router;

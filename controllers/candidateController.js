@@ -3,6 +3,8 @@ const { sanitizeBody, sanitizeQuery } = require('express-validator/filter');
 const candidateHelper = require('../helpers/candidateHelper');
 const numberUtility = require('../utilities/numberUtitlity');
 
+const models = require('../models');
+
 exports.createNewCandidate = [
     body('uri', 'uri is required'),
     sanitizeBody('uri'),
@@ -124,3 +126,40 @@ exports.downvoteCandidate = [
       );
   }
 ];
+
+// Display Contact create form on POST.
+exports.candidate_create_post = function(req, res, next) {
+    // get data for song
+    var data = {
+        name: req.body.name,
+        artist: req.body.artist,
+        uri: req.body.uri,
+        preview: req.body.preview,
+        album_name: req.body.album_name,
+        album_image: req.body.album_image,
+        // vote_count: req.body.vote_count,
+        // roomId: req.body.RoomId
+        roomId: req.params.id
+    };
+
+    // find or create a new song
+    models.Song.findOrCreate({
+        where: { uri: req.body.uri },
+        defaults: data
+    }).spread((song, created) => {
+        models.Candidate.findOrCreate( {
+            where: { roomId: req.params.id, songId: song.get({ plain: true}).id }, defaults: { vote_count: req.body.vote_count }
+        }).spread((candidate, created) => {
+            // if candidate exists
+            if (created === false) {
+                // update total vote_count
+                new_vote_count  = eval(candidate.vote_count) + eval(req.body.vote_count);
+                candidate.update({
+                    vote_count: new_vote_count
+                });
+            }
+        })
+    })
+
+    res.send('success');
+};

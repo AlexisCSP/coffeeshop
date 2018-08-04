@@ -3,6 +3,8 @@ const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const request = require('request');
 const querystring = require('querystring');
+const Spotify = require('node-spotify-api');
+const keys = require('../routes/keys');
 
 /* API Credentials */
 var client_id = 'c086167c88da4af6a09abe8244133a5b';
@@ -85,7 +87,17 @@ exports.callback = function(req, res) {
             res.cookie('access_token', access_token);
             res.cookie('refresh_token', refresh_token);
             // we can also pass the token to the browser to make requests from there
-            res.redirect('http://localhost:3000');
+            // res.redirect('/#' +
+            // querystring.stringify({
+            //     access_token: access_token,
+            //     refresh_token: refresh_token
+            // }));
+
+            // Enable for React redirect
+            // res.redirect('http://localhost:3000');
+            
+            // Enable for Pug redirect
+            res.redirect('http://localhost:3001');
         }
         else {
             res.redirect('/#' +
@@ -120,55 +132,45 @@ exports.refresh_token = function(req, res) {
     });
 };
 
-//----------------------------------------------------------------------------------------------------------------//
-//SEARCH SONG FROM SPOTIFY
-//Import the Spotify API
-var Spotify = require('node-spotify-api');
-
-//Import our Keys File
-var keys = require('../routes/keys');
-
 //Create a Spotify Client
 var spotify = new Spotify(keys.spotifyKeys);
 
 //Store the results of a request to spotify
 var results = [];
 
-exports.search_get = function (req, res, next) {
+exports.spotify_search_get = function (req, res, next) {
     var contype = req.headers['content-type'];
-    //Get the type of Query from the User
+   
+    // Get the type of Query from the User
     var type = 'track';
 
-    //Get the query from the user
+    // Get the query from the user
     var query = req.params.query;
 
-    //Clear out old results
+    // Clear out old results
     results = [];
 
-    //Make a request to Spotify
-    spotify.search({type: type, query: query})
-        .then(function (spotRes) {
-
-            //Store the artist, song, preview link, and album in the results array
-            spotRes.tracks.items.forEach(function(ea){
-                results.push({artist: ea.artists[0].name,
-                              song: ea.name,
-                              uri: ea.uri,
-                              url: ea.external_urls.spotify,
-                              preview: ea.preview,
-                              album_name: ea.album.name,
-                              album_image: ea.album.images[0].url
+    // Make a request to Spotify
+    spotify
+        .search({type: type, query: query})
+        .then( (spotify_res) => {
+            // Store the artist, song, preview link, and album in the results array
+            spotify_res.tracks.items.forEach(function(obj){
+                results.push({artist: obj.artists[0].name,
+                              song: obj.name,
+                              uri: obj.uri,
+                              url: obj.external_urls.spotify,
+                              track_id: obj.id,
+                              preview: obj.preview,
+                              album_name: obj.album.name,
+                              album_image: obj.album.images[0].url
                             });
             });
-            // console.log(results); -- for debug
-            //Render the homepage and return results to the view
-
             if (contype == 'application/json') {
-                res.json(results)
+                res.json(results);
             } else {
                 res.render('search', { title: 'Search results', results: results });
             }
-            //res.json(results);
         })
         .catch(function (err) {
             console.log(err);

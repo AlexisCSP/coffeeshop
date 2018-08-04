@@ -28,7 +28,7 @@ async function checkSelectedPlayer (sdk) {
   const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
   const token = access_token;
   const sdk = new Player({
-    name: "CoffeeShop",
+    name: "Coffee Shop",
     getOAuthToken: callback => { callback(token); }
   });
 

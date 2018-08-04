@@ -18,6 +18,7 @@ server.listen(port, () => {
 server.on('error', onError);
 server.on('listening', onListening);
 
+let candidates = {};
 /** Socket.IO Functionality **/
 io.of('/rooms').on('connection', (socket) => {
   socket.on('join room', (room) => {
@@ -26,20 +27,55 @@ io.of('/rooms').on('connection', (socket) => {
     
     socket.room = room;
     socket.join(room);
+    socket.emit('update room queue', candidates[`${room}`])
 
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
       io.of('/rooms').in(room).emit('user joined room', clients);
     });
+  });
+
+  socket.on('song suggested', (candidate) => {
+    let room = socket.room; 
+    if (!candidates.hasOwnProperty(`${room}`)) { candidates[`${room}`] = [] };
+    candidates[`${room}`].push(candidate);
+
+    console.log(`Candidates obj: ${candidates[`${room}`]}, type: `+typeof candidates[`${room}`]);
+
+    io.of('/rooms').in(socket.room).emit('update room queue', candidates[`${room}`]);
+  });
+
+  socket.on('user voted up', (candidate) => {
+    let room = socket.room; 
+
+    let i = candidates[`${room}`].findIndex( c => c.id == candidate.id );
+    candidates[`${room}`][i].votes++;
+
+    io.of('/rooms').in(socket.room).emit('update vote count', candidates[`${room}`]);
+  })
+
+  socket.on('user voted down', (candidate) => {
+    let room = socket.room; 
+
+    let i = candidates[`${room}`].findIndex( c => c.id == candidate.id );
+    candidates[`${room}`][i].votes--;
+
+    io.of('/rooms').in(socket.room).emit('update vote count', candidates[`${room}`]);
   })
 
   socket.on('disconnect', () => {
     let room = socket.room;
-    console.log(`room: ${room}`);
     socket.leave(room);
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
       io.of('/rooms').in(room).emit('user left room', clients);
+      console.log(`${clients.length} clients after disconnect.`)
+      if (clients.length < 1){
+        // Can delete queue if nobody in room
+        // Probably best to keep queue there until room is deleted
+        // Keeping for now for easy dev testing
+        delete candidates[`${room}`];
+      }
     });
   })
 })

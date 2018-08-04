@@ -29,7 +29,6 @@ exports.index = function(req, res) {
   });
 }
 
-
 /* GET create room */
 exports.room_create_get = function(req, res){
   res.render('room_form', { title: 'Create Room' });
@@ -40,6 +39,7 @@ exports.room_create_post = [
   body('title', 'Title is required').isLength({ min: 1 }).trim(),
   sanitizeBody('title').trim().escape(),
   (req, res) => {
+    const contype = req.headers['content-type'];
     const errors = validationResult(req);
 
     /* There were validation errors */

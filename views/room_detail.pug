@@ -1,63 +1,82 @@
 extends layout
 
 block content
-  h1 Welcome to Room: #[span#room-key #{room.key}]
+  h1 Welcome to #[span#room-title #{room.title}]: #[span#room-key #{room.key}]
   p There are #[span#num-users 0] users in rooms
   ul#connected-users
 
+  ul#song-suggestion-list
+
+  div#play-controls
+    button#play Play Song
+    button#toggle-play Toggle Play
+    button#skip-track Skip Track &gt;
+
+  div#queue-container
+    h2 Song Queue
+    ul#queue
+  div.input-group
+    label(for='name') Search for a song
+    input(id= 'song-search', name='name', type='string', placeholder='Enter track name', autocomplete='off').form-control
+
+    input(name="roomId", type="hidden", value=`${room.id}`)
+
+  div.potential-suggestion
+  div#search-results-container
+
   //- form(method="post", action=`/candidate/new`)
-  form(method="post", action= room.getUrl() + '/candidate/save')
-    //- div.form-group
-    //-   label(for="uri") Song Id
-    //-   input(name="uri", type="string", placeholder="Enter a track URI").form-control
-    //-   small#songid-help.form-text.text-muted This is for development for now
+  //- form(method="post", action= room.getUrl() + '/candidate/save')
+  //-   div.form-group
+  //-     label(for="uri") Song Id
+  //-     input(name="uri", type="string", placeholder="Enter a track URI").form-control
+  //-     small#songid-help.form-text.text-muted This is for development for now
 
-    div.form-group
-      label(for="userId") User Id
-      input(name="userId", type="int", placeholder="Enter an ID (Number)").form-control
-      small#songid-help.form-text.text-muted This is for development
+  //-   div.form-group
+  //-     label(for="userId") User Id
+  //-     input(name="userId", type="int", placeholder="Enter an ID (Number)").form-control
+  //-     small#songid-help.form-text.text-muted This is for development
       
-    div.form-group
-      label(for="name") Song name
-      input(name="name", type="string", placeholder="Enter track name").form-control
-      small#songid-help.form-text.text-muted This is for development for now
+  //-   div.form-group
+  //-     label(for="name") Song name
+  //-     input(name="name", type="string", placeholder="Enter track name").form-control
+  //-     small#songid-help.form-text.text-muted This is for development for now
 
-    div.form-group
-      label(for="artist") Artist
-      input(name="artist", type="string", placeholder="Enter track artist").form-control
-      small#songid-help.form-text.text-muted This is for development
+  //-   div.form-group
+  //-     label(for="artist") Artist
+  //-     input(name="artist", type="string", placeholder="Enter track artist").form-control
+  //-     small#songid-help.form-text.text-muted This is for development
   
-    div.form-group
-      label(for="preview") Preview URL
-      input(name="preview", type="string", placeholder="Enter preview url").form-control
-      small#songid-help.form-text.text-muted This is for development for now
+  //-   div.form-group
+  //-     label(for="preview") Preview URL
+  //-     input(name="preview", type="string", placeholder="Enter preview url").form-control
+  //-     small#songid-help.form-text.text-muted This is for development for now
 
-    div.form-group
-      label(for="album_name") Album name
-      input(name="album_name", type="string", placeholder="Enter album name").form-control
-      small#songid-help.form-text.text-muted This is for development
+  //-   div.form-group
+  //-     label(for="album_name") Album name
+  //-     input(name="album_name", type="string", placeholder="Enter album name").form-control
+  //-     small#songid-help.form-text.text-muted This is for development
 
-    div.form-group
-      label(for="album_image") Album image url
-      input(name="album_image", type="string", placeholder="Enter album image url").form-control
-      small#songid-help.form-text.text-muted This is for development
+  //-   div.form-group
+  //-     label(for="album_image") Album image url
+  //-     input(name="album_image", type="string", placeholder="Enter album image url").form-control
+  //-     small#songid-help.form-text.text-muted This is for development
       
-    //- test out realtime voting saving
+  //-   //- test out realtime voting saving
 
-    div.form-group
-      label(for="uri") Song uri
-      input(name="uri", type="string", placeholder="Enter song uri").form-control
-      small#songid-help.form-text.text-muted This is for development
+  //-   div.form-group
+  //-     label(for="uri") Song uri
+  //-     input(name="uri", type="string", placeholder="Enter song uri").form-control
+  //-     small#songid-help.form-text.text-muted This is for development
       
-    div.form-group
-      label(for="vote_count") Vote count
-      input(name="vote_count", type="number", placeholder="Enter vote_count").form-control
-      small#songid-help.form-text.text-muted vote_count will get in real time
+  //-   div.form-group
+  //-     label(for="vote_count") Vote count
+  //-     input(name="vote_count", type="number", placeholder="Enter vote_count").form-control
+  //-     small#songid-help.form-text.text-muted vote_count will get in real time
       
       
     
-    input(name="RoomId", type="hidden", value=`${room.id}`)
-    button(type="submit").btn.btn-primary Suggest A Song
+  //-   input(name="RoomId", type="hidden", value=`${room.id}`)
+  //-   button(type="submit").btn.btn-primary Suggest A Song
 
   //- if (candidates)
   //-   h2 Song Suggestions

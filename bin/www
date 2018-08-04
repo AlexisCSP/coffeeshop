@@ -40,27 +40,61 @@ io.of('/rooms').on('connection', (socket) => {
     if (!candidates.hasOwnProperty(`${room}`)) { candidates[`${room}`] = [] };
     candidates[`${room}`].push(candidate);
 
-    console.log(`Candidates obj: ${candidates[`${room}`]}, type: `+typeof candidates[`${room}`]);
+    console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
 
-    io.of('/rooms').in(socket.room).emit('update room queue', candidates[`${room}`]);
+    io.of('/rooms').in(room).emit('update room queue', candidates[`${room}`]);
   });
 
   socket.on('user voted up', (candidate) => {
     let room = socket.room; 
+    let queue = candidates[`${room}`];
 
-    let i = candidates[`${room}`].findIndex( c => c.id == candidate.id );
-    candidates[`${room}`][i].votes++;
+    let i = queue.findIndex( c => c.id == candidate.id );
+    queue[i].votes++;
 
-    io.of('/rooms').in(socket.room).emit('update vote count', candidates[`${room}`]);
+    io.of('/rooms').in(room).emit('update vote count', candidates[`${room}`]);
   })
 
   socket.on('user voted down', (candidate) => {
     let room = socket.room; 
+    let queue = candidates[`${room}`];
 
-    let i = candidates[`${room}`].findIndex( c => c.id == candidate.id );
-    candidates[`${room}`][i].votes--;
+    let i = queue.findIndex( c => c.id == candidate.id );
+    queue[i].votes--;
 
-    io.of('/rooms').in(socket.room).emit('update vote count', candidates[`${room}`]);
+    io.of('/rooms').in(room).emit('update vote count', candidates[`${room}`]);
+  })
+
+  socket.on('request to play', () => {
+    let room = socket.room; 
+
+    let uri = '';
+    let queue = candidates[`${room}`];
+    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
+      uri = candidates[`${room}`][0].uri;
+
+      io.of('/rooms').in(room).emit('play song', uri);
+    }
+    else{
+      console.log('No song in queue to play');
+    }
+  })
+
+  socket.on('play next song', () => {
+    let room = socket.room; 
+
+    let uri = '';
+    let queue = candidates[`${room}`];
+    let finishedSong = queue.shift();
+    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
+      uri = queue[0].uri;
+
+      socket.emit('play song', uri);
+      socket.emit('update room queue', queue);
+    }
+    else{
+      console.log('No song in queue to play');
+    }
   })
 
   socket.on('disconnect', () => {
@@ -79,7 +113,6 @@ io.of('/rooms').on('connection', (socket) => {
     });
   })
 })
-
 
 /* Normalize a port into a number, string, or false. */
 function normalizePort(val) {

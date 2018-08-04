@@ -27,46 +27,42 @@ async function checkSelectedPlayer (sdk) {
 (async () => {
   const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
   const token = access_token;
-  const sdk = new Player({
+  const player = new Player({
     name: "Coffee Shop",
     getOAuthToken: callback => { callback(token); }
   });
 
   // Error handling
-  sdk.addListener('initialization_error', ({ message }) => { console.error(message); });
-  sdk.addListener('authentication_error', ({ message }) => { console.error(message); });
-  sdk.addListener('account_error', ({ message }) => { console.error(message); });
-  sdk.addListener('playback_error', ({ message }) => { console.error(message); });
+  player.addListener('initialization_error', ({ message }) => { console.error(message); });
+  player.addListener('authentication_error', ({ message }) => { console.error(message); });
+  player.addListener('account_error', ({ message }) => { console.error(message); });
+  player.addListener('playback_error', ({ message }) => { console.error(message); });
 
-  sdk.on("player_state_changed", state => {
+  player.on("player_state_changed", state => {
     // Update UI with playback state changes
-    if (sdk.state && !sdk.state.paused && state && state.paused && state.position === 0) {
+    if (player.state && !player.state.paused && state && state.paused && state.position === 0) {
       console.log('Track ended');
-      dequeue(room_id).then(() => {
-        play();
-      });
-      // TODO: send message through socket about dequeue
+      socket.emit('play next song');
     }
-    sdk.state = state;
+    player.state = state;
   });
 
-
   // Ready
-  sdk.addListener('ready', ({ device_id }) => {
+  player.addListener('ready', ({ device_id }) => {
     console.log('Ready with Device ID', device_id);
     transferPlayback(device_id);
   });
 
   // Not Ready
-  sdk.addListener('not_ready', ({ device_id }) => {
+  player.addListener('not_ready', ({ device_id }) => {
     console.log('Device ID has gone offline', device_id);
   });
 
-  let connected = await sdk.connect();
+  let connected = await player.connect();
   if (connected) {
-    let state = await checkSelectedPlayer(sdk);
-    await sdk.resume();
-    await sdk.setVolume(0.5);
+    let state = await checkSelectedPlayer(player);
+    await player.resume();
+    await player.setVolume(0.5);
     let {
       id,
       uri: track_uri,
@@ -81,18 +77,19 @@ async function checkSelectedPlayer (sdk) {
     } = state.track_window.current_track;
     console.log(`You're listening to ${track_name} by ${artists[0].name}!`);
 
-    let togglePlayButton = document.getElementById('togglePlay');
+    let togglePlayButton = document.getElementById('toggle-play');
     togglePlayButton.onclick = async function() { 
-      await sdk.togglePlay().then(() => {
+      await player.togglePlay().then(() => {
         console.log("Playback toggled!");
       });
     }
 
-    let skipTrackButton = document.getElementById('skipTrack');
+    let skipTrackButton = document.getElementById('skip-track');
     skipTrackButton.onclick = async function() { 
-      await sdk.nextTrack().then(() => {
-        console.log('Set to next track!');
-      });
+      socket.emit('play next song');
+      console.log('Set to next track!');
+      // await player.nextTrack().then(() => {
+      // });
     }
 
   };
@@ -100,26 +97,24 @@ async function checkSelectedPlayer (sdk) {
 
 // Play a specified track on the Web Playback SDK's device ID
 function play() {
-  console.log("Entering play function");
-  getCandidates(room_id).then((candidates) => {
-    if (candidates.length > 0) {
-      var track = candidates[0].uri;
-      console.log("Playing", track);
-      $.ajax({
-        url: "https://api.spotify.com/v1/me/player/play",
-        type: "PUT",
-        data: '{"uris": ["' + track + '"]}',
-        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
-        success: function(data) { 
-          // console.log(data);
-        }
-       }).then(() => {
-        console.log('Playing music');
-       });
-    } else {
-      console.log('No songs on the queue');
-    }
-  })
+  console.log('Entering play function');
+  socket.emit('request to play', room_id);
+
+  socket.on('play song', (spotify_uri) => {
+    console.log('Playing...', spotify_uri);
+
+    $.ajax({
+      url: 'https://api.spotify.com/v1/me/player/play',
+      type: 'PUT',
+      data: JSON.stringify({ uris: [spotify_uri] }),
+      beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
+      success: () => { 
+        console.log('Successful play request...');
+      }
+    }).then(() => {
+      console.log('Playing music...');
+    });
+  });
 }
 
 function pausePlayback() {
@@ -128,7 +123,7 @@ function pausePlayback() {
    type: "PUT",
    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
    success: function() { 
-     console.log("Playback paused");
+     console.log("Playback paused...");
    }
   });
 }
@@ -142,12 +137,11 @@ function transferPlayback(device_id) {
    data: '{"device_ids": ["' + device_id + '"], "play": false}',
    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + access_token );},
    success: function() { 
-     console.log("Playback transfered");
+     console.log("Playback transfered...");
    }
   });
 }
 
-let playButton = document.getElementById('play');
-playButton.onclick = function() {
-  play(); 
-};
+$('#play').on('click', () => {
+  play();
+})

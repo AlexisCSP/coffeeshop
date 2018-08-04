@@ -160,7 +160,7 @@ exports.spotify_search_get = function (req, res, next) {
                               song: obj.name,
                               uri: obj.uri,
                               url: obj.external_urls.spotify,
-                              track_id: obj.id,
+                              id: obj.id,
                               preview: obj.preview,
                               album_name: obj.album.name,
                               album_image: obj.album.images[0].url

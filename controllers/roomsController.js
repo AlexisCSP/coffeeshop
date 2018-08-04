@@ -2,6 +2,8 @@ const models = require('../models');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const candidateHelper = require('../helpers/candidateHelper');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 /* Generates Room Keys - hard coded at length 4 */
 var keygen = function() {
@@ -177,4 +179,30 @@ exports.room_dequeue_post = (req, res) => {
       });
     }
   });
+}
+
+
+/* get a suggested song list from the database for new created room */
+// Option1: get songs based on the votes through all rooms
+exports.room_candidate_suggestion_get = function(req, res, next) {
+    models.Candidate.findAll({
+      attributes: ['songId', [Sequelize.fn('sum', Sequelize.col('vote_count')), 'total_vote']
+      ],
+      group: ['songId'],
+      order: [[Sequelize.fn('sum', Sequelize.col('vote_count')), 'DESC']],
+      limit: 10, // top ten songs with highest #vote_count
+      raw: true,
+  }).then((candidates) => {
+      console.log(candidates);
+      var songIdArray = candidates.map(function(el) { return el.songId; })
+      models.Song.findAll({
+          where: {
+              id: {
+                  [Op.or]: songIdArray
+              }
+          }
+      }).then((songs) => {
+          res.render('room_song_suggestion', { title: 'Suggestion', song_list: songs });
+      })
+  })
 }

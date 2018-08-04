@@ -27,4 +27,7 @@ router.post('/:id/dequeue', rooms_controller.room_dequeue_post);
 
 router.post('/:id/candidate/save', candidates_controller.candidate_create_post);
 
+// ajax call to return list of suggested songs
+router.get('/:id/suggestion', rooms_controller.room_candidate_suggestion_get);
+
 module.exports = router;

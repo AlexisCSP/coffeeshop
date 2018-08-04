@@ -94,6 +94,8 @@ block content
   //-   button(id="skipTrack" type="button") Skip Song
 
   a.button(href='/rooms') Back to rooms
+  hr
+  a.button(href=room.getUrl() + '/suggestion') Get song suggestion
 
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/rooms.js")

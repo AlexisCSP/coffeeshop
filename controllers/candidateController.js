@@ -127,7 +127,7 @@ exports.downvoteCandidate = [
   }
 ];
 
-// Display Contact create form on POST.
+// function to be called (ajax) to save played song to database
 exports.candidate_create_post = function(req, res, next) {
     // get data for song
     var data = {
@@ -142,6 +142,7 @@ exports.candidate_create_post = function(req, res, next) {
         roomId: req.params.id
     };
 
+    console.log(req.body.uri);
     // find or create a new song
     models.Song.findOrCreate({
         where: { uri: req.body.uri },

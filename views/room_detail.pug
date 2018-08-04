@@ -8,13 +8,13 @@ block content
   //- form(method="post", action=`/candidate/new`)
   form(method="post", action= room.getUrl() + '/candidate/save')
     div.form-group
-      label(for="SongId") Song Id
-      input(name="SongId", type="string", placeholder="Enter a track URI").form-control
+      label(for="uri") Song Id
+      input(name="uri", type="string", placeholder="Enter a track URI").form-control
       small#songid-help.form-text.text-muted This is for development for now
 
     div.form-group
-      label(for="UserId") User Id
-      input(name="UserId", type="int", placeholder="Enter an ID (Number)").form-control
+      label(for="userId") User Id
+      input(name="userId", type="int", placeholder="Enter an ID (Number)").form-control
       small#songid-help.form-text.text-muted This is for development
       
     div.form-group
@@ -59,20 +59,20 @@ block content
     input(name="RoomId", type="hidden", value=`${room.id}`)
     button(type="submit").btn.btn-primary Suggest A Song
 
-  if (candidates)
-    h2 Song Suggestions
-    ol#candidate-list.list-group
-      for candidate in candidates
-        li.candidate.list-group-item
-          p #{candidate.name} / #{candidate.album_name} / #{candidate.artist} - #{candidate.vote_count} Votes
-          form(method="POST", action=`/candidate/upvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
-            button(type="submit").btn.btn-primary=`upvote`
-          form(method="POST", action=`/candidate/downvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
-            button(type="submit").btn.btn-primary=`downvote`
-  div          
-    button(id="play" type="button") Play Audio
-    button(id="togglePlay" type="button") Resume/Pause
-    button(id="skipTrack" type="button") Skip Song
+  //- if (candidates)
+  //-   h2 Song Suggestions
+  //-   ol#candidate-list.list-group
+  //-     for candidate in candidates
+  //-       li.candidate.list-group-item
+  //-         p #{candidate.name} / #{candidate.album_name} / #{candidate.artist} - #{candidate.vote_count} Votes
+  //-         form(method="POST", action=`/candidate/upvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
+  //-           button(type="submit").btn.btn-primary=`upvote`
+  //-         form(method="POST", action=`/candidate/downvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
+  //-           button(type="submit").btn.btn-primary=`downvote`
+  //- div          
+  //-   button(id="play" type="button") Play Audio
+  //-   button(id="togglePlay" type="button") Resume/Pause
+  //-   button(id="skipTrack" type="button") Skip Song
 
   a.button(href='/rooms') Back to rooms
 

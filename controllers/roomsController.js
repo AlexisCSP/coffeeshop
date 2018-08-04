@@ -19,12 +19,13 @@ var keygen = function() {
 exports.index = function(req, res) {
   var contype = req.headers['content-type'];
   models.Room.findAll().then(rooms => {
+    // React
     if (contype == 'application/json') {
       res.json(rooms)
+    // Template
     } else {
       res.render('room_index', { title: 'Room List', rooms: rooms });
     }
-
   });
 }
 
@@ -47,39 +48,48 @@ exports.room_create_post = [
       return;
     }
     else {
-        do{ var roomKey = keygen(); }
-        while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
-        models.Room.findOrCreate({
-            where: {id: req.body.id || 0, key: roomKey},
-            defaults: {
-                id:    req.body.id,
-                key:   roomKey,
-                title: req.body.title,
-            }
-        })
-        .spread(room  => {
-            res.json(room);
-        })
+      let roomKey = '';
+      do{ roomKey = keygen(); }
+      while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
+      models.Room.findOrCreate({
+          where: {id: req.body.id || 0, key: roomKey},
+          defaults: {
+              id:    req.body.id,
+              key:   roomKey,
+              title: req.body.title,
+          }
+      })
+      .spread(room  => {
+        // React
+        if (contype == 'application/json'){
+          res.json(room);
+        // Template
+        } else {
+          res.redirect('/rooms/'+room.id);
+        }
+      })
     }
   }
 ];
 
 /* GET room detail */
 exports.room_detail_get = function(req, res){
-  var contype = req.headers['content-type'];
-  const roomId = req.params.id;
+  const contype = req.headers['content-type'];
+  const roomID = req.params.id;
   Promise.all([
-    models.Room.findById(roomId),
-    candidateHelper.getCandidates(roomId)
+    models.Room.findById(roomID),
+    candidateHelper.getCandidates(roomID)
   ]).then(results => {
     const room = results[0];
     const candidates = results[1];
+    // React
     if (contype == 'application/json') {
       res.json({
         room: room,
         candidates: candidates,
         access_token: req.cookies.access_token
       });
+    // Template
     } else {
       res.render('room_detail', {
         title: 'Room Information',

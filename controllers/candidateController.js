@@ -144,7 +144,7 @@ exports.candidate_create_post = function(req, res, next) {
 
     // find or create a new song
     models.Song.findOrCreate({
-        where: { url: req.body.uri },
+        where: { uri: req.body.uri },
         defaults: data
     }).spread((song, created) => {
         models.Candidate.findOrCreate( {
@@ -153,7 +153,7 @@ exports.candidate_create_post = function(req, res, next) {
             // if candidate exists
             if (created === false) {
                 // update total vote_count
-                new_vote_count  = candidate.vote_count + req.body.vote_count;
+                new_vote_count  = eval(candidate.vote_count) + eval(req.body.vote_count);
                 candidate.update({
                     vote_count: new_vote_count
                 });

@@ -5,7 +5,8 @@ block content
   p There are #[span#num-users 0] users in rooms
   ul#connected-users
 
-  form(method="post", action=`/candidate/new`)
+  //- form(method="post", action=`/candidate/new`)
+  form(method="post", action= room.getUrl() + '/candidate/save')
     div.form-group
       label(for="SongId") Song Id
       input(name="SongId", type="string", placeholder="Enter a track URI").form-control
@@ -40,7 +41,21 @@ block content
       label(for="album_image") Album image url
       input(name="album_image", type="string", placeholder="Enter album image url").form-control
       small#songid-help.form-text.text-muted This is for development
+      
+    //- test out realtime voting saving
 
+    div.form-group
+      label(for="uri") Song uri
+      input(name="uri", type="string", placeholder="Enter song uri").form-control
+      small#songid-help.form-text.text-muted This is for development
+      
+    div.form-group
+      label(for="vote_count") Vote count
+      input(name="vote_count", type="number", placeholder="Enter vote_count").form-control
+      small#songid-help.form-text.text-muted vote_count will get in real time
+      
+      
+    
     input(name="RoomId", type="hidden", value=`${room.id}`)
     button(type="submit").btn.btn-primary Suggest A Song
 

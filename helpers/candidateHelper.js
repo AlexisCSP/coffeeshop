@@ -60,9 +60,25 @@ exports.createNewCandidate = (data) => {
                     });
                 });
             } else {
-                this.commit_vote(data.roomId, song.id, data.userId, "upvote").then( () => {
-                    resolve();
-                });
+                models.Candidate.findOne({
+                    where: {
+                        roomId: data.roomId,
+                        songId: data.songId,
+                    }
+                }).then((candidate) => {
+                    if (candidate !== null) {
+                        this.commit_vote(data.roomId, song.id, data.userId, "upvote").then( () => {
+                            resolve();
+                        });
+                    } else {
+                        models.Room.findById(data.roomId).then((room) => {
+                            song.addRoom(room, { through: { vote_count: 1 } }).then( () => {
+                                resolve();
+                            });
+                        });
+                    }
+                })
+
             }
         });
 

@@ -27,10 +27,10 @@ exports.getCandidates = (roomId) => {
         models.Room.findById(roomId).then((room) => {
             room.getSong().then((songs) => {
                 songs.sort(function(a, b) {
-                    if (a.vote_count == b.vote_count) {
+                    if (a.Candidate.vote_count == b.Candidate.vote_count) {
                         return a.songId > b.songId; // change to timestamp
                     }
-                    return b.vote_count - a.vote_count;
+                    return b.Candidate.vote_count - a.Candidate.vote_count;
                 });
                 resolve(songs);
             });
@@ -55,7 +55,7 @@ exports.createNewCandidate = (data) => {
         }).spread((song, created) => {
             if (created) {
                 models.Room.findById(data.roomId).then((room) => {
-                    song.addRoom(room, { vote_count: 1 }).then( () => {
+                    song.addRoom(room, { through: { vote_count: 1 } }).then( () => {
                         resolve();
                     });
                 });
@@ -77,17 +77,28 @@ exports.commit_vote = (roomId, songId, userId, type) => {
                 roomId: roomId,
                 songId: songId,
             }
-        }).then(candidate => {
+        }).then((candidate) => {
+            console.log(candidate);
             var new_vote_count = candidate.vote_count;
             if (type == "upvote") {
                 new_vote_count += 1;
             } else {
                 new_vote_count -= 1;
             }
-            candidate.update({
-                vote_count: new_vote_count
-            }).then(() => {})
+            models.Candidate.update(
+                { vote_count: new_vote_count },
+                { where: {
+                    roomId: roomId,
+                    songId: songId,
+                }
+            }
+        ).then(() => {
             resolve(candidate);
+        });
+            // candidate.update({
+            //     vote_count: new_vote_count
+            // }).then(() => {})
+
         });
     });
 };

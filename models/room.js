@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   Room.associate = function(models) {
-      Room.belongsToMany(models.Song, { through: 'Candidates', foreignKey: 'roomId', as: 'song' })
+      Room.belongsToMany(models.Song, { through: 'Candidate', foreignKey: 'roomId', as: 'song' })
   };
 
   // define instance methods

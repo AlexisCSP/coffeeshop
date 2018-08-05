@@ -126,7 +126,7 @@ class Room extends Component {
         <Search onSearchItemClick={this.onSearchItemClick}/>
         <ul>
           {this.state.roomData.candidates.map(song =>
-          <li key={song.SongId}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
+          <li key={song.id}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
         </ul>
       </div>
     )

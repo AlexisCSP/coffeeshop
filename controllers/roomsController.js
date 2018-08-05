@@ -33,6 +33,7 @@ exports.index = function(req, res) {
 
 /* GET create room */
 exports.room_create_get = function(req, res){
+    console.log(req.cookies.spotify_id);
     if (req.cookies.spotify_id) {
         res.render('room_form', { title: 'Create Room' });
     } else {

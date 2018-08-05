@@ -19,7 +19,6 @@ module.exports = {
       owner: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       createdAt: {
         allowNull: false,

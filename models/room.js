@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     owner: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
   }, {});
 

@@ -127,40 +127,34 @@ exports.downvoteCandidate = [
   }
 ];
 
-// function to be called (ajax) to save played song to database
-exports.candidate_create_post = function(req, res, next) {
-    // get data for song
+// Display Contact create form on POST.
+exports.candidate_create_post = function(candidate) {
+
     var data = {
-        name: req.body.name,
-        artist: req.body.artist,
-        uri: req.body.uri,
-        preview: req.body.preview,
-        album_name: req.body.album_name,
-        album_image: req.body.album_image,
-        // vote_count: req.body.vote_count,
-        // roomId: req.body.RoomId
-        roomId: req.params.id
+        uri: candidate.uri,
+        name: candidate.song,
+        artist: candidate.artist,
+        album_name: candidate.album_name,
+        album_image: candidate.album_image,
+        room: candidate.room
     };
 
-    console.log(req.body.uri);
     // find or create a new song
     models.Song.findOrCreate({
-        where: { uri: req.body.uri },
+        where: { uri: candidate.uri },
         defaults: data
     }).spread((song, created) => {
         models.Candidate.findOrCreate( {
-            where: { roomId: req.params.id, songId: song.get({ plain: true}).id }, defaults: { vote_count: req.body.vote_count }
-        }).spread((candidate, created) => {
+            where: { roomId: candidate.room, songId: song.get({ plain: true}).id }, defaults: { vote_count: candidate.votes }
+        }).spread((newCandidate, created) => {
             // if candidate exists
             if (created === false) {
                 // update total vote_count
-                new_vote_count  = eval(candidate.vote_count) + eval(req.body.vote_count);
-                candidate.update({
+                new_vote_count  = newCandidate.vote_count + candidate.votes;
+                newCandidate.update({
                     vote_count: new_vote_count
                 });
             }
         })
     })
-
-    res.send('success');
 };

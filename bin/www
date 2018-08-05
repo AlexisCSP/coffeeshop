@@ -3,6 +3,8 @@ var app = require('../app');
 var debug = require('debug')('coffeeshop:server');
 var http = require('http');
 
+const candidates_controller = require('../controllers/candidateController');
+
 /* Get port from environment and store in Express. */
 var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
@@ -24,7 +26,7 @@ io.of('/rooms').on('connection', (socket) => {
   socket.on('join room', (room) => {
     if(socket.room)
       socket.leave(socket.room);
-    
+
     socket.room = room;
     socket.join(room);
     socket.emit('update room queue', candidates[`${room}`])
@@ -36,17 +38,17 @@ io.of('/rooms').on('connection', (socket) => {
   });
 
   socket.on('song suggested', (candidate) => {
-    let room = socket.room; 
+    let room = socket.room;
     if (!candidates.hasOwnProperty(`${room}`)) { candidates[`${room}`] = [] };
     candidates[`${room}`].push(candidate);
 
-    console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
+    // console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
 
     io.of('/rooms').in(room).emit('update room queue', candidates[`${room}`]);
   });
 
   socket.on('user voted up', (candidate) => {
-    let room = socket.room; 
+    let room = socket.room;
     let queue = candidates[`${room}`];
 
     let i = queue.findIndex( c => c.id == candidate.id );
@@ -56,7 +58,7 @@ io.of('/rooms').on('connection', (socket) => {
   })
 
   socket.on('user voted down', (candidate) => {
-    let room = socket.room; 
+    let room = socket.room;
     let queue = candidates[`${room}`];
 
     let i = queue.findIndex( c => c.id == candidate.id );
@@ -66,7 +68,7 @@ io.of('/rooms').on('connection', (socket) => {
   })
 
   socket.on('request to play', () => {
-    let room = socket.room; 
+    let room = socket.room;
 
     let uri = '';
     let queue = candidates[`${room}`];
@@ -81,11 +83,15 @@ io.of('/rooms').on('connection', (socket) => {
   })
 
   socket.on('play next song', () => {
-    let room = socket.room; 
+    let room = socket.room;
 
     let uri = '';
     let queue = candidates[`${room}`];
     let finishedSong = queue.shift();
+    finishedSong['room'] = room;
+
+    candidates_controller.candidate_create_post(finishedSong);
+
     if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
       uri = queue[0].uri;
 

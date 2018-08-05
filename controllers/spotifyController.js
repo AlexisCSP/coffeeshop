@@ -81,7 +81,8 @@ exports.callback = function(req, res) {
 
             // use the access token to access the Spotify Web API
             request.get(options, function(error, response, body) {
-                console.log(body);
+                // console.log(body);
+                console.log(body.id);
             });
 
             res.cookie('access_token', access_token);
@@ -95,7 +96,7 @@ exports.callback = function(req, res) {
 
             // Enable for React redirect
             // res.redirect('http://localhost:3000');
-            
+
             // Enable for Pug redirect
             res.redirect('http://localhost:3001');
         }
@@ -140,7 +141,7 @@ var results = [];
 
 exports.spotify_search_get = function (req, res, next) {
     var contype = req.headers['content-type'];
-   
+
     // Get the type of Query from the User
     var type = 'track';
 

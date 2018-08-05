@@ -130,6 +130,7 @@ class Player extends Component {
         return (
           <div>
             <ProgressBar
+
                 totalTime={this.state.totalTime}
                 currentTime={this.state.currentTime}
                 bufferedTime={this.state.bufferedTime}

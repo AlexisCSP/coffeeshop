@@ -47,6 +47,6 @@ exports.isOwner = function(req, res, next) {
     }).then(function(room) {
         if (req.cookies.spotify_id === room.owner)
             return next();
-        res.redirect("/");
+        res.redirect(`/rooms/${req.params.id}`);
     })
 }

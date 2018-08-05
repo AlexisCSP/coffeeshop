@@ -2,15 +2,24 @@ extends layout
 
 block content
   h1 Welcome to #[span#room-title #{room.title}]: #[span#room-key #{room.key}]
+  p The room owner is #[span#room-owner #{room.owner}]
   p There are #[span#num-users 0] users in rooms
   ul#connected-users
 
   ul#song-suggestion-list
 
+  h2 Now Playing
+  div#now-playing-container
+      div#now-playing
+        img#now-album-image
+        span#now-song Nothing is playing
+        span#now-artist
+        span#now-album-name
+
   div#play-controls
-    button#play Play Song
+    button#play Play Next Song
     button#toggle-play Toggle Play
-    button#skip-track Skip Track &gt;
+    //- button#skip-track Skip Track &gt;
 
   div#queue-container
     h2 Song Queue
@@ -21,77 +30,7 @@ block content
 
     input(name="roomId", type="hidden", value=`${room.id}`)
 
-  div.potential-suggestion
   div#search-results-container
-
-  //- form(method="post", action=`/candidate/new`)
-  //- form(method="post", action= room.getUrl() + '/candidate/save')
-  //-   div.form-group
-  //-     label(for="uri") Song Id
-  //-     input(name="uri", type="string", placeholder="Enter a track URI").form-control
-  //-     small#songid-help.form-text.text-muted This is for development for now
-
-  //-   div.form-group
-  //-     label(for="userId") User Id
-  //-     input(name="userId", type="int", placeholder="Enter an ID (Number)").form-control
-  //-     small#songid-help.form-text.text-muted This is for development
-      
-  //-   div.form-group
-  //-     label(for="name") Song name
-  //-     input(name="name", type="string", placeholder="Enter track name").form-control
-  //-     small#songid-help.form-text.text-muted This is for development for now
-
-  //-   div.form-group
-  //-     label(for="artist") Artist
-  //-     input(name="artist", type="string", placeholder="Enter track artist").form-control
-  //-     small#songid-help.form-text.text-muted This is for development
-  
-  //-   div.form-group
-  //-     label(for="preview") Preview URL
-  //-     input(name="preview", type="string", placeholder="Enter preview url").form-control
-  //-     small#songid-help.form-text.text-muted This is for development for now
-
-  //-   div.form-group
-  //-     label(for="album_name") Album name
-  //-     input(name="album_name", type="string", placeholder="Enter album name").form-control
-  //-     small#songid-help.form-text.text-muted This is for development
-
-  //-   div.form-group
-  //-     label(for="album_image") Album image url
-  //-     input(name="album_image", type="string", placeholder="Enter album image url").form-control
-  //-     small#songid-help.form-text.text-muted This is for development
-      
-  //-   //- test out realtime voting saving
-
-  //-   div.form-group
-  //-     label(for="uri") Song uri
-  //-     input(name="uri", type="string", placeholder="Enter song uri").form-control
-  //-     small#songid-help.form-text.text-muted This is for development
-      
-  //-   div.form-group
-  //-     label(for="vote_count") Vote count
-  //-     input(name="vote_count", type="number", placeholder="Enter vote_count").form-control
-  //-     small#songid-help.form-text.text-muted vote_count will get in real time
-      
-      
-    
-  //-   input(name="RoomId", type="hidden", value=`${room.id}`)
-  //-   button(type="submit").btn.btn-primary Suggest A Song
-
-  //- if (candidates)
-  //-   h2 Song Suggestions
-  //-   ol#candidate-list.list-group
-  //-     for candidate in candidates
-  //-       li.candidate.list-group-item
-  //-         p #{candidate.name} / #{candidate.album_name} / #{candidate.artist} - #{candidate.vote_count} Votes
-  //-         form(method="POST", action=`/candidate/upvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
-  //-           button(type="submit").btn.btn-primary=`upvote`
-  //-         form(method="POST", action=`/candidate/downvote?UserId=null&RoomId=${room.id}&SongId=${candidate.SongId}`)
-  //-           button(type="submit").btn.btn-primary=`downvote`
-  //- div          
-  //-   button(id="play" type="button") Play Audio
-  //-   button(id="togglePlay" type="button") Resume/Pause
-  //-   button(id="skipTrack" type="button") Skip Song
 
   a.button(href='/rooms') Back to rooms
   hr

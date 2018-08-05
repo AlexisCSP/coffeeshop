@@ -53,12 +53,14 @@ exports.room_create_post = [
       let roomKey = '';
       do{ roomKey = keygen(); }
       while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
+      console.log(req.cookies.spotify_id);
       models.Room.findOrCreate({
           where: {id: req.body.id || 0, key: roomKey},
           defaults: {
               id:    req.body.id,
               key:   roomKey,
               title: req.body.title,
+              owner: req.cookies.spotify_id,
           }
       })
       .spread(room  => {

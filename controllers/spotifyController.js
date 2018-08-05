@@ -72,7 +72,6 @@ exports.callback = function(req, res) {
         if (!error && response.statusCode === 200) {
             var access_token = body.access_token;
             var refresh_token = body.refresh_token;
-
             var options = {
                 url: 'https://api.spotify.com/v1/me',
                 headers: { 'Authorization': 'Bearer ' + access_token },
@@ -80,13 +79,14 @@ exports.callback = function(req, res) {
             };
 
             // use the access token to access the Spotify Web API
-            request.get(options, function(error, response, body) {
-                // console.log(body);
-                console.log(body.id);
-            });
 
             res.cookie('access_token', access_token);
             res.cookie('refresh_token', refresh_token);
+
+            request.get(options, function(error, response, body) {
+                res.cookie('spotify_id', body.id);
+                res.redirect('http://localhost:3001');
+            });
             // we can also pass the token to the browser to make requests from there
             // res.redirect('/#' +
             // querystring.stringify({
@@ -96,9 +96,7 @@ exports.callback = function(req, res) {
 
             // Enable for React redirect
             // res.redirect('http://localhost:3000');
-
             // Enable for Pug redirect
-            res.redirect('http://localhost:3001');
         }
         else {
             res.redirect('/#' +

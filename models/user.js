@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         spotify_id: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
             unique: true,
         }
     });

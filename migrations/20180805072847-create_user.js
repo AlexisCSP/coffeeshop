@@ -13,17 +13,6 @@ module.exports = {
           allowNull: false,
           unique: true,
       },
-      owner: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          unique: true,
-          references: {
-              model: 'Rooms',
-              key: 'owner'
-          },
-          onUpdate: 'cascade',
-          onDelete: 'cascade'
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

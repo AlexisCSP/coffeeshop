@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.associate = function(models) {
-        User.hasMany(models.Room, { foreignKey: 'owner', sourceKey: 'spotify_id' })
+        
     };
 
     return User;

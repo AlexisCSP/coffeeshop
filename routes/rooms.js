@@ -3,7 +3,6 @@ var router = express.Router();
 
 const rooms_controller = require('../controllers/roomsController');
 const candidates_controller = require('../controllers/candidateController');
-const candidates_router = require('./candidate');
 
 router.get('/', rooms_controller.index);
 

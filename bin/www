@@ -3,6 +3,8 @@ var app = require('../app');
 var debug = require('debug')('coffeeshop:server');
 var http = require('http');
 
+const candidates_controller = require('../controllers/candidateController');
+
 /* Get port from environment and store in Express. */
 var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
@@ -40,7 +42,7 @@ io.of('/rooms').on('connection', (socket) => {
     if (!candidates.hasOwnProperty(`${room}`)) { candidates[`${room}`] = [] };
     candidates[`${room}`].push(candidate);
 
-    console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
+    // console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
 
     io.of('/rooms').in(room).emit('update room queue', candidates[`${room}`]);
   });
@@ -86,6 +88,10 @@ io.of('/rooms').on('connection', (socket) => {
     let uri = '';
     let queue = candidates[`${room}`];
     let finishedSong = queue.shift();
+    finishedSong['room'] = room;
+
+    candidates_controller.candidate_create_post(finishedSong);
+
     if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
       uri = queue[0].uri;
 

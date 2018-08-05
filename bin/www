@@ -26,7 +26,7 @@ io.of('/rooms').on('connection', (socket) => {
   socket.on('join room', (room) => {
     if(socket.room)
       socket.leave(socket.room);
-    
+
     socket.room = room;
     socket.join(room);
     socket.emit('update room queue', candidates[`${room}`])
@@ -38,7 +38,7 @@ io.of('/rooms').on('connection', (socket) => {
   });
 
   socket.on('song suggested', (candidate) => {
-    let room = socket.room; 
+    let room = socket.room;
     if (!candidates.hasOwnProperty(`${room}`)) { candidates[`${room}`] = [] };
     candidates[`${room}`].push(candidate);
 
@@ -48,7 +48,7 @@ io.of('/rooms').on('connection', (socket) => {
   });
 
   socket.on('user voted up', (candidate) => {
-    let room = socket.room; 
+    let room = socket.room;
     let queue = candidates[`${room}`];
 
     let i = queue.findIndex( c => c.id == candidate.id );
@@ -58,7 +58,7 @@ io.of('/rooms').on('connection', (socket) => {
   })
 
   socket.on('user voted down', (candidate) => {
-    let room = socket.room; 
+    let room = socket.room;
     let queue = candidates[`${room}`];
 
     let i = queue.findIndex( c => c.id == candidate.id );
@@ -68,7 +68,7 @@ io.of('/rooms').on('connection', (socket) => {
   })
 
   socket.on('request to play', () => {
-    let room = socket.room; 
+    let room = socket.room;
 
     let uri = '';
     let queue = candidates[`${room}`];
@@ -83,7 +83,7 @@ io.of('/rooms').on('connection', (socket) => {
   })
 
   socket.on('play next song', () => {
-    let room = socket.room; 
+    let room = socket.room;
 
     let uri = '';
     let queue = candidates[`${room}`];

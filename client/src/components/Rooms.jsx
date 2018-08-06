@@ -29,7 +29,7 @@ class Rooms extends Component {
             <Route
               key={index}
               path={"/rooms/" + room.id}
-              component={() => <Room id={room.id}/>} />
+              component={() => <Room id={room.id} isLoggedIn={this.props.isLoggedIn}/>} />
             ))}
           </div>
         </div>

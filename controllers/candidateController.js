@@ -47,6 +47,7 @@ exports.createNewCandidate = [
         var data = {
             name: req.body.name,
             artist: req.body.artist,
+            duration_ms: req.body.duration_ms,
             uri: req.body.uri,
             preview: req.body.preview,
             album_name: req.body.album_name,

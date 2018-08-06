@@ -19,8 +19,8 @@ class Player extends Component {
             bufferedTime: 0,
             isSeekable: true,
             hasNext: false,
-            first_playback: true
         };
+        window.first_playback = true
     }
 
     tick() {
@@ -30,6 +30,7 @@ class Player extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        window.first_playback = true
         this.setState({ candidates: nextProps.candidates });
         var candidates = nextProps.candidates;
         if (candidates.length > 1) {
@@ -49,9 +50,9 @@ class Player extends Component {
     play() {
         if (this.state.candidates.length > 0) {
             // not working, always start from beginning
-            if (this.state.first_playback) {
+            if (window.first_playback) {
                 spotifyApi.play({uris: [this.state.candidates[0].uri]});
-                this.setState({ first_playback: false });
+                window.first_playback = false
             } else {
                 console.log("here");
                 spotifyApi.play({});
@@ -201,7 +202,7 @@ class Player extends Component {
             <TimeMarker
                 totalTime={this.state.totalTime}
                 currentTime={this.state.currentTime}
-                markerSeparator={this.state.markerSeparator="/"}
+                markerSeparator= "/"
             />
             <PlaybackControls
                 isPlayable={this.state.isPlayable}

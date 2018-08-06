@@ -30,7 +30,6 @@ class Player extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        window.first_playback = true
         this.setState({ candidates: nextProps.candidates });
         var candidates = nextProps.candidates;
         if (candidates.length > 1) {
@@ -52,6 +51,7 @@ class Player extends Component {
             // not working, always start from beginning
             if (window.first_playback) {
                 spotifyApi.play({uris: [this.state.candidates[0].uri]});
+                this.dequeue();
                 window.first_playback = false
             } else {
                 console.log("here");
@@ -67,6 +67,8 @@ class Player extends Component {
     }
 
     next() {
+        this.pause();
+        setTimeout(function() { }, 500);
         clearInterval(this.interval);
         this.setState({currentTime: 0});
         window.first_playback = true;
@@ -87,7 +89,6 @@ class Player extends Component {
              // handle error
         }).then(() => {
             this.props.fetchCandidates();
-            this.next();
         })
     }
 
@@ -150,8 +151,7 @@ class Player extends Component {
         // Update UI with playback state changes
         if (player.state && !player.state.paused && state && state.paused && state.position === 0) {
           console.log('Track ended');
-          this.dequeue();
-          //this.next();
+          this.next();
         }
         player.state = state;
       });
@@ -222,8 +222,7 @@ class Player extends Component {
                 }}
                 onPrevious={() => alert('Go to previous')}
                 onNext={() => {
-                    this.dequeue();
-                    //this.next();
+                    this.next();
                 }}
             />
             <MuteToggleButton

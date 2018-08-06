@@ -28,7 +28,7 @@ class Room extends Component {
   }
 
   fetchRoomData() {
-    fetch('/rooms/' + this.props.id, {
+    fetch('http://localhost:3001/rooms/' + this.props.id, {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -43,7 +43,7 @@ class Room extends Component {
   }
 
   fetchCandidatesData() {
-    fetch('/rooms/' + this.props.id + '/candidates', {
+    fetch('http://localhost:3001/rooms/' + this.props.id + '/candidates', {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -62,7 +62,7 @@ class Room extends Component {
   }
 
   onUpvoteClick(songId) {
-    fetch('/candidate/upvote', {
+    fetch('http://localhost:3001/candidate/upvote', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -79,7 +79,7 @@ class Room extends Component {
     }
 
   onDownvoteClick(songId) {
-    fetch('/candidate/downvote', {
+    fetch('http://localhost:3001/candidate/downvote', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -97,7 +97,7 @@ class Room extends Component {
   }
 
   onSearchItemClick(song) {
-    fetch('/candidate/new', {
+    fetch('http://localhost:3001/candidate/new', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

@@ -17,7 +17,7 @@ class NewRoomModal extends Component {
   }
 
   handleSubmit(event) {
-    fetch('/rooms/create', {
+    fetch('http://localhost:3001/rooms/create', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

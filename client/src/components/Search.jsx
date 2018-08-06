@@ -33,7 +33,7 @@ class Search extends Component {
   retrieveDataAsynchronously(searchText){
       let _this = this;
 
-      let url = `/spotify/search/` + searchText;
+      let url = `http://localhost:3001/spotify/search/` + searchText;
 
       let xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);

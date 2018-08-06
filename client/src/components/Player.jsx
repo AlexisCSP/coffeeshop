@@ -81,7 +81,7 @@ class Player extends Component {
     }
 
     dequeue() {
-        fetch('/rooms/' + this.props.id + '/dequeue', {
+        fetch('http://localhost:3001/rooms/' + this.props.id + '/dequeue', {
           method: 'POST',
           headers: {
            'Accept': 'application/json',
@@ -234,7 +234,7 @@ class Player extends Component {
                 isMuted={this.state.isMuted}
                 onMuteChange={isMuted => {
                     if (this.state.isMuted) {
-                        spotifyApi.setVolume(100*this.state.volume, {});
+                        spotifyApi.setVolume(Math.round(100*this.state.volume), {});
                     } else {
                         spotifyApi.setVolume(0, {});
                     }

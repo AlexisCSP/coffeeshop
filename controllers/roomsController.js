@@ -92,8 +92,6 @@ exports.room_detail_get = function(req, res){
         room: room,
         candidates: candidates,
         access_token: req.cookies.access_token,
-        latitude: latitude,
-        longitude: longitude
       });
     // Template
     } else {
@@ -102,8 +100,6 @@ exports.room_detail_get = function(req, res){
         room: room,
         candidates: candidates,
         access_token: req.cookies.access_token,
-        latitude: latitude,
-        longitude: longitude
       });
     }
   });

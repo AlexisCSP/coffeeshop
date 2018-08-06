@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     owner: {
       type: DataTypes.STRING,
-      // allowNull: false, // TODO: enable later
+      allowNull: false,
     },
   }, {});
 

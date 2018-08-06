@@ -4,9 +4,9 @@ module.exports = {
     return queryInterface.createTable('Songs', {
       id: {
         allowNull: false,
-        autoIncrement: true,
+        // autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       name: Sequelize.STRING,
       artist: Sequelize.STRING,

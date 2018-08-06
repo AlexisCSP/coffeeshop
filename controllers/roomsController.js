@@ -33,7 +33,12 @@ exports.index = function(req, res) {
 
 /* GET create room */
 exports.room_create_get = function(req, res){
-  res.render('room_form', { title: 'Create Room' });
+    console.log(req.cookies.spotify_id);
+    if (req.cookies.spotify_id) {
+        res.render('room_form', { title: 'Create Room' });
+    } else {
+        res.redirect("/");
+    }
 }
 
 /* POST create room */
@@ -53,12 +58,14 @@ exports.room_create_post = [
       let roomKey = '';
       do{ roomKey = keygen(); }
       while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
+      console.log(req.cookies.spotify_id);
       models.Room.findOrCreate({
           where: {id: req.body.id || 0, key: roomKey},
           defaults: {
               id:    req.body.id,
               key:   roomKey,
               title: req.body.title,
+              owner: req.cookies.spotify_id,
           }
       })
       .spread(room  => {
@@ -106,7 +113,9 @@ exports.room_detail_get = function(req, res){
 /* GET room edit */
 exports.room_update_get = function(req, res){
     models.Room.findById(req.params.id).then(function(room) {
-      res.render('room_form', { title: 'Edit Room', room: room });
+        if (req.cookies.spotify_id === room.owner) {
+            res.render('room_form', { title: 'Edit Room', room: room });
+        }
     }).catch(function (err) {
       return next(err);
     })

@@ -5,6 +5,8 @@ const request = require('request');
 const querystring = require('querystring');
 const Spotify = require('node-spotify-api');
 const keys = require('../routes/keys');
+const models = require('../models');
+
 
 /* API Credentials */
 var client_id = 'c086167c88da4af6a09abe8244133a5b';
@@ -72,7 +74,6 @@ exports.callback = function(req, res) {
         if (!error && response.statusCode === 200) {
             var access_token = body.access_token;
             var refresh_token = body.refresh_token;
-
             var options = {
                 url: 'https://api.spotify.com/v1/me',
                 headers: { 'Authorization': 'Bearer ' + access_token },
@@ -80,12 +81,18 @@ exports.callback = function(req, res) {
             };
 
             // use the access token to access the Spotify Web API
-            request.get(options, function(error, response, body) {
-                console.log(body);
-            });
 
             res.cookie('access_token', access_token);
             res.cookie('refresh_token', refresh_token);
+
+            request.get(options, function(error, response, body) {
+                res.cookie('spotify_id', body.id);
+                // create a new user with spotify_id
+                models.User.findOrCreate({
+                    where: { spotify_id: body.id },
+                });
+                res.redirect('http://localhost:3001');
+            });
             // we can also pass the token to the browser to make requests from there
             // res.redirect('/#' +
             // querystring.stringify({

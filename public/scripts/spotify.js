@@ -84,22 +84,20 @@ async function checkSelectedPlayer (sdk) {
       });
     }
 
-    let skipTrackButton = document.getElementById('skip-track');
-    skipTrackButton.onclick = async function() { 
-      socket.emit('play next song');
-      console.log('Set to next track!');
-      // await player.nextTrack().then(() => {
-      // });
-    }
+    // let skipTrackButton = document.getElementById('skip-track');
+    // skipTrackButton.onclick = async function() { 
+    //   socket.emit('play next song');
+    //   console.log('Set to next track!');
+    //   // await player.nextTrack().then(() => {
+    //   // });
+    // }
 
   };
 })();
 
 // Play a specified track on the Web Playback SDK's device ID
 function play() {
-  console.log('Entering play function');
-  socket.emit('request to play', room_id);
-
+  socket.emit('play next song', room_id);
   socket.on('play song', (spotify_uri) => {
     console.log('Playing...', spotify_uri);
 

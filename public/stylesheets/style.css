@@ -40,3 +40,11 @@ a {
   width:200px;
   height:100px;
 }
+
+#now-album-image{
+  height: 80px;
+}
+
+#now-playing-container{
+  background-color: #e0e0e0;
+}

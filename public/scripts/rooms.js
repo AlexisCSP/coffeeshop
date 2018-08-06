@@ -77,14 +77,65 @@ $(function() {
       })
     }
   });
-
+  
+  
+  // Temp event listener that send selected song suggestion to queue 
+  // and emits across sockets
+  $(document).on('click', '.potential-suggestion', (e) => {
+    // Temp DOM maintenence for testing
+    $('#song-search').blur();
+    $('#song-search').val('');
+    $('#search-results-container').empty();
+    
+    // Construct candidate JS object and emit
+    let candidate = {}
+    candidate.id = e.target.closest('button.potential-suggestion').id;
+    candidate.uri = $(e.currentTarget).children('input#uri').val();
+    candidate.song = $(e.currentTarget).children('span#song').text();
+    candidate.artist = $(e.currentTarget).children('span#artist').text();
+    candidate.album_name = $(e.currentTarget).children('span#album-name').text();
+    candidate.album_image = $(e.currentTarget).children('img#album-image').attr('src');
+    candidate.votes = 0;
+    
+    console.log(`Suggesting: ${JSON.stringify(candidate)}`);
+    
+    socket.emit('song suggested', candidate);
+  })
+  
+  // Temp event listener that listens for vote up
+  // and emits across sockets
+  $(document).on('click', '.vote-up', (e) => {
+    // Construct candidate JS object and emit
+    let candidate = {}
+    candidate.id = e.target.id;
+    
+    socket.emit('user voted up', candidate);
+  })
+  
+  // Temp event listener that listens for vote down
+  // and emits across sockets
+  $(document).on('click', '.vote-down', (e) => {
+    // Construct candidate JS object and emit
+    let candidate = {}
+    candidate.id = e.target.id;
+    
+    socket.emit('user voted down', candidate);
+  })
+  
   // data is array of candidate OBJs
   socket.on('update vote count', (data) => {
     data.forEach( (obj) => {
-      $(`input#${obj.id}`).attr('value', obj.votes);
+      $(`#${obj.id}.vote-count`).attr('value', `${obj.votes}`);
     })
   });
   
+  socket.on('update now playing', (song) => {
+    $('#now-album-image').attr('src', song.album_image);
+    $('#now-song').text(`${song.song} - `);
+    $('#now-artist').text(song.artist);
+    // $('#now-album-name').text(song.album_name);
+  })
+
   // Real-time debounced search - makes async calls to Spotify API via /spotify/search
   $('#song-search').on('keyup', debounce(function(){
     let container = $('#search-results-container');
@@ -117,47 +168,4 @@ $(function() {
       }
     })
   }, 175));
-  
-  // Temp event listener that send selected song suggestion to queue 
-  // and emits across sockets
-  $(document).on('click', '.potential-suggestion', (e) => {
-    // Temp DOM maintenence for testing
-    $('#song-search').blur();
-    $('#song-search').val('');
-    $('#search-results-container').empty();
-    
-    // Construct candidate JS object and emit
-    let candidate = {}
-    candidate.id = e.target.closest('button.potential-suggestion').id;
-    candidate.uri = $(e.currentTarget).children('input#uri').val();
-    candidate.song = $(e.currentTarget).children('span#song').text();
-    candidate.artist = $(e.currentTarget).children('span#artist').text();
-    candidate.album_name = $(e.currentTarget).children('span#album-name').text();
-    candidate.album_image = $(e.currentTarget).children('img#album-image').attr('src');
-    candidate.votes = 0;
-
-    console.log(`Suggesting: ${JSON.stringify(candidate)}`);
-
-    socket.emit('song suggested', candidate);
-  })
-
-  // Temp event listener that listens for vote up
-  // and emits across sockets
-  $(document).on('click', '.vote-up', (e) => {
-    // Construct candidate JS object and emit
-    let candidate = {}
-    candidate.id = e.target.id;
-
-    socket.emit('user voted up', candidate);
-  })
-
-  // Temp event listener that listens for vote down
-  // and emits across sockets
-  $(document).on('click', '.vote-down', (e) => {
-    // Construct candidate JS object and emit
-    let candidate = {}
-    candidate.id = e.target.id;
-
-    socket.emit('user voted down', candidate);
-  })
 })

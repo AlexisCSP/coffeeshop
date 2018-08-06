@@ -21,6 +21,8 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 let candidates = {};
+let nowPlaying = {};
+let roomOwners = {};
 /** Socket.IO Functionality **/
 io.of('/rooms').on('connection', (socket) => {
 
@@ -30,8 +32,15 @@ io.of('/rooms').on('connection', (socket) => {
 
     socket.room = room;
     socket.join(room);
-    socket.emit('update room queue', candidates[`${room}`])
 
+    // Set this new room up
+    if (typeof nowPlaying[`${room}`] != 'undefined' && typeof nowPlaying[`${room}`] != 'undefined'){
+      socket.emit('play song', nowPlaying[`${room}`].uri);
+    }
+    socket.emit('update room queue', candidates[`${room}`]);
+    socket.emit('update now playing', nowPlaying[`${room}`]);
+
+    // Tell others in room someone joined
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
       io.of('/rooms').in(room).emit('user joined room', clients);
@@ -40,43 +49,62 @@ io.of('/rooms').on('connection', (socket) => {
 
   socket.on('song suggested', (candidate) => {
     let room = socket.room;
+    if (!candidates.hasOwnProperty(`${room}`)) { 
+      candidates[`${room}`] = [] 
+    };
+    candidates[`${room}`].push(candidate);
 
-    // console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
-
-    io.of('/rooms').in(room).emit('update room queue');
+    io.of('/rooms').in(room).emit('update room queue', candidates[`${room}`]);
   });
 
   socket.on('user voted up', (candidate) => {
     let room = socket.room;
 
-    io.of('/rooms').in(room).emit('update vote count');
+    let i = queue.findIndex( c => c.id == candidate.id );
+    queue[i].votes++;
+
+    // Maintain sorted order by votes
+    queue.sort((a, b) => b.votes - a.votes);
+
+    io.of('/rooms').in(room).emit('update vote count', queue);
+    io.of('/rooms').in(room).emit('update room queue', queue);
   })
 
   socket.on('user voted down', (candidate) => {
     let room = socket.room;
 
-    io.of('/rooms').in(room).emit('update vote count');
-  })
+    let i = queue.findIndex( c => c.id == candidate.id );
+    queue[i].votes--;
 
-  socket.on('request to play', () => {
-    let room = socket.room;
+    // Maintain sorted order by votes
+    queue.sort((a, b) => b.votes - a.votes);
 
-    let uri = '';
-    let queue = candidates[`${room}`];
-    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
-      uri = candidates[`${room}`][0].uri;
-
-      io.of('/rooms').in(room).emit('play song', uri);
-    }
-    else{
-      console.log('No song in queue to play');
-    }
+    io.of('/rooms').in(room).emit('update vote count', queue);
+    io.of('/rooms').in(room).emit('update room queue', queue);
   })
 
   socket.on('play next song', () => {
     let room = socket.room;
+    let queue = candidates[`${room}`];
+    let uri = '';
 
-    io.of('/rooms').in(room).emit('play next song');
+    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
+      if (!nowPlaying.hasOwnProperty(`${room}`)) { 
+        nowPlaying[`${room}`] = {} 
+      };
+      nowPlaying[`${room}`] = queue.shift();
+      uri = nowPlaying[`${room}`].uri;
+      
+      io.of('/rooms').in(room).emit('play song', uri);
+      io.of('/rooms').in(room).emit('update room queue', queue);
+      io.of('/rooms').in(room).emit('update now playing', nowPlaying[`${room}`]);
+
+      nowPlaying[`${room}`]['room'] = room;
+      candidates_controller.candidate_create_post(nowPlaying[`${room}`]);
+    }
+    else{
+      console.log('No song in queue to play');
+    }
   })
 
   socket.on('disconnect', () => {
@@ -85,12 +113,13 @@ io.of('/rooms').on('connection', (socket) => {
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
       io.of('/rooms').in(room).emit('user left room', clients);
-      console.log(`${clients.length} clients after disconnect.`)
+      
       if (clients.length < 1){
         // Can delete queue if nobody in room
         // Probably best to keep queue there until room is deleted
         // Keeping for now for easy dev testing
-        delete candidates[`${room}`];
+        
+        // delete candidates[`${room}`];
       }
     });
   })

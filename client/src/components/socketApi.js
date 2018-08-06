@@ -1,32 +1,41 @@
-import socketIOClient from 'socket.io-client';
-const  socket = socketIOClient('http://localhost:3001:/rooms');
+import io from 'socket.io-client';
+const  socket = io('http://localhost:3001/rooms');
 
-function emitJoinRoom(data) {
-  socket.emit('join room', data)
+function emitJoinRoom() {
+  socket.emit('join room')
 }
 
 function subscribeToSongSuggested(callback) {
-  socket.on('song suggested', () => callback(null));
+  socket.on('update room queue', () => callback(null));
 }
 
 function subscribeToSongUpvoted(callback) {
-  socket.on('user voted up', () => callback(null));
+  socket.on('update vote count', () => callback(null));
 }
 
 function subscribeToSongDownvoted(callback) {
-  socket.on('user voted down', () => callback(null));
+  socket.on('update vote count', () => callback(null));
 }
 
-function emitSongSuggested(data) {
-  socket.emit('song suggested', data)
+function subscribeToPlayNextSong(callback) {
+  socket.on('play next song', () => callback(null));
 }
 
-function emitSongUpvoted(data) {
-  socket.emit('user voted up', data)
+function emitSongSuggested() {
+  socket.emit('song suggested')
 }
 
-function emitSongDownvoted(data) {
-  socket.emit('user voted down', data)
+function emitSongUpvoted() {
+  socket.emit('user voted up')
 }
 
-export { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted };
+function emitSongDownvoted() {
+  socket.emit('user voted down')
+}
+
+function emitPlayNextSong() {
+  socket.emit('play next song')
+}
+
+export { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted,
+  subscribeToPlayNextSong, emitSongSuggested, emitSongUpvoted, emitSongDownvoted, emitPlayNextSong };

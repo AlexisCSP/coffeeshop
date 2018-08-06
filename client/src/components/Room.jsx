@@ -18,9 +18,9 @@ class Room extends Component {
     };
 
     emitJoinRoom(props.id)
-    subscribeToSongSuggested(this.fetchCandidatesData())
-    subscribeToSongUpvoted(this.fetchCandidatesData())
-    subscribeToSongDownvoted(this.fetchCandidatesData())
+    subscribeToSongSuggested(this.fetchCandidatesData)
+    subscribeToSongUpvoted(this.fetchCandidatesData)
+    subscribeToSongDownvoted(this.fetchCandidatesData)
   }
 
   componentDidMount() {
@@ -74,9 +74,7 @@ class Room extends Component {
         userId: 1
       })
     }).then(() => {
-                    emitSongUpvoted({roomId: this.props.id,
-                    songId: songId,
-                    userId: 1});
+                    emitSongUpvoted();
                     this.fetchCandidatesData();})
     }
 
@@ -93,9 +91,7 @@ class Room extends Component {
         userId: 1
       })
     }).then(() => {
-                    emitSongDownvoted({roomId: this.props.id,
-                    songId: songId,
-                    userId: 1});
+                    emitSongDownvoted();
                     this.fetchCandidatesData();})
 
   }
@@ -119,9 +115,7 @@ class Room extends Component {
         album_image: song.album_image
       })
     }).then(() => {
-                    emitSongSuggested({roomId: this.props.id,
-                    songId: song.uri,
-                    userId: 1});
+                    emitSongSuggested();
                     this.fetchCandidatesData();})
   }
 

@@ -5,6 +5,8 @@ import { ControlDirection } from 'react-player-controls/dist/components/RangeCon
 import Script from 'react-load-script'
 import SpotifyWebApi from 'spotify-web-api-js';
 import cookie from 'react-cookies'
+import { subscribeToPlayNextSong, emitPlayNextSong } from './socketApi';
+
 const spotifyApi = new SpotifyWebApi();
 
 class Player extends Component {
@@ -21,6 +23,7 @@ class Player extends Component {
             hasNext: false,
         };
         window.first_playback = true
+        subscribeToPlayNextSong(this.props.fetchCandidates)
     }
 
     tick() {
@@ -89,6 +92,7 @@ class Player extends Component {
              // handle error
         }).then(() => {
             this.props.fetchCandidates();
+            emitPlayNextSong();
         })
     }
 

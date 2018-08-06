@@ -30,19 +30,19 @@ class Player extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ candidates: nextProps.candidates });  
+        this.setState({ candidates: nextProps.candidates });
         var candidates = nextProps.candidates;
         if (candidates.length > 1) {
-            this.setState({ hasNext: true });  
+            this.setState({ hasNext: true });
         } else {
-            this.setState({ hasNext: false });  
+            this.setState({ hasNext: false });
         }
-        if (candidates.length == 0) {
+        if (candidates.length === 0) {
             this.setState({ isPlayable: false });
         } else {
             this.setState({ totalTime: Math.round(candidates[0].duration_ms/1000) });
             this.setState({ bufferedTime: Math.round(candidates[0].duration_ms/1000) });
-            this.setState({ isPlayable: true });  
+            this.setState({ isPlayable: true });
         }
     }
 
@@ -51,7 +51,7 @@ class Player extends Component {
             // not working, always start from beginning
             if (this.state.first_playback) {
                 spotifyApi.play({uris: [this.state.candidates[0].uri]});
-                this.setState({ first_playback: false });  
+                this.setState({ first_playback: false });
             } else {
                 console.log("here");
                 spotifyApi.play({});
@@ -76,18 +76,18 @@ class Player extends Component {
         .catch(error => {
              // handle error
         }).then(() => {
-            this.props.fetchCandidates;
+            this.props.fetchCandidates();
         })
     }
 
     handleScriptCreate() {
         this.setState({ scriptLoaded: false })
     }
-  
+
   handleScriptError() {
     this.setState({ scriptError: true })
   }
-  
+
   handleScriptLoad() {
     this.setState({ scriptLoaded: true })
   }
@@ -246,7 +246,7 @@ class Player extends Component {
                 volume={this.state.volume}
                 onVolumeChange={volume => {
                     spotifyApi.setVolume(Math.round(100*volume), {});
-                    this.setState({ ...this.state, volume }) 
+                    this.setState({ ...this.state, volume })
                 }}
             />
             <Script

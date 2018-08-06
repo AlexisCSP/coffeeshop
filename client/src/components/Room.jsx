@@ -10,6 +10,7 @@ class Room extends Component {
     this.onUpvoteClick = this.onUpvoteClick.bind(this);
     this.onDownvoteClick = this.onDownvoteClick.bind(this);
     this.onSearchItemClick = this.onSearchItemClick.bind(this);
+    this.fetchCandidatesData = this.fetchCandidatesData.bind(this);
 
     this.state = { roomData : {
       candidates: []}

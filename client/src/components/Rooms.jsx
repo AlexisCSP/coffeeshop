@@ -24,6 +24,7 @@ class Rooms extends Component {
   }
 
   withinRange(start, end, radius) {
+    console.log(radius);
     if (end !== null) {
       return haversine({latitude: start.latitude, longitude: start.longitude}, {latitude: end.latitude, longitude: end.longitude}, {unit: 'meter'}) <=radius;
     }

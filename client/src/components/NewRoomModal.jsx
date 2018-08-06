@@ -17,6 +17,12 @@ class NewRoomModal extends Component {
   }
 
   handleSubmit(event) {
+    var latitude = 49.2790657;
+    var longitude = -122.9206087;
+    if (this.props.coords !== null) {
+      latitude = this.props.coords.latitude;
+      longitude = this.props.coords.longitude;
+    }
     fetch('/rooms/create', {
       method: 'POST',
       headers: {
@@ -25,8 +31,8 @@ class NewRoomModal extends Component {
       },
       body: JSON.stringify({
         title: this.state.value,
-        latitude: this.props.coords.latitude,
-        longitude: this.props.coords.longitude,
+        latitude: latitude,
+        longitude: longitude,
       })
     })
     .then(res => res.json())

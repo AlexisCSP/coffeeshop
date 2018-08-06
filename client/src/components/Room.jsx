@@ -3,7 +3,7 @@ import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
 import Player from './Player.jsx'
-import { subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
+import { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
 
 class Room extends Component {
   constructor(props) {
@@ -17,6 +17,7 @@ class Room extends Component {
       candidates: []}
     };
 
+    emitJoinRoom(props.id)
     subscribeToSongSuggested(this.fetchCandidatesData())
     subscribeToSongUpvoted(this.fetchCandidatesData())
     subscribeToSongDownvoted(this.fetchCandidatesData())

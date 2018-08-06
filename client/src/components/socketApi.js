@@ -1,5 +1,9 @@
-import openSocket from 'socket.io-client';
-const  socket = openSocket('http://localhost:3001');
+import socketIOClient from 'socket.io-client';
+const  socket = socketIOClient('http://localhost:3001:/rooms');
+
+function emitJoinRoom(data) {
+  socket.emit('join room', data)
+}
 
 function subscribeToSongSuggested(callback) {
   socket.on('song suggested', () => callback(null));
@@ -25,4 +29,4 @@ function emitSongDownvoted(data) {
   socket.emit('user voted down', data)
 }
 
-export { subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted };
+export { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted };

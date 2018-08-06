@@ -11,20 +11,73 @@ class Player extends Component {
 
     constructor(props) {
         super(props);
-        
-        var next = false;
-        var candidates = this.props.candidates;
-        if (candidates.length > 1) {
-             next = true;
-        }
-        console.log(candidates);
         this.state = {
+            candidates: [],
             volume: 0.5,
             totalTime: 200,
             currentTime: 0,
             bufferedTime: 0,
-            isSeekable: true
+            isSeekable: true,
+            hasNext: false,
+            first_playback: true
         };
+    }
+
+    tick() {
+        this.setState(prevState => ({
+          currentTime: prevState.currentTime + 1
+        }));
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ candidates: nextProps.candidates });  
+        var candidates = nextProps.candidates;
+        if (candidates.length > 1) {
+            this.setState({ hasNext: true });  
+        } else {
+            this.setState({ hasNext: false });  
+        }
+        if (candidates.length == 0) {
+            this.setState({ isPlayable: false });
+        } else {
+            this.setState({ totalTime: Math.round(candidates[0].duration_ms/1000) });
+            this.setState({ bufferedTime: Math.round(candidates[0].duration_ms/1000) });
+            this.setState({ isPlayable: true });  
+        }
+    }
+
+    play() {
+        if (this.state.candidates.length > 0) {
+            // not working, always start from beginning
+            if (this.state.first_playback) {
+                spotifyApi.play({uris: [this.state.candidates[0].uri]});
+                this.setState({ first_playback: false });  
+            } else {
+                console.log("here");
+                spotifyApi.play({});
+            }
+            this.interval = setInterval(() => this.tick(), 1000);
+        }
+    }
+
+    pause() {
+        clearInterval(this.interval);
+        spotifyApi.pause({});
+    }
+
+    dequeue() {
+        fetch('/rooms/' + this.props.id + '/dequeue', {
+          method: 'POST',
+          headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+          }
+        })
+        .catch(error => {
+             // handle error
+        }).then(() => {
+            this.props.fetchCandidates;
+        })
     }
 
     handleScriptCreate() {
@@ -86,6 +139,8 @@ class Player extends Component {
         // Update UI with playback state changes
         if (player.state && !player.state.paused && state && state.paused && state.position === 0) {
           console.log('Track ended');
+          this.dequeue();
+          this.play();
         }
         player.state = state;
       });
@@ -93,7 +148,8 @@ class Player extends Component {
       // Ready
       player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
-        spotifyApi.transferMyPlayback([device_id]);
+        spotifyApi.pause({});
+        spotifyApi.transferMyPlayback([device_id], {play: false});
         cookie.save('device_id', device_id, { path: '/' });
       });
 
@@ -130,12 +186,14 @@ class Player extends Component {
         return (
           <div>
             <ProgressBar
-
                 totalTime={this.state.totalTime}
                 currentTime={this.state.currentTime}
                 bufferedTime={this.state.bufferedTime}
                 isSeekable={this.state.isSeekable}
-                onSeek={time => this.setState(() => ({ currentTime: time }))}
+                onSeek={time => this.setState({currentTime: time }, (time) => {
+                     spotifyApi.seek(Math.ceil(this.state.currentTime*1000), {});
+                    }
+                )}
                 onSeekStart={time => this.setState(() => ({ lastSeekStart: time }))}
                 onSeekEnd={time => this.setState(() => ({ lastSeekEnd: time }))}
                 onIntent={time => this.setState(() => ({ lastIntent: time }))}
@@ -146,7 +204,7 @@ class Player extends Component {
                 markerSeparator={this.state.markerSeparator="/"}
             />
             <PlaybackControls
-                isPlayable={true}
+                isPlayable={this.state.isPlayable}
                 isPlaying={this.state.isPlaying}
                 showPrevious={false}
                 hasPrevious={false}
@@ -154,14 +212,21 @@ class Player extends Component {
                 hasNext={this.state.hasNext}
                 onPlaybackChange={isPlaying => {
                     if (this.state.isPlaying) {
-                        spotifyApi.pause({});
+                        this.pause();
                     } else {
-                        spotifyApi.play({});
+                        this.play();
                     }
                     this.setState({ ...this.state, isPlaying });
                 }}
                 onPrevious={() => alert('Go to previous')}
-                onNext={() => alert('Go to next')}
+                onNext={() => {
+                    this.dequeue();
+                    if (this.state.isPlaying) {
+                        this.setState({currentTime: 0});
+                        clearInterval(this.interval);
+                        this.play();
+                    }
+                }}
             />
             <MuteToggleButton
                 isEnabled={true}
@@ -180,7 +245,7 @@ class Player extends Component {
                 isEnabled={true}
                 volume={this.state.volume}
                 onVolumeChange={volume => {
-                    spotifyApi.setVolume(100*volume, {});
+                    spotifyApi.setVolume(Math.round(100*volume), {});
                     this.setState({ ...this.state, volume }) 
                 }}
             />

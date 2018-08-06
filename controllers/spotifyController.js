@@ -163,7 +163,8 @@ exports.spotify_search_get = function (req, res, next) {
                               id: obj.id,
                               preview: obj.preview,
                               album_name: obj.album.name,
-                              album_image: obj.album.images[0].url
+                              album_image: obj.album.images[0].url,
+                              duration_ms: obj.duration_ms
                             });
             });
             if (contype == 'application/json') {

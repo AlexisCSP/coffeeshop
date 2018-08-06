@@ -98,6 +98,7 @@ class Room extends Component {
         userId: 1,
         name: song.song,
         artist: song.artist,
+        duration_ms: song.duration_ms,
         preview: song.preview,
         album_name: song.album_name,
         album_image: song.album_image
@@ -113,7 +114,7 @@ class Room extends Component {
           {this.state.roomData.candidates.map(song =>
           <li key={song.id}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
         </ul>
-        <Player candidates={this.state.roomData.candidates}/>
+        {this.props.isLoggedIn && <Player id={this.props.id} candidates={this.state.roomData.candidates} fetchCandidates={this.fetchCandidatesData}/>}
        </div>
     )
   }

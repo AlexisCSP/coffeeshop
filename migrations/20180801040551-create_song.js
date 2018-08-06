@@ -10,6 +10,7 @@ module.exports = {
       },
       name: Sequelize.STRING,
       artist: Sequelize.STRING,
+      duration_ms: Sequelize.INTEGER,
       preview: Sequelize.STRING,
       album_name: Sequelize.STRING,
       album_image: Sequelize.STRING,

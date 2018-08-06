@@ -47,6 +47,7 @@ exports.createNewCandidate = (data) => {
             defaults: {
                 name: data.name,
                 artist: data.artist,
+                duration_ms: data.duration_ms,
                 preview: data.preview,
                 album_name: data.album_name,
                 album_image: data.album_image,

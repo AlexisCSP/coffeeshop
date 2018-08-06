@@ -131,6 +131,7 @@ exports.downvoteCandidate = [
 exports.candidate_create_post = function(candidate) {
 
     var data = {
+        id: candidate.id,
         uri: candidate.uri,
         name: candidate.song,
         artist: candidate.artist,
@@ -141,7 +142,7 @@ exports.candidate_create_post = function(candidate) {
 
     // find or create a new song
     models.Song.findOrCreate({
-        where: { uri: candidate.uri },
+        where: { id: candidate.id },
         defaults: data
     }).spread((song, created) => {
         models.Candidate.findOrCreate( {

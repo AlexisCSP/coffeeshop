@@ -25,6 +25,8 @@ class NewRoomModal extends Component {
       },
       body: JSON.stringify({
         title: this.state.value,
+        latitude: this.props.coords.latitude,
+        longitude: this.props.coords.longitude,
       })
     })
     .then(res => res.json())

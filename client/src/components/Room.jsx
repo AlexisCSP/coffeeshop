@@ -3,6 +3,7 @@ import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
 import Player from './Player.jsx'
+import { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
 
 class Room extends Component {
   constructor(props) {
@@ -15,6 +16,11 @@ class Room extends Component {
     this.state = { roomData : {
       candidates: []}
     };
+
+    emitJoinRoom(props.id)
+    subscribeToSongSuggested(this.fetchCandidatesData)
+    subscribeToSongUpvoted(this.fetchCandidatesData)
+    subscribeToSongDownvoted(this.fetchCandidatesData)
   }
 
   componentDidMount() {
@@ -67,8 +73,10 @@ class Room extends Component {
         songId: songId,
         userId: 1
       })
-    }).then(() => this.fetchCandidatesData())
-  }
+    }).then(() => {
+                    emitSongUpvoted();
+                    this.fetchCandidatesData();})
+    }
 
   onDownvoteClick(songId) {
     fetch('/candidate/downvote', {
@@ -82,7 +90,9 @@ class Room extends Component {
         songId: songId,
         userId: 1
       })
-    }).then(() => this.fetchCandidatesData())
+    }).then(() => {
+                    emitSongDownvoted();
+                    this.fetchCandidatesData();})
 
   }
 
@@ -104,7 +114,9 @@ class Room extends Component {
         album_name: song.album_name,
         album_image: song.album_image
       })
-    }).then(() => this.fetchCandidatesData())
+    }).then(() => {
+                    emitSongSuggested();
+                    this.fetchCandidatesData();})
   }
 
   render() {

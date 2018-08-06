@@ -23,6 +23,7 @@ server.on('listening', onListening);
 let candidates = {};
 /** Socket.IO Functionality **/
 io.of('/rooms').on('connection', (socket) => {
+
   socket.on('join room', (room) => {
     if(socket.room)
       socket.leave(socket.room);
@@ -39,32 +40,22 @@ io.of('/rooms').on('connection', (socket) => {
 
   socket.on('song suggested', (candidate) => {
     let room = socket.room;
-    if (!candidates.hasOwnProperty(`${room}`)) { candidates[`${room}`] = [] };
-    candidates[`${room}`].push(candidate);
 
     // console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
 
-    io.of('/rooms').in(room).emit('update room queue', candidates[`${room}`]);
+    io.of('/rooms').in(room).emit('update room queue');
   });
 
   socket.on('user voted up', (candidate) => {
     let room = socket.room;
-    let queue = candidates[`${room}`];
 
-    let i = queue.findIndex( c => c.id == candidate.id );
-    queue[i].votes++;
-
-    io.of('/rooms').in(room).emit('update vote count', candidates[`${room}`]);
+    io.of('/rooms').in(room).emit('update vote count');
   })
 
   socket.on('user voted down', (candidate) => {
     let room = socket.room;
-    let queue = candidates[`${room}`];
 
-    let i = queue.findIndex( c => c.id == candidate.id );
-    queue[i].votes--;
-
-    io.of('/rooms').in(room).emit('update vote count', candidates[`${room}`]);
+    io.of('/rooms').in(room).emit('update vote count');
   })
 
   socket.on('request to play', () => {
@@ -85,22 +76,7 @@ io.of('/rooms').on('connection', (socket) => {
   socket.on('play next song', () => {
     let room = socket.room;
 
-    let uri = '';
-    let queue = candidates[`${room}`];
-    let finishedSong = queue.shift();
-    finishedSong['room'] = room;
-
-    candidates_controller.candidate_create_post(finishedSong);
-
-    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
-      uri = queue[0].uri;
-
-      socket.emit('play song', uri);
-      socket.emit('update room queue', queue);
-    }
-    else{
-      console.log('No song in queue to play');
-    }
+    io.of('/rooms').in(room).emit('play next song');
   })
 
   socket.on('disconnect', () => {

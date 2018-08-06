@@ -2,8 +2,24 @@ import React, { Component } from 'react';
 import './Rooms.css'
 import Room from './Room.jsx'
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+const haversine = require('haversine');
 
 class Rooms extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { roomData : {
+      candidates: []}
+    };
+  }
+
+  withinRange(start, end, radius) {
+    if (end !== null) {
+      return haversine({latitude: start.latitude, longitude: start.longitude}, {latitude: end.latitude, longitude: end.longitude}, {unit: 'meter'}) <=radius;
+    }
+    return true;
+  }
+
 
   logout() {
     document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
@@ -16,7 +32,7 @@ class Rooms extends Component {
           <div id="sidebar">
             <h1>Coffee Shop</h1>
             <ul>
-              {this.props.rooms.map(room =>
+              {this.props.rooms.filter(room => this.withinRange(room, this.props.coords, 100)).map(room =>
               <li key={room.id}><NavLink to={"/rooms/" + room.id}  activeClassName="selected">{room.title}</NavLink></li>)}
             </ul>
             {this.props.isLoggedIn && <p id="new-room-btn" onClick={this.props.openModal}>Create New Room</p>}

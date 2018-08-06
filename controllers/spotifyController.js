@@ -94,10 +94,10 @@ exports.callback = function(req, res) {
             // }));
 
             // Enable for React redirect
-            // res.redirect('http://localhost:3000');
-            
+            res.redirect('http://localhost:3000');
+
             // Enable for Pug redirect
-            res.redirect('http://localhost:3001');
+            //res.redirect('http://localhost:3001');
         }
         else {
             res.redirect('/#' +
@@ -140,7 +140,7 @@ var results = [];
 
 exports.spotify_search_get = function (req, res, next) {
     var contype = req.headers['content-type'];
-   
+
     // Get the type of Query from the User
     var type = 'track';
 

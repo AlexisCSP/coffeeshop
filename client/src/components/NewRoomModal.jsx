@@ -28,10 +28,10 @@ class NewRoomModal extends Component {
       })
     })
     .then(res => res.json())
+    .then(() => this.props.onModalClose())
     .catch(error => {
          // handle error
     });
-    this.props.onModalClose();
     event.preventDefault();
   }
 

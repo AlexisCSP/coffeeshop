@@ -66,6 +66,15 @@ class Player extends Component {
         spotifyApi.pause({});
     }
 
+    next() {
+        clearInterval(this.interval);
+        this.setState({currentTime: 0});
+        window.first_playback = true;
+        if (this.state.isPlaying) {
+            this.play();
+        }
+    }
+
     dequeue() {
         fetch('/rooms/' + this.props.id + '/dequeue', {
           method: 'POST',
@@ -78,6 +87,7 @@ class Player extends Component {
              // handle error
         }).then(() => {
             this.props.fetchCandidates();
+            this.next();
         })
     }
 
@@ -141,7 +151,7 @@ class Player extends Component {
         if (player.state && !player.state.paused && state && state.paused && state.position === 0) {
           console.log('Track ended');
           this.dequeue();
-          this.play();
+          //this.next();
         }
         player.state = state;
       });
@@ -149,7 +159,6 @@ class Player extends Component {
       // Ready
       player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
-        spotifyApi.pause({});
         spotifyApi.transferMyPlayback([device_id], {play: false});
         cookie.save('device_id', device_id, { path: '/' });
       });
@@ -165,16 +174,8 @@ class Player extends Component {
         await player.resume();
         await player.setVolume(0.5);
         let {
-          id,
-          uri: track_uri,
           name: track_name,
-          duration_ms,
           artists,
-          album: {
-            name: album_name,
-            uri: album_uri,
-            images: album_images
-          }
         } = state.track_window.current_track;
         console.log(`You're listening to ${track_name} by ${artists[0].name}!`);
 
@@ -222,11 +223,7 @@ class Player extends Component {
                 onPrevious={() => alert('Go to previous')}
                 onNext={() => {
                     this.dequeue();
-                    if (this.state.isPlaying) {
-                        this.setState({currentTime: 0});
-                        clearInterval(this.interval);
-                        this.play();
-                    }
+                    //this.next();
                 }}
             />
             <MuteToggleButton

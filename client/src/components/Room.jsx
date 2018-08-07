@@ -3,7 +3,7 @@ import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
 import Player from './Player.jsx'
-import { emitJoinRoom, onSongSuggested, onSongUpvoted, onSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
+import { onPlayNextSong, emitJoinRoom, onSongSuggested, onSongUpvoted, onSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
 
 class Room extends Component {
   constructor(props) {
@@ -23,6 +23,7 @@ class Room extends Component {
     onSongSuggested(this.fetchCandidatesData)
     onSongUpvoted(this.fetchCandidatesData)
     onSongDownvoted(this.fetchCandidatesData)
+    onPlayNextSong(this.fetchCandidatesData)
   }
 
   componentDidMount() {

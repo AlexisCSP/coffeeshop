@@ -143,7 +143,7 @@ exports.candidate_create_post = function(candidate) {
 
     // find or create a new song
     models.Song.findOrCreate({
-        where: { id: candidate.id },
+        where: { uri: candidate.uri },
         defaults: data
     }).spread((song, created) => {
         models.Candidate.findOrCreate( {

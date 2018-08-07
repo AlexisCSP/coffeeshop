@@ -210,6 +210,7 @@ class Player extends Component {
                 markerSeparator= "/"
             />
             <PlaybackControls
+                style="dispaly: inline;"
                 isPlayable={this.state.isPlayable}
                 isPlaying={this.state.isPlaying}
                 showPrevious={false}
@@ -230,6 +231,7 @@ class Player extends Component {
                 }}
             />
             <MuteToggleButton
+                style="display: inline;"
                 isEnabled={true}
                 isMuted={this.state.isMuted}
                 onMuteChange={isMuted => {
@@ -242,6 +244,7 @@ class Player extends Component {
                 }}
             />
             <VolumeSlider
+                style="display: inline-block;"
                 direction={ControlDirection.HORIZONTAL}
                 isEnabled={true}
                 volume={this.state.volume}

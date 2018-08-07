@@ -32,12 +32,12 @@ http://localhost:3000/
 ```
 
 ## Features : 
-* Press the login button in the sidebar to get directed to get redirected to Spotify to login and grant Coffee Shop access.
+* Press the login button in the sidebar to get redirected to Spotify to login and grant Coffee Shop access.
 * Create New Rooms (once logged in) using the button in the sidebar to create new rooms for your Coffee Shop.
 * Use the slider in the sidebar to view rooms which are within the specified radius (in meters) of your location (must grant location access when prompted by the browser).
 * Enter a room by clicking on it in the sidebar, then use the search bar to search for songs and add to the room queue. The search bar provides an autocomplete feature which suggests songs as you type characters.
 * Upvote or downvote songs by clicking on the thumb icons next to the songs. Watch the queue update as votes are added/subtracted.
-* Play, pause or skip songs (only visible to group owners) by using the playback controls.
+* Play, pause or skip songs (only visible to room owners) by using the playback controls.
 * See live changes for song suggestions, upvotes, downvotes and playback across multiple browser instances (use a new Incognito instance on Chrome to simulate different user experiences).
 
 ## Things that could have been improved :

@@ -1,40 +1,44 @@
 extends layout
 
 block content
-  h1 Welcome to Room: #[span#room-key #{room.key}]
+  h1 Welcome to #[span#room-title #{room.title}]: #[span#room-key #{room.key}]
+  p The room owner is #[span#room-owner #{room.owner}]
   p There are #[span#num-users 0] users in rooms
   ul#connected-users
 
-  form(method="post", action=`/suggestions/new`)
-    div.form-group
-      label(for="SongId") Song Id
-      input(name="SongId", type="int", placeholder="Enter an ID (Number)").form-control
-      small#songid-help.form-text.text-muted This is for development for now
+  ul#song-suggestion-list
 
-    div.form-group
-      label(for="UserId") User Id
-      input(name="UserId", type="int", placeholder="Enter an ID (Number)").form-control
-      small#songid-help.form-text.text-muted This is for development
+  h2 Now Playing
+  div#now-playing-container
+      div#now-playing
+        img#now-album-image
+        span#now-song Nothing is playing
+        span#now-artist
+        span#now-album-name
 
-    input(name="RoomId", type="hidden", value=`${room.id}`)
-    button(type="submit").btn.btn-primary Suggest A Song
+  div#play-controls
+    button#play Play Next Song
+    button#toggle-play Toggle Play
+    //- button#skip-track Skip Track &gt;
 
-  if (candidates)
-    h2 Song Suggestions
-    ol#candidate-list.list-group
-      for candidate in candidates
-        li.candidate.list-group-item
-          form(method="POST", action=`/votes/new?UserId=null&CandidateId=${candidate.id}`)
-            button(type="submit").btn.btn-primary= `${candidate.songId} - ${candidate.count} Votes - Submitted by ${candidate.user.username}`
-  div          
-    button(id="play" type="button") Play Audio
-    button(id="togglePlay" type="button") Resume/Pause
-    button(id="skipTrack" type="button") Skip Song
+  div#queue-container
+    h2 Song Queue
+    ul#queue
+  div.input-group
+    label(for='name') Search for a song
+    input(id= 'song-search', name='name', type='string', placeholder='Enter track name', autocomplete='off').form-control
+
+    input(name="roomId", type="hidden", value=`${room.id}`)
+
+  div#search-results-container
 
   a.button(href='/rooms') Back to rooms
+  hr
+  a.button(href=room.getUrl() + '/suggestion') Get song suggestion
 
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/rooms.js")
+  script(src="/scripts/candidates.js")
   script(src="https://sdk.scdn.co/spotify-player.js")
   script(src="/scripts/spotify.js")
   script.

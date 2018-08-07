@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  //- h1 Welcome to Room: #[span#room-key #{room.key}]
+  ul
+    each song in song_list
+        li
+            p #{song.name} - #{song.album_name} - #{song.artist}
+            //- button#add.btn.btn-primary(type='submit') Add
+            //- script.
+            //-     $('#add').click(function() {
+            //-         $.ajax({
+            //-             url: 'rooms/:id/candidate/save',
+            //-             data: {
+            //-                 name: #{song.name},
+            //-                 artist: #{song.artist},
+            //-                 preview: #{song.preview},
+            //-                 album_name: #{song.album_name},
+            //-                 album_image: #{song.album_image},
+            //-                 uri: #{song.uri}
+            //-             },
+            //-             success: function() {
+            //-                 console.log("ok")
+            //-             }
+            //-         })
+            //-     });
+      
+  //- script(src="/socket.io/socket.io.js")
+  //- script(src="/scripts/rooms.js")
+  //- script(src="/scripts/candidates.js")
+  //- script(src="https://sdk.scdn.co/spotify-player.js")
+  //- script(src="/scripts/spotify.js")
+  //- script.
+  //-   var room_id = #{room.id};
+  //-   var access_token = !{JSON.stringify(access_token)};

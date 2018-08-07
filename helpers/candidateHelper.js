@@ -1,4 +1,7 @@
 const models = require('../models');
+const { body, query, validationResult } = require('express-validator/check');
+const { sanitizeBody, sanitizeQuery } = require('express-validator/filter');
+const numberUtility = require('../utilities/numberUtitlity');
 const voteHelper = require('./voteHelper');
 const userHelper = require('./userHelper');
 
@@ -21,47 +24,110 @@ const userHelper = require('./userHelper');
 // ]
 exports.getCandidates = (roomId) => {
     return new Promise((resolve, reject) => {
-        models.Candidate.findAll({
-            where: {RoomId: roomId}
-        }).then(candidates => {
-            Promise.all(candidates.map(makeCandidateObject)).then(results => {
-                results.sort(function(a, b) {
-                    if (a.count == b.count) {
-                        return a.songId - b.songId; // change to timestamp
+        models.Room.findById(roomId).then((room) => {
+            room.getSong().then((songs) => {
+                songs.sort(function(a, b) {
+                    if (a.Candidate.vote_count == b.Candidate.vote_count) {
+                        return a.songId > b.songId; // change to timestamp
                     }
-                    return b.count - a.count;
+                    return b.Candidate.vote_count - a.Candidate.vote_count;
                 });
-                resolve(results);
+                resolve(songs);
             });
         });
     });
-};
+}
 
 // Returns no object
-exports.createNewCandidate = (roomId, songId, userId) => {
+exports.createNewCandidate = (data) => {
     return new Promise((resolve, reject) => {
-        models.Candidate.create({
-            RoomId: roomId,
-            SongId: songId,
-            UserId: userId
-        }).then(candidate => {
-            voteHelper.createNewVote(
-                candidate.dataValues.id, 
-                userId).then(() => {
-                    resolve();
+        console.log("SEARCHING SONG");
+        models.Song.findOrCreate({
+            where: {uri: data.uri},
+            defaults: {
+                name: data.name,
+                artist: data.artist,
+                duration_ms: data.duration_ms,
+                preview: data.preview,
+                album_name: data.album_name,
+                album_image: data.album_image,
+                uri: data.uri,
+            }
+        }).spread((song, created) => {
+            if (created) {
+                models.Room.findById(data.roomId).then((room) => {
+                    song.addRoom(room, { through: { vote_count: 1 } }).then( () => {
+                        resolve();
+                    });
                 });
+            } else {
+                models.Candidate.findOne({
+                    where: {
+                        roomId: data.roomId,
+                        songId: data.songId,
+                    }
+                }).then((candidate) => {
+                    if (candidate !== null) {
+                        this.commit_vote(data.roomId, song.id, data.userId, "upvote").then( () => {
+                            resolve();
+                        });
+                    } else {
+                        models.Room.findById(data.roomId).then((room) => {
+                            song.addRoom(room, { through: { vote_count: 1 } }).then( () => {
+                                resolve();
+                            });
+                        });
+                    }
+                })
+
+            }
+        });
+
+
+    });
+};
+
+exports.commit_vote = (roomId, songId, userId, type) => {
+    return new Promise((resolve, reject) => {
+        models.Candidate.findOne({
+            where: {
+                roomId: roomId,
+                songId: songId,
+            }
+        }).then((candidate) => {
+            console.log(candidate);
+            var new_vote_count = candidate.vote_count;
+            if (type == "upvote") {
+                new_vote_count += 1;
+            } else {
+                new_vote_count -= 1;
+            }
+            models.Candidate.update(
+                { vote_count: new_vote_count },
+                { where: {
+                    roomId: roomId,
+                    songId: songId,
+                }
+            }
+        ).then(() => {
+            resolve(candidate);
+        });
+            // candidate.update({
+            //     vote_count: new_vote_count
+            // }).then(() => {})
+
         });
     });
 };
 
-// Returns the room id (integer) that corresponds to the candidate id
-exports.getRoomIdForCandidate = (candidateId) => {
-    return new Promise((resolve, reject) => {
-        models.Candidate.findById(candidateId).then(candidate => {
-            resolve(candidate.dataValues.RoomId);
-        });
-    });
-};
+// // Returns the room id (integer) that corresponds to the candidate id
+// exports.getRoomIdForCandidate = (candidateId) => {
+//     return new Promise((resolve, reject) => {
+//         models.Candidate.findById(candidateId).then(candidate => {
+//             resolve(candidate.dataValues.RoomId);
+//         });
+//     });
+// };
 
 //Return the following object
 // {
@@ -74,21 +140,21 @@ exports.getRoomIdForCandidate = (candidateId) => {
 //     }
 // }
 // Returns a promise to make the code using this easier to use
-function makeCandidateObject(candidate){
-    return new Promise((resolve, reject) => {
-        Promise.all([
-            voteHelper.getVoteCountForCandidate(candidate.dataValues.id),
-            userHelper.getUserById(candidate.dataValues.UserId)
-        ]).then(pieces => {
-            const voteCount = pieces[0];
-            const user = pieces[1];
+// function makeCandidateObject(candidate){
+//     return new Promise((resolve, reject) => {
+//         Promise.all([
+//             voteHelper.getVoteCountForCandidate(candidate.dataValues.id),
+//             userHelper.getUserById(candidate.dataValues.UserId)
+//         ]).then(pieces => {
+//             const voteCount = pieces[0];
+//             const user = pieces[1];
 
-            resolve({
-                id: candidate.dataValues.id,
-                songId: candidate.dataValues.SongId,
-                count: voteCount,
-                user: user
-            });
-        });
-    });
-}
+//             resolve({
+//                 id: candidate.dataValues.id,
+//                 songId: candidate.dataValues.SongId,
+//                 count: voteCount,
+//                 user: user
+//             });
+//         });
+//     });
+// }

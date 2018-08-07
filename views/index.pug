@@ -3,14 +3,16 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  p There are #[span#num-users 0] users here at index
+  a.button(href='/rooms') View Rooms
+  
+  //- p There are #[span#num-users 0] users here at index
 
-  form(method='POST' action='/spotify/search')
-    div.form-group
-      label(for='query') Your song <span> </span> 
-      input#query.form-control(type='text' placeholder='Song' name='query' required='true')
-      | 
-      button.btn.btn-primary(type='submit') Search
+  //- form(method='GET' action='/spotify/search/:query')
+  //-   div.form-group
+  //-     label(for='query') Your song <span> </span> 
+  //-     input#query.form-control(type='text' placeholder='Song' name='query' required='true')
+  //-     | 
+  //-     button.btn.btn-primary(type='submit') Search
   //- if errors 
   //-   ul
   //-     for error in errors
@@ -23,32 +25,32 @@ block content
   //-       a(href=track.preview) #{track.song}
   //-       |  - (#{track.artist})
 
-  // TODO: show list of rooms
-  div#loggedin
-    div#user-profile
-      dl
-        //- Returns null at the moment
-        //- h2 Display Name
-        //- p#display_name
-        h4 Id
-        p#user_id
-        h4 Email
-        p#email
-        h4 Spotify URI
-        a#external_urls_spotify
-        h4 Link
-        a#user_link_href
-        h4 Profile Image
-        img#images_0_url
-        h4 Country
-        p#country
-    div#oauth
-    button.button#obtain-new-token Obtain new token using refresh token
-    br
-    a.button(href='/rooms') View Rooms
+  //- // TODO: show list of rooms
+  //- div#loggedin
+  //-   div#user-profile
+  //-     dl
+  //-       Returns null at the moment
+  //-       h2 Display Name
+  //-       p#display_name
+  //-       h4 Id
+  //-       p#user_id
+  //-       h4 Email
+  //-       p#email
+  //-       h4 Spotify URI
+  //-       a#external_urls_spotify
+  //-       h4 Link
+  //-       a#user_link_href
+  //-       h4 Profile Image
+  //-       img#images_0_url
+  //-       h4 Country
+  //-       p#country
+  //-   div#oauth
+  //-   button.button#obtain-new-token Obtain new token using refresh token
+  //-   br
+  //-   a.button(href='/rooms') View Rooms
 
 
-  // TODO: relocate the code to user_profile page
+  //- // TODO: relocate the code to user_profile page
   //- p There are #[span#numUsers] users here
   //- 
   //- div#login

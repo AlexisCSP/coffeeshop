@@ -1,11 +1,16 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
-        Username: {
+        spotify_id: {
             type: DataTypes.STRING,
-            defaultValue: null
+            allowNull: false,
+            unique: true,
         }
     });
+
+    User.associate = function(models) {
+        
+    };
 
     return User;
 }

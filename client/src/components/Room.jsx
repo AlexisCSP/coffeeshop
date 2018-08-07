@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
+import Player from './Player.jsx'
+import { onPlayNextSong, emitJoinRoom, onSongSuggested, onSongUpvoted, onSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
 
 class Room extends Component {
   constructor(props) {
@@ -9,10 +11,19 @@ class Room extends Component {
     this.onUpvoteClick = this.onUpvoteClick.bind(this);
     this.onDownvoteClick = this.onDownvoteClick.bind(this);
     this.onSearchItemClick = this.onSearchItemClick.bind(this);
+    this.fetchCandidatesData = this.fetchCandidatesData.bind(this);
 
-    this.state = { roomData : {
-      candidates: []}
+    this.state = {
+      roomData : {
+        candidates: []
+      }
     };
+
+    emitJoinRoom(props.id)
+    onSongSuggested(this.fetchCandidatesData)
+    onSongUpvoted(this.fetchCandidatesData)
+    onSongDownvoted(this.fetchCandidatesData)
+    onPlayNextSong(this.fetchCandidatesData)
   }
 
   componentDidMount() {
@@ -20,7 +31,7 @@ class Room extends Component {
   }
 
   fetchRoomData() {
-    fetch('/rooms/' + this.props.id, {
+    fetch('http://localhost:3001/rooms/' + this.props.id, {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -28,14 +39,14 @@ class Room extends Component {
       }
     })
     .then(res => res.json())
-    .then(roomData => this.setState({ roomData : roomData } ))
+    .then(roomData => this.setState({ roomData } ))
     .catch(error => {
          // handle error
     });
   }
 
   fetchCandidatesData() {
-    fetch('/rooms/' + this.props.id + '/candidates', {
+    fetch('http://localhost:3001/rooms/' + this.props.id + '/candidates', {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -54,70 +65,61 @@ class Room extends Component {
   }
 
   onUpvoteClick(songId) {
-    /*var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/candidate/upvote');
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    const data = {
-      RoomId: this.props.id,
-      SongId: songId,
-      UserId: 1
-    }
-    xhr.send(JSON.stringify(data));*/
-    fetch('/candidate/upvote', {
+    fetch('http://localhost:3001/candidate/upvote', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        RoomId: this.props.id,
-        SongId: songId,
-        UserId: 1
+        roomId: this.props.id,
+        songId: songId,
+        userId: 1
       })
-    }).then(() => this.fetchCandidatesData())
-  }
+    }).then(() => {
+                    emitSongUpvoted();
+                    this.fetchCandidatesData();})
+    }
 
   onDownvoteClick(songId) {
-    /*var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/candidate/downvote');
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    const data = {
-      RoomId: this.props.id,
-      SongId: songId,
-      UserId: 1
-    }
-    xhr.send(JSON.stringify(data));*/
-    fetch('/candidate/downvote', {
+    fetch('http://localhost:3001/candidate/downvote', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        RoomId: this.props.id,
-        SongId: songId,
-        UserId: 1
+        roomId: this.props.id,
+        songId: songId,
+        userId: 1
       })
-    }).then(() => this.fetchCandidatesData())
+    }).then(() => {
+                    emitSongDownvoted();
+                    this.fetchCandidatesData();})
 
   }
 
   onSearchItemClick(song) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/candidate/new');
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    const data = {
-      RoomId: this.props.id,
-      SongId: song.uri,
-      UserId: 1,
-      name: song.song,
-      artist: song.artist,
-      preview: song.preview,
-      album_name: song.album_name,
-      album_image: song.album_image
-    }
-    xhr.send(JSON.stringify(data));
-    this.fetchCandidatesData()
+    fetch('http://localhost:3001/candidate/new', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        roomId: this.props.id,
+        uri: song.uri,
+        userId: 1,
+        name: song.song,
+        artist: song.artist,
+        duration_ms: song.duration_ms,
+        preview: song.preview,
+        album_name: song.album_name,
+        album_image: song.album_image
+      })
+    }).then(() => {
+                    emitSongSuggested();
+                    this.fetchCandidatesData();})
   }
 
   render() {
@@ -126,11 +128,22 @@ class Room extends Component {
         <Search onSearchItemClick={this.onSearchItemClick}/>
         <ul>
           {this.state.roomData.candidates.map(song =>
-          <li key={song.SongId}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
+          <li key={song.id}>
+            <Song song={song}
+                  onUpvoteClick={this.onUpvoteClick}
+                  onDownvoteClick={this.onDownvoteClick}
+            />
+          </li>)}
         </ul>
+        {(this.props.isLoggedIn && this.props.isRoomOwner) &&
+        <Player id={this.props.id}
+                candidates={this.state.roomData.candidates}
+                fetchCandidates={this.fetchCandidatesData}
+        />}
       </div>
     )
   }
+
 }
 
 export default Room;

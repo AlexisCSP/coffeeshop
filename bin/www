@@ -3,6 +3,8 @@ var app = require('../app');
 var debug = require('debug')('coffeeshop:server');
 var http = require('http');
 
+const candidates_controller = require('../controllers/candidateController');
+
 /* Get port from environment and store in Express. */
 var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
@@ -18,32 +20,81 @@ server.listen(port, () => {
 server.on('error', onError);
 server.on('listening', onListening);
 
+let candidates = {};
 /** Socket.IO Functionality **/
 io.of('/rooms').on('connection', (socket) => {
+
   socket.on('join room', (room) => {
     if(socket.room)
       socket.leave(socket.room);
-    
+
     socket.room = room;
     socket.join(room);
+    socket.emit('update room queue', candidates[`${room}`])
 
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
       io.of('/rooms').in(room).emit('user joined room', clients);
     });
+  });
+
+  socket.on('song suggested', (candidate) => {
+    let room = socket.room;
+
+    // console.log(`Candidates obj: ${JSON.stringify(candidates[`${room}`])}, type: `+typeof candidates[`${room}`]);
+
+    io.of('/rooms').in(room).emit('update room queue');
+  });
+
+  socket.on('user voted up', (candidate) => {
+    let room = socket.room;
+
+    io.of('/rooms').in(room).emit('update vote count');
+  })
+
+  socket.on('user voted down', (candidate) => {
+    let room = socket.room;
+
+    io.of('/rooms').in(room).emit('update vote count');
+  })
+
+  socket.on('request to play', () => {
+    let room = socket.room;
+
+    let uri = '';
+    let queue = candidates[`${room}`];
+    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
+      uri = candidates[`${room}`][0].uri;
+
+      io.of('/rooms').in(room).emit('play song', uri);
+    }
+    else{
+      console.log('No song in queue to play');
+    }
+  })
+
+  socket.on('play next song', () => {
+    let room = socket.room;
+
+    io.of('/rooms').in(room).emit('play next song');
   })
 
   socket.on('disconnect', () => {
     let room = socket.room;
-    console.log(`room: ${room}`);
     socket.leave(room);
     io.of('/rooms').in(room).clients((error, clients) => {
       if (error) throw error;
       io.of('/rooms').in(room).emit('user left room', clients);
+      console.log(`${clients.length} clients after disconnect.`)
+      if (clients.length < 1){
+        // Can delete queue if nobody in room
+        // Probably best to keep queue there until room is deleted
+        // Keeping for now for easy dev testing
+        delete candidates[`${room}`];
+      }
     });
   })
 })
-
 
 /* Normalize a port into a number, string, or false. */
 function normalizePort(val) {

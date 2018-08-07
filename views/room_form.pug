@@ -8,7 +8,7 @@ block content
       each error in errors
         li.red!= error.msg
 
-  form.new-room-form(method='POST' action='')
+  form.new-room-form(method='POST')
     input(type='hidden' name='id' value=(undefined===room ? '' : room.id))
     div.input-block
       div.text-flex

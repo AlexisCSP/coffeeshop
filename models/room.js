@@ -11,12 +11,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     owner: {
       type: DataTypes.STRING,
-      // allowNull: false, // TODO: enable later
+      allowNull: false,
+    },
+    latitude: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    longitude: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
     },
   }, {});
 
   Room.associate = function(models) {
-      Room.belongsToMany(models.Song, { through: 'Candidates', foreignKey: 'roomId', as: 'song' })
+      Room.belongsToMany(models.Song, { through: 'Candidate', foreignKey: 'roomId', as: 'song' })
   };
 
   // define instance methods

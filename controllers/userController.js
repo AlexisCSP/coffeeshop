@@ -1,6 +1,7 @@
 const {body, validationResult} = require('express-validator/check');
 const {sanitizeBody} = require('express-validator/filter');
 const userHelper = require('../helpers/userHelper');
+const models = require('../models');
 
 exports.createNewUser = [
     body('Username', 'Username is required and must be a string')
@@ -38,3 +39,14 @@ exports.getNewUserForm = [
         res.render('user_form', {title: 'Create a new user'});
     }
 ];
+
+exports.isOwner = function(req, res, next) {
+    models.Room.findAll({
+        where: { id: req.params.id },
+        plain: true
+    }).then(function(room) {
+        if (req.cookies.spotify_id === room.owner)
+            return next();
+        res.redirect(`/rooms/${req.params.id}`);
+    })
+}

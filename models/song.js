@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     var Song = sequelize.define('Song', {
         name: DataTypes.STRING,
         artist: DataTypes.STRING,
+        duration_ms: DataTypes.INTEGER,
         preview: DataTypes.STRING,
         album_name: DataTypes.STRING,
         album_image: DataTypes.STRING,
@@ -13,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {});
     Song.associate = function(models) {
-        Song.belongsToMany(models.Room, { through: 'Candidates', foreignKey: 'songId', as: 'room' })
+        Song.belongsToMany(models.Room, { through: 'Candidate', foreignKey: 'songId', as: 'room' })
     };
 
     // define instance methods

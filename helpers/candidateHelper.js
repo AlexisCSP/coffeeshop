@@ -24,36 +24,66 @@ const userHelper = require('./userHelper');
 // ]
 exports.getCandidates = (roomId) => {
     return new Promise((resolve, reject) => {
-        models.Candidate.findAll({
-            where: {RoomId: roomId}
-        }).then(candidates => {
-                candidates.sort(function(a, b) {
-                    if (a.vote_count == b.vote_count) {
-                        return a.SongId > b.SongId; // change to timestamp
+        models.Room.findById(roomId).then((room) => {
+            room.getSong().then((songs) => {
+                songs.sort(function(a, b) {
+                    if (a.Candidate.vote_count == b.Candidate.vote_count) {
+                        return a.songId > b.songId; // change to timestamp
                     }
-                    return b.vote_count - a.vote_count;
+                    return b.Candidate.vote_count - a.Candidate.vote_count;
                 });
-                resolve(candidates);
+                resolve(songs);
             });
         });
-
-};
+    });
+}
 
 // Returns no object
 exports.createNewCandidate = (data) => {
     return new Promise((resolve, reject) => {
-        models.Candidate.create({
-            RoomId: data.roomId,
-            SongId: data.songId,
-            UserId: data.userId,
-            name: data.name,
-            artist: data.artist,
-            album_name: data.album_name,
-            album_image: data.album_image,
-            preview: data.preview,
-            vote_count: 1
-        })
-        resolve();
+        console.log("SEARCHING SONG");
+        models.Song.findOrCreate({
+            where: {uri: data.uri},
+            defaults: {
+                name: data.name,
+                artist: data.artist,
+                duration_ms: data.duration_ms,
+                preview: data.preview,
+                album_name: data.album_name,
+                album_image: data.album_image,
+                uri: data.uri,
+            }
+        }).spread((song, created) => {
+            if (created) {
+                models.Room.findById(data.roomId).then((room) => {
+                    song.addRoom(room, { through: { vote_count: 1 } }).then( () => {
+                        resolve();
+                    });
+                });
+            } else {
+                models.Candidate.findOne({
+                    where: {
+                        roomId: data.roomId,
+                        songId: data.songId,
+                    }
+                }).then((candidate) => {
+                    if (candidate !== null) {
+                        this.commit_vote(data.roomId, song.id, data.userId, "upvote").then( () => {
+                            resolve();
+                        });
+                    } else {
+                        models.Room.findById(data.roomId).then((room) => {
+                            song.addRoom(room, { through: { vote_count: 1 } }).then( () => {
+                                resolve();
+                            });
+                        });
+                    }
+                })
+
+            }
+        });
+
+
     });
 };
 
@@ -61,20 +91,31 @@ exports.commit_vote = (roomId, songId, userId, type) => {
     return new Promise((resolve, reject) => {
         models.Candidate.findOne({
             where: {
-                RoomId: roomId,
-                SongId: songId,
+                roomId: roomId,
+                songId: songId,
             }
-        }).then(candidate => {
+        }).then((candidate) => {
+            console.log(candidate);
             var new_vote_count = candidate.vote_count;
             if (type == "upvote") {
                 new_vote_count += 1;
             } else {
                 new_vote_count -= 1;
             }
-            candidate.update({
-                vote_count: new_vote_count
-            }).then(() => {})
+            models.Candidate.update(
+                { vote_count: new_vote_count },
+                { where: {
+                    roomId: roomId,
+                    songId: songId,
+                }
+            }
+        ).then(() => {
             resolve(candidate);
+        });
+            // candidate.update({
+            //     vote_count: new_vote_count
+            // }).then(() => {})
+
         });
     });
 };

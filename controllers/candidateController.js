@@ -3,12 +3,14 @@ const { sanitizeBody, sanitizeQuery } = require('express-validator/filter');
 const candidateHelper = require('../helpers/candidateHelper');
 const numberUtility = require('../utilities/numberUtitlity');
 
-exports.createNewCandidate = [
-    body('SongId', 'Song Id is required'),
-    sanitizeBody('SongId'),
+const models = require('../models');
 
-    body('RoomId', 'Room Id is required').isNumeric(),
-    sanitizeBody('RoomId').toInt(),
+exports.createNewCandidate = [
+    body('uri', 'uri is required'),
+    sanitizeBody('uri'),
+
+    body('roomId', 'room Id is required').isNumeric(),
+    sanitizeBody('roomId').toInt(),
 
     body('name', 'name is required'),
     sanitizeBody('name'),
@@ -25,7 +27,7 @@ exports.createNewCandidate = [
     body('album_image', 'album_image is required'),
     sanitizeBody('album_image'),
 
-    body('UserId', 'User ID is required (May be null)').exists(),
+    body('userId', 'user ID is required (May be null)').exists(),
 
     (req, res, next) => {
         const errors = validationResult(req);
@@ -34,7 +36,7 @@ exports.createNewCandidate = [
             return;
         }
 
-        var userId = req.body.UserId;
+        var userId = req.body.userId;
 
         if (userId && userId != null && userId != ""){
             userId = parseInt(userId);
@@ -45,28 +47,29 @@ exports.createNewCandidate = [
         var data = {
             name: req.body.name,
             artist: req.body.artist,
-            songId: req.body.SongId,
+            duration_ms: req.body.duration_ms,
+            uri: req.body.uri,
             preview: req.body.preview,
             album_name: req.body.album_name,
             album_image: req.body.album_image,
             vote_count: 1,
             userId: userId,
-            roomId: req.body.RoomId
+            roomId: req.body.roomId
         };
         candidateHelper.createNewCandidate(data)
             .then( () => {
-                res.redirect(`/rooms/${req.body.RoomId}`);
+                res.redirect(`/rooms/${req.body.roomId}`);
             }
         );
     }
 ];
 
 exports.upvoteCandidate = [
-  body('SongId', 'Song Id is required'),
-  sanitizeBody('SongId'),
+  body('songId', 'song Id is required'),
+  sanitizeBody('songId'),
 
-  body('RoomId', 'Room Id is required').isNumeric(),
-  sanitizeBody('RoomId').toInt(),
+  body('roomId', 'room Id is required').isNumeric(),
+  sanitizeBody('roomId').toInt(),
 
   (req, res, next) => {
       const errors = validationResult(req);
@@ -75,9 +78,9 @@ exports.upvoteCandidate = [
           return;
       }
 
-      const roomId = req.body.RoomId;
-      const songId = req.body.SongId;
-      var userId = req.body.UserId;
+      const roomId = req.body.roomId;
+      const songId = req.body.songId;
+      var userId = req.body.userId;
 
       if (userId && userId != null && userId != ""){
           userId = parseInt(userId);
@@ -94,11 +97,11 @@ exports.upvoteCandidate = [
 ];
 
 exports.downvoteCandidate = [
-  body('SongId', 'Song Id is required'),
-  sanitizeBody('SongId'),
+  body('songId', 'song Id is required'),
+  sanitizeBody('songId'),
 
-  body('RoomId', 'Room Id is required').isNumeric(),
-  sanitizeBody('RoomId').toInt(),
+  body('roomId', 'room Id is required').isNumeric(),
+  sanitizeBody('roomId').toInt(),
 
   (req, res, next) => {
       const errors = validationResult(req);
@@ -107,9 +110,9 @@ exports.downvoteCandidate = [
           return;
       }
 
-      const roomId = req.body.RoomId;
-      const songId = req.body.SongId;
-      var userId = req.body.UserId;
+      const roomId = req.body.roomId;
+      const songId = req.body.songId;
+      var userId = req.body.userId;
 
       if (userId && userId != null && userId != ""){
           userId = parseInt(userId);
@@ -124,3 +127,36 @@ exports.downvoteCandidate = [
       );
   }
 ];
+
+// Display Contact create form on POST.
+exports.candidate_create_post = function(candidate) {
+
+    var data = {
+        id: candidate.id,
+        uri: candidate.uri,
+        name: candidate.song,
+        artist: candidate.artist,
+        album_name: candidate.album_name,
+        album_image: candidate.album_image,
+        room: candidate.room
+    };
+
+    // find or create a new song
+    models.Song.findOrCreate({
+        where: { uri: candidate.uri },
+        defaults: data
+    }).spread((song, created) => {
+        models.Candidate.findOrCreate( {
+            where: { roomId: candidate.room, songId: song.get({ plain: true}).id }, defaults: { vote_count: candidate.votes }
+        }).spread((newCandidate, created) => {
+            // if candidate exists
+            if (created === false) {
+                // update total vote_count
+                new_vote_count  = newCandidate.vote_count + candidate.votes;
+                newCandidate.update({
+                    vote_count: new_vote_count
+                });
+            }
+        })
+    })
+};

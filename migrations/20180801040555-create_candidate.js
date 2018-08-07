@@ -8,7 +8,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            vote: {
+            vote_count: {
                 allowNull: true,
                 type: Sequelize.INTEGER,
                 defaultValue: 0

@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         vote_count: {
             type: DataTypes.INTEGER,
-            defaultValue: 0
+            defaultValue: 1
         },
     });
 

@@ -10,6 +10,6 @@ router.get('/callback', spotify_controller.callback);
 
 router.get('/refresh_token', spotify_controller.refresh_token);
 
-router.get('/search/:query', spotify_controller.search_get);
+router.get('/search/:query', spotify_controller.spotify_search_get);
 
 module.exports = router;

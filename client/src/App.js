@@ -33,7 +33,7 @@ class App extends Component {
   }
 
   getRoomsData() {
-    fetch('/rooms', {
+    fetch('http://localhost:3001/rooms', {
       method: 'GET',
       headers: {
        'Accept': 'application/json',

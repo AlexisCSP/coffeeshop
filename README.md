@@ -46,3 +46,8 @@ http://localhost:3000/
 * Displaying 'time remaining' for the current song across all client windows.
 * Updating sidebars across all client windows when a new room is created (easy to implement, but low on our priority list).
 * Did we mention styling?
+ 
+## Known Bugs :
+* When there is one song in the queue, the current playing song becomes unskippable. This is an easy to fix bug that requires some boolean logic checking.
+* Spotify Playback API quirks : A team member reported being unable to play the song sometimes, but logging out and logging in fixed the issue. Other members were unable to replicate it. The Spotify Web Playback SDK is still in beta, so it is possibly a bug on their end.
+

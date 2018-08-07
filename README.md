@@ -1,40 +1,48 @@
 # Coffee Shop
 ## CMPT470 Group 5
 
-Democratric digital jukebox
+Coffee Shop is a democratric digital jukebox app built using ReactJS, SocketIO and ExpressJS.
 
-Vagrant environment configuration provided.
+##### Coffee Shop requires a Premium Spotify account for full feature access. Please contact one of the group members if you do not have a premium Spotify account and need to test the app.
 
-Clone coffeeshop repository:
+## Running Coffee Shop : 
+
+* Clone coffeeshop repository:
 
 ```
 $ git clone git@csil-git1.cs.surrey.sfu.ca:tudatn/coffeeshop.git
 ```
 
-Move into the coffeshop folder you just cloned and run:
+* Move into the Coffe Shop folder created :
+
+```
+$ cd coffeeshop
+```
+
+* Start the VM using : 
 
 ```
 $ vagrant up
 ```
 
-ssh into the vagrant machine
+* Access the app from your browser by visiting:
 
 ```
-$ vagrant ssh
+http://localhost:3000/
 ```
 
-Change to the project folder
+## Features : 
+* Press the login button in the sidebar to get directed to get redirected to Spotify to login and grant Coffee Shop access.
+* Create New Rooms (once logged in) using the button in the sidebar to create new rooms for your Coffee Shop.
+* Use the slider in the sidebar to view rooms which are within the specified radius (in meters) of your location (must grant location access when prompted by the browser).
+* Enter a room by clicking on it in the sidebar, then use the search bar to search for songs and add to the room queue. The search bar provides an autocomplete feature which suggests songs as you type characters.
+* Upvote or downvote songs by clicking on the thumb icons next to the songs. Watch the queue update as votes are added/subtracted.
+* Play, pause or skip songs (only visible to group owners) by using the playback controls.
+* See live changes for song suggestions, upvotes, downvotes and playback across multiple browser instances (use a new Incognito instance on Chrome to simulate different user experiences).
 
-```
-$ cd project/
-```
-
-Run the server with
-
-```
-$ npm run devstart
-```
-
-Access the app from your browser by typing the following link:
-
-http://localhost:3001
+## Things that could have been improved :
+* Styling
+* Restricting individual user votes to 1 to prevent misuse of the voting system.
+* Displaying 'time remaining' for the current song across all client windows.
+* Updating sidebars across all client windows when a new room is created (easy to implement, but low on our priority list).
+* Did we mention styling?

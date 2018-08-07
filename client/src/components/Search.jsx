@@ -115,6 +115,7 @@ class Search extends Component {
   render() {
       return (
             <Autocomplete
+                className="background-secondary-main color-secondary-text"
                 getItemValue={this.getItemValue}
                 items={this.state.autocompleteData}
                 renderItem={this.renderItem}

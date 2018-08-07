@@ -75,3 +75,24 @@
 .form-style-6 input[type="button"]:hover{
     background: #2EBC99;
 }
+
+.close-button {
+    top: 1px;
+    right: 1px;
+}
+
+.background-secondary-main {
+    background-color: #616161;
+}
+
+.background-secondary-dark {
+    background-color: #8c8c8c;
+}
+
+.background-secondary-light {
+    background-color: #8e8e8e;
+}
+
+button [class*=styles_closeButton] {
+    color: #ffffff;
+}

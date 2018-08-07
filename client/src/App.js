@@ -5,6 +5,7 @@ import NewRoomModal from './components/NewRoomModal'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import cookie from 'react-cookies'
+import {geolocated} from 'react-geolocated';
 
 library.add(faThumbsUp)
 library.add(faThumbsDown)
@@ -32,7 +33,7 @@ class App extends Component {
   }
 
   getRoomsData() {
-    fetch('/rooms', {
+    fetch('http://localhost:3001/rooms', {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -50,11 +51,18 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Rooms rooms = {this.state.rooms} isLoggedIn = {this.state.isLoggedIn} openModal = {this.onOpenModal}/>
-        <NewRoomModal isModalOpen={this.state.isModalOpen} onModalClose={this.onCloseModal}/>
+        <Rooms rooms = {this.state.rooms} isLoggedIn = {this.state.isLoggedIn} openModal = {this.onOpenModal} coords={this.props.coords}/>
+        <NewRoomModal isModalOpen={this.state.isModalOpen} onModalClose={this.onCloseModal} coords={this.props.coords}/>
       </div>
     );
   }
 }
 
-export default App;
+export default geolocated({
+  positionOptions: {
+    enableHighAccuracy: false,
+  },
+  userDecisionTimeout: 5000,
+})(App);
+
+//export default App;

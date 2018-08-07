@@ -33,7 +33,12 @@ exports.index = function(req, res) {
 
 /* GET create room */
 exports.room_create_get = function(req, res){
-  res.render('room_form', { title: 'Create Room' });
+    console.log(req.cookies.spotify_id);
+    if (req.cookies.spotify_id) {
+        res.render('room_form', { title: 'Create Room' });
+    } else {
+        res.redirect("/");
+    }
 }
 
 /* POST create room */
@@ -50,15 +55,21 @@ exports.room_create_post = [
       return;
     }
     else {
+      console.log('room create body:'+JSON.stringify(req.body));
+      console.log('room create cookies:'+JSON.stringify(req.cookies));
       let roomKey = '';
       do{ roomKey = keygen(); }
       while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
+      console.log(req.cookies.spotify_id);
       models.Room.findOrCreate({
           where: {id: req.body.id || 0, key: roomKey},
           defaults: {
               id:    req.body.id,
               key:   roomKey,
               title: req.body.title,
+              owner: req.body.spotify_id,
+              latitude: req.body.latitude,
+              longitude: req.body.longitude
           }
       })
       .spread(room  => {
@@ -89,7 +100,7 @@ exports.room_detail_get = function(req, res){
       res.json({
         room: room,
         candidates: candidates,
-        access_token: req.cookies.access_token
+        access_token: req.cookies.access_token,
       });
     // Template
     } else {
@@ -97,7 +108,7 @@ exports.room_detail_get = function(req, res){
         title: 'Room Information',
         room: room,
         candidates: candidates,
-        access_token: req.cookies.access_token
+        access_token: req.cookies.access_token,
       });
     }
   });
@@ -106,7 +117,9 @@ exports.room_detail_get = function(req, res){
 /* GET room edit */
 exports.room_update_get = function(req, res){
     models.Room.findById(req.params.id).then(function(room) {
-      res.render('room_form', { title: 'Edit Room', room: room });
+        if (req.cookies.spotify_id === room.owner) {
+            res.render('room_form', { title: 'Edit Room', room: room });
+        }
     }).catch(function (err) {
       return next(err);
     })

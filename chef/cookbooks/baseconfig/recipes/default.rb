@@ -46,7 +46,7 @@ execute "install_packages" do
 end
 
 # Installing npm packages for react
-execute "install_packages" do
+execute "install_packages_react" do
   command "sudo npm install --silent"
   cwd "/home/vagrant/project/client"
   user 'vagrant'
@@ -69,8 +69,14 @@ execute "run_migrations" do
   cwd "/home/vagrant/project"
 end
 
-# # run server
-# execute "run_server" do
-#   command "forever start ./bin/www"
-#   cwd "/home/vagrant/project"
-# end
+# Build React files
+execute "build_react" do
+  command "sudo npm run build"
+  cwd "/home/vagrant/project/client"
+end
+
+# run server
+execute "run_server" do
+  command "forever start ./bin/www"
+  cwd "/home/vagrant/project"
+end

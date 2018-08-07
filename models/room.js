@@ -11,7 +11,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     owner: {
       type: DataTypes.STRING,
-      // allowNull: false, // TODO: enable later
+      allowNull: false,
+    },
+    latitude: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    longitude: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
     },
   }, {});
 

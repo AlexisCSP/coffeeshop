@@ -5,7 +5,7 @@ import { ControlDirection } from 'react-player-controls/dist/components/RangeCon
 import Script from 'react-load-script'
 import SpotifyWebApi from 'spotify-web-api-js';
 import cookie from 'react-cookies'
-import { subscribeToPlayNextSong, emitPlayNextSong } from './socketApi';
+import { onPlayNextSong, emitPlayNextSong } from './socketApi';
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -23,7 +23,7 @@ class Player extends Component {
             hasNext: false,
         };
         window.first_playback = true
-        subscribeToPlayNextSong(this.props.fetchCandidates)
+        onPlayNextSong(this.props.fetchCandidates)
     }
 
     tick() {
@@ -81,7 +81,7 @@ class Player extends Component {
     }
 
     dequeue() {
-        fetch('/rooms/' + this.props.id + '/dequeue', {
+        fetch('http://localhost:3001/rooms/' + this.props.id + '/dequeue', {
           method: 'POST',
           headers: {
            'Accept': 'application/json',
@@ -234,7 +234,7 @@ class Player extends Component {
                 isMuted={this.state.isMuted}
                 onMuteChange={isMuted => {
                     if (this.state.isMuted) {
-                        spotifyApi.setVolume(100*this.state.volume, {});
+                        spotifyApi.setVolume(Math.round(100*this.state.volume), {});
                     } else {
                         spotifyApi.setVolume(0, {});
                     }

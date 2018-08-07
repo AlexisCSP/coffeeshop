@@ -3,7 +3,7 @@ import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
 import Player from './Player.jsx'
-import { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
+import { emitJoinRoom, onSongSuggested, onSongUpvoted, onSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
 
 class Room extends Component {
   constructor(props) {
@@ -13,14 +13,16 @@ class Room extends Component {
     this.onSearchItemClick = this.onSearchItemClick.bind(this);
     this.fetchCandidatesData = this.fetchCandidatesData.bind(this);
 
-    this.state = { roomData : {
-      candidates: []}
+    this.state = {
+      roomData : {
+        candidates: []
+      }
     };
 
     emitJoinRoom(props.id)
-    subscribeToSongSuggested(this.fetchCandidatesData)
-    subscribeToSongUpvoted(this.fetchCandidatesData)
-    subscribeToSongDownvoted(this.fetchCandidatesData)
+    onSongSuggested(this.fetchCandidatesData)
+    onSongUpvoted(this.fetchCandidatesData)
+    onSongDownvoted(this.fetchCandidatesData)
   }
 
   componentDidMount() {
@@ -28,7 +30,7 @@ class Room extends Component {
   }
 
   fetchRoomData() {
-    fetch('/rooms/' + this.props.id, {
+    fetch('http://localhost:3001/rooms/' + this.props.id, {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -36,14 +38,14 @@ class Room extends Component {
       }
     })
     .then(res => res.json())
-    .then(roomData => this.setState({ roomData : roomData } ))
+    .then(roomData => this.setState({ roomData } ))
     .catch(error => {
          // handle error
     });
   }
 
   fetchCandidatesData() {
-    fetch('/rooms/' + this.props.id + '/candidates', {
+    fetch('http://localhost:3001/rooms/' + this.props.id + '/candidates', {
       method: 'GET',
       headers: {
        'Accept': 'application/json',
@@ -62,7 +64,7 @@ class Room extends Component {
   }
 
   onUpvoteClick(songId) {
-    fetch('/candidate/upvote', {
+    fetch('http://localhost:3001/candidate/upvote', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -79,7 +81,7 @@ class Room extends Component {
     }
 
   onDownvoteClick(songId) {
-    fetch('/candidate/downvote', {
+    fetch('http://localhost:3001/candidate/downvote', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -97,7 +99,7 @@ class Room extends Component {
   }
 
   onSearchItemClick(song) {
-    fetch('/candidate/new', {
+    fetch('http://localhost:3001/candidate/new', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -125,10 +127,19 @@ class Room extends Component {
         <Search onSearchItemClick={this.onSearchItemClick}/>
         <ul>
           {this.state.roomData.candidates.map(song =>
-          <li key={song.id}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
+          <li key={song.id}>
+            <Song song={song}
+                  onUpvoteClick={this.onUpvoteClick}
+                  onDownvoteClick={this.onDownvoteClick}
+            />
+          </li>)}
         </ul>
-        {this.props.isLoggedIn && <Player id={this.props.id} candidates={this.state.roomData.candidates} fetchCandidates={this.fetchCandidatesData}/>}
-       </div>
+        {(this.props.isLoggedIn && this.props.isRoomOwner) &&
+        <Player id={this.props.id}
+                candidates={this.state.roomData.candidates}
+                fetchCandidates={this.fetchCandidatesData}
+        />}
+      </div>
     )
   }
 

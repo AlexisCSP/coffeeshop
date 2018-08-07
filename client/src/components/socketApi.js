@@ -5,19 +5,19 @@ function emitJoinRoom() {
   socket.emit('join room')
 }
 
-function subscribeToSongSuggested(callback) {
+function onSongSuggested(callback) {
   socket.on('update room queue', () => callback(null));
 }
 
-function subscribeToSongUpvoted(callback) {
+function onSongUpvoted(callback) {
   socket.on('update vote count', () => callback(null));
 }
 
-function subscribeToSongDownvoted(callback) {
+function onSongDownvoted(callback) {
   socket.on('update vote count', () => callback(null));
 }
 
-function subscribeToPlayNextSong(callback) {
+function onPlayNextSong(callback) {
   socket.on('play next song', () => callback(null));
 }
 
@@ -37,5 +37,5 @@ function emitPlayNextSong() {
   socket.emit('play next song')
 }
 
-export { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted,
-  subscribeToPlayNextSong, emitSongSuggested, emitSongUpvoted, emitSongDownvoted, emitPlayNextSong };
+export { emitJoinRoom, onSongSuggested, onSongUpvoted, onSongDownvoted,
+  onPlayNextSong, emitSongSuggested, emitSongUpvoted, emitSongDownvoted, emitPlayNextSong };

@@ -5,6 +5,8 @@ const request = require('request');
 const querystring = require('querystring');
 const Spotify = require('node-spotify-api');
 const keys = require('../routes/keys');
+const models = require('../models');
+
 
 /* API Credentials */
 var client_id = 'c086167c88da4af6a09abe8244133a5b';
@@ -13,23 +15,23 @@ var redirect_uri = 'http://localhost:3001/spotify/callback';
 var stateKey = 'spotify_auth_state'; //response header
 
 /* Helper for statekey generation */
-var generateRandomString = function(length) {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const generateRandomString = function(length) {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
 };
 
 exports.login = function(req, res) {
-    var state = generateRandomString(16);
+    const state = generateRandomString(16);
     res.cookie(stateKey, state);
 
     // application requests authorization
     // TODO Make scope multi-line for easier reading
-    var scope = 'streaming user-read-birthdate user-read-private user-read-email playlist-read-private user-library-read user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
+    const scope = 'streaming user-read-birthdate user-read-private user-read-email playlist-read-private user-library-read user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
         response_type: 'code',
@@ -55,7 +57,7 @@ exports.callback = function(req, res) {
     }
     else {
         res.clearCookie(stateKey);
-        var authOptions = {
+        let authOptions = {
             url: 'https://accounts.spotify.com/api/token',
             form: {
                 code: code,
@@ -67,45 +69,49 @@ exports.callback = function(req, res) {
             },
             json: true
         };
+        
+        // get access_token
+        request.post(authOptions, (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+                let access_token = body.access_token;
+                let refresh_token = body.refresh_token;
 
-        request.post(authOptions, function(error, response, body) {
-        if (!error && response.statusCode === 200) {
-            var access_token = body.access_token;
-            var refresh_token = body.refresh_token;
-
-            var options = {
-                url: 'https://api.spotify.com/v1/me',
-                headers: { 'Authorization': 'Bearer ' + access_token },
-                json: true
-            };
-
-            // use the access token to access the Spotify Web API
-            request.get(options, function(error, response, body) {
-                console.log(body);
-            });
-
-            res.cookie('access_token', access_token);
-            res.cookie('refresh_token', refresh_token);
-            // we can also pass the token to the browser to make requests from there
-            // res.redirect('/#' +
-            // querystring.stringify({
-            //     access_token: access_token,
-            //     refresh_token: refresh_token
-            // }));
-
-            // Enable for React redirect
-            res.redirect('http://localhost:3000');
-
-            // Enable for Pug redirect
-            //res.redirect('http://localhost:3001');
-        }
-        else {
-            res.redirect('/#' +
-            querystring.stringify({
-                error: 'invalid_token'
-            }));
-        }
+                res.cookie('access_token', access_token);
+                res.cookie('refresh_token', refresh_token);
+                
+                let user_options = {
+                    url: 'https://api.spotify.com/v1/me',
+                    headers: { 'Authorization': 'Bearer ' + access_token },
+                    json: true
+                };
+                
+                // use the access token to get user information
+                request.get(user_options, (error, response, body) => {
+                    if (!error && response.statusCode === 200) {
+                        res.cookie('spotify_id', body.id);
+                        
+                        // Enable for React redirect
+                        res.redirect('http://localhost:3000');
+                        
+                        // Enable for Pug redirect
+                        //res.redirect('http://localhost:3001');
+                    }
+                    else {
+                        res.redirect('http://localhost:3000/#' +
+                        querystring.stringify({
+                            error: 'error_getting_user_info'
+                        }));
+                    }
+                });
+            }
+            else {
+                res.redirect('http://localhost:3000/#' +
+                querystring.stringify({
+                    error: 'invalid_token'
+                }));
+            }
         });
+
     }
 };
 

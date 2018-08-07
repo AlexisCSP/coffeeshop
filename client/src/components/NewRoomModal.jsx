@@ -47,12 +47,12 @@ class NewRoomModal extends Component {
 
   render() {
     return (
-      <Modal open={this.props.isModalOpen} onClose={this.props.onModalClose} center>
-        <div className="form-style-6">
-          <h1>Create a new room</h1>
+      <Modal className="background-secondary-dark" open={this.props.isModalOpen} onClose={this.props.onModalClose} center>
+        <div className="form-style-6 background-secondary-main">
+          <h1 className="background-secondary-dark color-secondary-text">Create a new room</h1>
           <form onSubmit={this.handleSubmit}>
-            <input type="text" value={this.state.value} onChange={this.handleChange} placeholder="Room Name" />
-            <input type="submit" value="Create" />
+            <input className="background-secondary-light color-secondary-text" type="text" value={this.state.value} onChange={this.handleChange} placeholder="Room Name" />
+            <input className="background-secondary-dark color-secondary-text" type="submit" value="Create" />
           </form>
         </div>
       </Modal>

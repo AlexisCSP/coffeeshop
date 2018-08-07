@@ -1,0 +1,45 @@
+/* 
+Main theme colors
+{
+    primary: {
+        main: #bcbcbc,
+        light: #eeeeee,
+        dark: #8c8c8c,
+        text: #000000
+    },
+    secondary: {
+        main: #616161,
+        light: #8e8e8e,
+        dark: #373737,
+        text: #ffffff
+    }
+} 
+*/
+
+body {
+    font-family: 'Roboto', Helvetica, Verdana, sans-serif;
+}
+
+li {
+    font-family: inherit;
+}
+
+a {
+    text-decoration: none;
+}
+
+.background-secondary-main {
+    background-color: #616161;
+}
+
+.background-secondary-dark {
+    background-color: #8c8c8c;
+}
+
+.background-secondary-light {
+    background-color: #8e8e8e;
+}
+
+.color-secondary-text {
+    color: #ffffff;
+}

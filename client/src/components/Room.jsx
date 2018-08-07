@@ -38,7 +38,7 @@ class Room extends Component {
       }
     })
     .then(res => res.json())
-    .then(roomData => this.setState({ roomData : roomData } ))
+    .then(roomData => this.setState({ roomData } ))
     .catch(error => {
          // handle error
     });

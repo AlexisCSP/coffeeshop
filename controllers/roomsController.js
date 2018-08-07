@@ -55,6 +55,8 @@ exports.room_create_post = [
       return;
     }
     else {
+      console.log('room create body:'+JSON.stringify(req.body));
+      console.log('room create cookies:'+JSON.stringify(req.cookies));
       let roomKey = '';
       do{ roomKey = keygen(); }
       while (models.Room.findAndCount({where: {key: roomKey} }).count < 1);
@@ -65,12 +67,9 @@ exports.room_create_post = [
               id:    req.body.id,
               key:   roomKey,
               title: req.body.title,
-<<<<<<< HEAD
               owner: req.cookies.spotify_id,
-=======
               latitude: req.body.latitude,
               longitude: req.body.longitude
->>>>>>> fae940310b06cd34e8e66bc6123da6e48addb2de
           }
       })
       .spread(room  => {

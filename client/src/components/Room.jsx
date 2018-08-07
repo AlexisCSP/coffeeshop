@@ -134,7 +134,7 @@ class Room extends Component {
             />
           </li>)}
         </ul>
-        {this.props.isLoggedIn &&
+        {(this.props.isLoggedIn && this.props.isRoomOwner) &&
         <Player id={this.props.id}
                 candidates={this.state.roomData.candidates}
                 fetchCandidates={this.fetchCandidatesData}

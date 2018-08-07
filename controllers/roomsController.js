@@ -67,7 +67,7 @@ exports.room_create_post = [
               id:    req.body.id,
               key:   roomKey,
               title: req.body.title,
-              owner: req.cookies.spotify_id,
+              owner: req.body.spotify_id,
               latitude: req.body.latitude,
               longitude: req.body.longitude
           }

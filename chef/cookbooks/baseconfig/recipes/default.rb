@@ -53,10 +53,10 @@ execute "install_packages_react" do
 end
 
 # Installing npm package forever
-execute "install_forever" do
-  command "sudo npm install -g forever"
-  cwd "/home/vagrant/project"
-end
+#execute "install_forever" do
+  #command "sudo npm install -g forever"
+  #cwd "/home/vagrant/project"
+#end
 
 # Create databases
 execute 'create_dbs' do
@@ -69,14 +69,14 @@ execute "run_migrations" do
   cwd "/home/vagrant/project"
 end
 
-# Execute db migrations
-execute "run_migrations" do
+# Build React files
+execute "build_react" do
   command "sudo npm run build"
   cwd "/home/vagrant/project/client"
 end
 
 # run server
-execute "run_server" do
-  command "forever start ./bin/www"
-  cwd "/home/vagrant/project"
-end
+#execute "run_server" do
+  #command "forever start ./bin/www"
+  #cwd "/home/vagrant/project"
+#end

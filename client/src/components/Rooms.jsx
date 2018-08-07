@@ -4,6 +4,8 @@ import Room from './Room.jsx'
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
+import cookie from 'react-cookies'
+
 const haversine = require('haversine');
 
 class Rooms extends Component {
@@ -64,7 +66,7 @@ class Rooms extends Component {
             <Route
               key={index}
               path={"/rooms/" + room.id}
-              component={() => <Room id={room.id} isLoggedIn={this.props.isLoggedIn}/>} />
+              component={() => <Room id={room.id} isLoggedIn={this.props.isLoggedIn} isRoomOwner={cookie.load('spotify_id') === room.owner}/>} />
             ))}
           </div>
         </div>

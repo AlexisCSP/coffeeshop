@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
 import './NewRoomModal.css'
+import cookie from 'react-cookies'
 
 class NewRoomModal extends Component {
   constructor(props, context) {
@@ -23,7 +24,7 @@ class NewRoomModal extends Component {
       latitude = this.props.coords.latitude;
       longitude = this.props.coords.longitude;
     }
-    fetch('/rooms/create', {
+    fetch('http://localhost:3001/rooms/create', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -33,6 +34,7 @@ class NewRoomModal extends Component {
         title: this.state.value,
         latitude: latitude,
         longitude: longitude,
+        spotify_id: cookie.load('spotify_id')
       })
     })
     .then(res => res.json())

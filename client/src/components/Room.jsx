@@ -3,7 +3,7 @@ import './Room.css'
 import Search from './Search.jsx'
 import Song from './Song.jsx'
 import Player from './Player.jsx'
-import { emitJoinRoom, subscribeToSongSuggested, subscribeToSongUpvoted, subscribeToSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
+import { emitJoinRoom, onSongSuggested, onSongUpvoted, onSongDownvoted, emitSongSuggested, emitSongUpvoted, emitSongDownvoted } from './socketApi';
 
 class Room extends Component {
   constructor(props) {
@@ -13,16 +13,16 @@ class Room extends Component {
     this.onSearchItemClick = this.onSearchItemClick.bind(this);
     this.fetchCandidatesData = this.fetchCandidatesData.bind(this);
 
-    this.state = { 
+    this.state = {
       roomData : {
         candidates: []
       }
     };
 
     emitJoinRoom(props.id)
-    subscribeToSongSuggested(this.fetchCandidatesData)
-    subscribeToSongUpvoted(this.fetchCandidatesData)
-    subscribeToSongDownvoted(this.fetchCandidatesData)
+    onSongSuggested(this.fetchCandidatesData)
+    onSongUpvoted(this.fetchCandidatesData)
+    onSongDownvoted(this.fetchCandidatesData)
   }
 
   componentDidMount() {
@@ -128,15 +128,15 @@ class Room extends Component {
         <ul>
           {this.state.roomData.candidates.map(song =>
           <li key={song.id}>
-            <Song song={song} 
-                  onUpvoteClick={this.onUpvoteClick} 
+            <Song song={song}
+                  onUpvoteClick={this.onUpvoteClick}
                   onDownvoteClick={this.onDownvoteClick}
             />
           </li>)}
         </ul>
-        {this.props.isLoggedIn && 
-        <Player id={this.props.id} 
-                candidates={this.state.roomData.candidates} 
+        {this.props.isLoggedIn &&
+        <Player id={this.props.id}
+                candidates={this.state.roomData.candidates}
                 fetchCandidates={this.fetchCandidatesData}
         />}
       </div>

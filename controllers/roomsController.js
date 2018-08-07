@@ -65,7 +65,12 @@ exports.room_create_post = [
               id:    req.body.id,
               key:   roomKey,
               title: req.body.title,
+<<<<<<< HEAD
               owner: req.cookies.spotify_id,
+=======
+              latitude: req.body.latitude,
+              longitude: req.body.longitude
+>>>>>>> fae940310b06cd34e8e66bc6123da6e48addb2de
           }
       })
       .spread(room  => {
@@ -96,7 +101,7 @@ exports.room_detail_get = function(req, res){
       res.json({
         room: room,
         candidates: candidates,
-        access_token: req.cookies.access_token
+        access_token: req.cookies.access_token,
       });
     // Template
     } else {
@@ -104,7 +109,7 @@ exports.room_detail_get = function(req, res){
         title: 'Room Information',
         room: room,
         candidates: candidates,
-        access_token: req.cookies.access_token
+        access_token: req.cookies.access_token,
       });
     }
   });

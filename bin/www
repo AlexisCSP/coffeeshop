@@ -59,12 +59,15 @@ io.of('/rooms').on('connection', (socket) => {
 
   socket.on('user voted up', (candidate) => {
     let room = socket.room;
+    let queue = candidates[`${room}`];
 
-    let i = queue.findIndex( c => c.id == candidate.id );
-    queue[i].votes++;
-
-    // Maintain sorted order by votes
-    queue.sort((a, b) => b.votes - a.votes);
+    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
+      let i = queue.findIndex( c => c.id == candidate.id );
+      queue[i].votes++;
+  
+      // Maintain sorted order by votes
+      queue.sort((a, b) => b.votes - a.votes);
+    }
 
     io.of('/rooms').in(room).emit('update vote count', queue);
     io.of('/rooms').in(room).emit('update room queue', queue);
@@ -72,12 +75,15 @@ io.of('/rooms').on('connection', (socket) => {
 
   socket.on('user voted down', (candidate) => {
     let room = socket.room;
+    let queue = candidates[`${room}`];
 
-    let i = queue.findIndex( c => c.id == candidate.id );
-    queue[i].votes--;
-
-    // Maintain sorted order by votes
-    queue.sort((a, b) => b.votes - a.votes);
+    if (typeof queue != 'undefined' && typeof queue[0] != 'undefined'){
+      let i = queue.findIndex( c => c.id == candidate.id );
+      queue[i].votes--;
+  
+      // Maintain sorted order by votes
+      queue.sort((a, b) => b.votes - a.votes);
+    }
 
     io.of('/rooms').in(room).emit('update vote count', queue);
     io.of('/rooms').in(room).emit('update room queue', queue);
@@ -100,7 +106,8 @@ io.of('/rooms').on('connection', (socket) => {
       io.of('/rooms').in(room).emit('update now playing', nowPlaying[`${room}`]);
 
       nowPlaying[`${room}`]['room'] = room;
-      candidates_controller.candidate_create_post(nowPlaying[`${room}`]);
+      /* Call to save candidate to DB */
+      // candidates_controller.candidate_create_post(nowPlaying[`${room}`]);
     }
     else{
       console.log('No song in queue to play');

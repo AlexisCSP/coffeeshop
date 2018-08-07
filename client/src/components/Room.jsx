@@ -13,8 +13,10 @@ class Room extends Component {
     this.onSearchItemClick = this.onSearchItemClick.bind(this);
     this.fetchCandidatesData = this.fetchCandidatesData.bind(this);
 
-    this.state = { roomData : {
-      candidates: []}
+    this.state = { 
+      roomData : {
+        candidates: []
+      }
     };
 
     emitJoinRoom(props.id)
@@ -125,10 +127,19 @@ class Room extends Component {
         <Search onSearchItemClick={this.onSearchItemClick}/>
         <ul>
           {this.state.roomData.candidates.map(song =>
-          <li key={song.id}><Song song={song} onUpvoteClick={this.onUpvoteClick} onDownvoteClick={this.onDownvoteClick}/></li>)}
+          <li key={song.id}>
+            <Song song={song} 
+                  onUpvoteClick={this.onUpvoteClick} 
+                  onDownvoteClick={this.onDownvoteClick}
+            />
+          </li>)}
         </ul>
-        {this.props.isLoggedIn && <Player id={this.props.id} candidates={this.state.roomData.candidates} fetchCandidates={this.fetchCandidatesData}/>}
-       </div>
+        {this.props.isLoggedIn && 
+        <Player id={this.props.id} 
+                candidates={this.state.roomData.candidates} 
+                fetchCandidates={this.fetchCandidatesData}
+        />}
+      </div>
     )
   }
 

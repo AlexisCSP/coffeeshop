@@ -71,47 +71,35 @@ exports.callback = function(req, res) {
         };
 
         request.post(authOptions, function(error, response, body) {
-        if (!error && response.statusCode === 200) {
-            var access_token = body.access_token;
-            var refresh_token = body.refresh_token;
-            var options = {
-                url: 'https://api.spotify.com/v1/me',
-                headers: { 'Authorization': 'Bearer ' + access_token },
-                json: true
-            };
+            if (!error && response.statusCode === 200) {
+                var access_token = body.access_token;
+                var refresh_token = body.refresh_token;
+                var options = {
+                    url: 'https://api.spotify.com/v1/me',
+                    headers: { 'Authorization': 'Bearer ' + access_token },
+                    json: true
+                };
 
-            // use the access token to access the Spotify Web API
+                // use the access token to access the Spotify Web API
+                res.cookie('access_token', access_token);
+                res.cookie('refresh_token', refresh_token);
 
-            res.cookie('access_token', access_token);
-            res.cookie('refresh_token', refresh_token);
-
-            request.get(options, function(error, response, body) {
-                res.cookie('spotify_id', body.id);
-                // create a new user with spotify_id
-                models.User.findOrCreate({
-                    where: { spotify_id: body.id },
+                /* Possible Error */
+                request.get(options, function(error, response, body) {
+                    res.cookie('spotify_id', body.id);
+                    // create a new user with spotify_id
+                    models.User.findOrCreate({
+                        where: { spotify_id: body.id },
+                    });
+                    res.redirect('http://localhost:3001');
                 });
-                res.redirect('http://localhost:3001');
-            });
-            // we can also pass the token to the browser to make requests from there
-            // res.redirect('/#' +
-            // querystring.stringify({
-            //     access_token: access_token,
-            //     refresh_token: refresh_token
-            // }));
-
-            // Enable for React redirect
-            res.redirect('http://localhost:3000');
-
-            // Enable for Pug redirect
-            //res.redirect('http://localhost:3001');
-        }
-        else {
-            res.redirect('/#' +
-            querystring.stringify({
-                error: 'invalid_token'
-            }));
-        }
+            }
+            else {
+                res.redirect('/#' +
+                querystring.stringify({
+                    error: 'invalid_token'
+                }));
+            }
         });
     }
 };

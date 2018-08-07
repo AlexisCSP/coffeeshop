@@ -76,3 +76,7 @@ Main theme colors
 .rc-slider-mark-text  {
   color: #ffffff;
 }
+
+.rc-slider-mark-text-active {
+  color: #ffffff;
+}

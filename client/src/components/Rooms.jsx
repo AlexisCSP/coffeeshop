@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Rooms.css'
-import Room from './Room.jsx'
+import Room from './Room'
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
@@ -64,7 +64,7 @@ class Rooms extends Component {
             <Route
               key={index}
               path={"/rooms/" + room.id}
-              component={() => <Room id={room.id} isLoggedIn={this.props.isLoggedIn}/>} />
+              render={() => <Room id={room.id} isLoggedIn={this.props.isLoggedIn}/>} />
             ))}
           </div>
         </div>

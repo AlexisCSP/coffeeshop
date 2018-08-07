@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { PlaybackControls, MuteToggleButton, VolumeSlider, TimeMarker, ProgressBar } from 'react-player-controls';
-import './Player.css'
 import { ControlDirection } from 'react-player-controls/dist/components/RangeControlOverlay';
 import Script from 'react-load-script'
 import SpotifyWebApi from 'spotify-web-api-js';
 import cookie from 'react-cookies'
-import { subscribeToPlayNextSong, emitPlayNextSong } from './socketApi';
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -14,16 +12,13 @@ class Player extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            candidates: [],
             volume: 0.5,
             totalTime: 200,
             currentTime: 0,
             bufferedTime: 0,
             isSeekable: true,
-            hasNext: false,
+            isPaused: false
         };
-        window.first_playback = true
-        subscribeToPlayNextSong(this.props.fetchCandidates)
     }
 
     tick() {
@@ -33,67 +28,62 @@ class Player extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ candidates: nextProps.candidates });
-        var candidates = nextProps.candidates;
-        if (candidates.length > 1) {
-            this.setState({ hasNext: true });
-        } else {
-            this.setState({ hasNext: false });
+        if (nextProps.song !== this.props.song) {
+            spotifyApi.play({uris: [nextProps.song.uri]});
+            this.setState({
+                isPlaying: true,
+                currentTime: 0,
+                totalTime: nextProps.song.duration_ms / 1000
+            })
+            this.interval = setInterval(() => this.tick(), 1000);
         }
-        if (candidates.length === 0) {
-            this.setState({ isPlayable: false });
-        } else {
-            this.setState({ totalTime: Math.round(candidates[0].duration_ms/1000) });
-            this.setState({ bufferedTime: Math.round(candidates[0].duration_ms/1000) });
-            this.setState({ isPlayable: true });
-        }
+        // if (!this.props.song) {
+        //     this.setState({ isPlayable: false });
+        // } else {
+        //     this.setState({ totalTime: Math.round(this.props.song.duration_ms/1000) });
+        //     this.setState({ bufferedTime: Math.round(this.props.song.duration_ms/1000) });
+        //     this.setState({ isPlayable: true });
+        // }
     }
 
     play() {
-        if (this.state.candidates.length > 0) {
-            // not working, always start from beginning
-            if (window.first_playback) {
-                spotifyApi.play({uris: [this.state.candidates[0].uri]});
-                this.dequeue();
-                window.first_playback = false
-            } else {
-                console.log("here");
-                spotifyApi.play({});
-            }
+        if (this.paused) {
+            spotifyApi.play({});
             this.interval = setInterval(() => this.tick(), 1000);
+        } else {
+            this.props.onNext();
         }
+
+        // if (this.props.song) {
+        //     // not working, always start from beginning
+        //     if (window.first_playback) {
+        //         spotifyApi.play({uris: [this.props.song.uri]});
+        //         window.first_playback = false
+        //     } else {
+        //         spotifyApi.play({uris: [this.props.song.uri]});
+        //     }
+        //     this.interval = setInterval(() => this.tick(), 1000);
+        // } else {
+        // }
     }
 
     pause() {
         clearInterval(this.interval);
         spotifyApi.pause({});
+        this.paused = true;
     }
 
     next() {
-        this.pause();
-        setTimeout(function() { }, 500);
-        clearInterval(this.interval);
-        this.setState({currentTime: 0});
+        // this.pause();
+        // setTimeout(function() { }, 500);
+        // clearInterval(this.interval);
+        // this.setState({currentTime: 0});
+        // window.first_playback = true;
+        // if (this.state.isPlaying) {
+        //     this.play();
+        // }
         window.first_playback = true;
-        if (this.state.isPlaying) {
-            this.play();
-        }
-    }
-
-    dequeue() {
-        fetch('http://localhost:3001/rooms/' + this.props.id + '/dequeue', {
-          method: 'POST',
-          headers: {
-           'Accept': 'application/json',
-           'Content-Type': 'application/json',
-          }
-        })
-        .catch(error => {
-             // handle error
-        }).then(() => {
-            this.props.fetchCandidates();
-            emitPlayNextSong();
-        })
+        this.props.onNext();
     }
 
     handleScriptCreate() {
@@ -210,12 +200,12 @@ class Player extends Component {
                 markerSeparator= "/"
             />
             <PlaybackControls
-                isPlayable={this.state.isPlayable}
+                isPlayable={this.props.hasNext || this.props.song}
                 isPlaying={this.state.isPlaying}
                 showPrevious={false}
                 hasPrevious={false}
-                showNext={this.state.showNext}
-                hasNext={this.state.hasNext}
+                // showNext={this.state.showNext}
+                hasNext={this.props.hasNext}
                 onPlaybackChange={isPlaying => {
                     if (this.state.isPlaying) {
                         this.pause();

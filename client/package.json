@@ -16,9 +16,11 @@
     "react-geolocated": "^2.4.0",
     "react-load-script": "0.0.6",
     "react-player-controls": "^0.5.20",
+    "react-redux": "^5.0.7",
     "react-responsive-modal": "^3.2.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
     "socket.io-client": "^2.1.1",
     "spotify-web-api-js": "^0.24.0"
   },

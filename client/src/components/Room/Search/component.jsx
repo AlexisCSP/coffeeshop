@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
-import './Search.css'
 
 class Search extends Component {
   constructor(props, context) {

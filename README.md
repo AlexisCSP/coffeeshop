@@ -10,7 +10,7 @@ Coffee Shop is a democratric digital jukebox app built using ReactJS, SocketIO a
 * Clone coffeeshop repository:
 
 ```
-$ git clone git@csil-git1.cs.surrey.sfu.ca:tudatn/coffeeshop.git
+$ git clone git@github.com:AlexisCSP/coffeeshop.git
 ```
 
 * Move into the Coffe Shop folder created :
